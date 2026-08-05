@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install workspace
+        run: npm ci
+
+      # The monitor imports the analyzer's compiled contract, so build order matters.
+      - name: Build
+        run: npm run build
+
+      - name: Test analyzer
+        run: npm run test --workspace mcp-sentinel
+
+      - name: Test monitor
+        run: npm run test --workspace @sentinel/watch
+
+  invariants:
+    name: Architectural invariants
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The analyzer must never depend on a consumer of its reports. Dependencies
+      # run one way: the monitor imports the analyzer, never the reverse.
+      # Matched narrowly and deliberately. A bare "watch" would fire on ordinary
+      # English ("watch out", "stopwatch"), and a guard that cries wolf gets
+      # disabled, which is worse than no guard.
+      - name: Analyzer has no downstream dependency
+        run: |
+          if grep -rniE '@sentinel/watch|packages/watch|mcp-watch|magus|opensecmcp' \
+              packages/sentinel/src packages/sentinel/schemas 2>/dev/null; then
+            echo "::error::The analyzer references a downstream consumer."
+            exit 1
+          fi
+          echo "OK: analyzer is independent."
+
+      # These modules are imported by consumers in constrained runtimes (edge
+      # workers). A Node built-in creeping in breaks them at deploy time, not
+      # build time, so it is checked here.
+      - name: Exported modules stay runtime-agnostic
+        run: |
+          if grep -nE 'from "node:|require\(' packages/sentinel/src/diff.ts packages/sentinel/src/report-contract.ts; then
+            echo "::error::A portable module imports a Node built-in."
+            exit 1
+          fi
+          echo "OK: diff and report-contract are runtime-agnostic."
+
+      # The analyzer states what changed; the monitor decides what it is worth.
+      # Severity leaking into the analyzer would put product policy in the engine.
+      - name: Analyzer assigns no severity
+        run: |
+          if grep -nE '"(high|review|critical)"' packages/sentinel/src/diff.ts; then
+            echo "::error::The analyzer diff assigns severity. Ranking belongs to the consumer."
+            exit 1
+          fi
+          echo "OK: no severity in the analyzer diff."
+
+      # The monitor must consume reports through the published contract, never by
+      # reaching into analyzer internals or re-declaring the report shape.
+      - name: Monitor uses the published contract only
+        run: |
+          if grep -rnE 'from "mcp-sentinel/(src|dist)' packages/watch/src packages/watch/test 2>/dev/null; then
+            echo "::error::The monitor reaches past the analyzer's exports."
+            exit 1
+          fi
+          if grep -rnE '^export interface Sentinel(Report|Observation|Finding)' packages/watch/src 2>/dev/null; then
+            echo "::error::The monitor re-declares the report contract. Import it instead."
+            exit 1
+          fi
+          echo "OK: monitor consumes the published contract."
+
+      # Guards against the two false alarms that would most damage trust in an
+      # alerting product. Named explicitly so a refactor cannot quietly drop them.
+      - name: False-alarm guards are tested
+        run: |
+          set -euo pipefail
+          for name in \
+            "does not invent tool changes when the baseline has no inventory" \
+            "treats a missing tool as inconclusive when extraction was incomplete" \
+            "an identical rebuild produces no reviewable changes"
+          do
+            if ! grep -qF "$name" packages/watch/test/policy.test.ts; then
+              echo "::error::Required regression test missing: $name"
+              exit 1
+            fi
+          done
+          echo "OK: false-alarm guards present."
+
+  secrets:
+    name: Secret hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No committed secrets
+        run: |
+          if [ -f packages/watch/.dev.vars ]; then
+            echo "::error::.dev.vars is committed. It holds live secrets."
+            exit 1
+          fi
+          if grep -rnE '(OPERATOR_API_KEY|ANALYZER_INGEST_SECRET|JOB_SIGNING_SECRET)[[:space:]]*=[[:space:]]*["'\'']?[A-Za-z0-9+/_-]{16,}' \
+              --exclude='*.example' --exclude-dir=.git --exclude-dir=node_modules . 2>/dev/null; then
+            echo "::error::A secret value appears to be committed."
+            exit 1
+          fi
+          echo "OK: no committed secret values."
+
+  end-to-end:
+    name: Real package end to end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace mcp-sentinel
+
+      # A report that does not validate against its own schema is worthless as
+      # evidence, so prove the CLI against a real published package.
+      - name: Analyze a published MCP server
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/e2e && cd /tmp/e2e
+          npm pack @modelcontextprotocol/server-filesystem >/dev/null 2>&1
+          TARBALL="$(ls ./*.tgz | head -1)"
+          CLI="$GITHUB_WORKSPACE/packages/sentinel/dist/src/cli.js"
+          node "$CLI" analyze "$TARBALL" --output report.json
+          node "$CLI" analyze "$TARBALL" --output repeat.json
+          node -e '
+            const r = require("/tmp/e2e/report.json");
+            const inv = r.observations.find(o => o.kind === "protocol_inventory");
+            if (!inv || !Array.isArray(inv.data.tools)) throw new Error("no tool inventory");
+            if (inv.data.tools.length === 0) throw new Error("expected tools from a known server");
+            if (!/^[a-f0-9]{64}$/.test(r.analysis.rule_pack.sha256)) throw new Error("rule pack digest missing");
+            console.log("ok:", inv.data.tools.length, "tools, complete =", inv.data.complete);
+          '
+
+      # Same artifact in, same evidence out. Determinism is the property the whole
+      # change-detection story rests on.
+      - name: Re-analysis is deterministic
+        run: |
+          set -euo pipefail
+          cd /tmp/e2e
+          node -e '
+            const a = require("/tmp/e2e/report.json").observations;
+            const b = require("/tmp/e2e/repeat.json").observations;
+            if (JSON.stringify(a) !== JSON.stringify(b)) throw new Error("re-analysis differed");
+            console.log("ok: observations byte-identical across runs");
+          '
+          node "$GITHUB_WORKSPACE/packages/sentinel/dist/src/cli.js" diff report.json repeat.json | tee diff.txt
+          grep -q "No normalized changes" diff.txt || { echo "::error::diff found changes between identical analyses"; exit 1; }

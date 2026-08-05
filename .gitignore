@@ -1,0 +1,69 @@
+# ---- Build output ----
+dist/
+*.tsbuildinfo
+
+# ---- Dependencies ----
+node_modules/
+
+# ---- Cloudflare ----
+.wrangler/
+
+# ---- Internal working documents ----
+# Kept locally so we can track our own work; not part of the published repo.
+# This repository distributes a tool. It is not a record of how it was built.
+docs/ENGINEERING_LOG.md
+docs/ENGINEERING_LOG_WATCH.md
+docs/ROADMAP.md
+docs/PRODUCT_AND_TECHNICAL_PLAN.md
+docs/FIXTURE_PLAN.md
+docs/Project Sentinel.md
+docs/SECURITY_WATCH_NOTES.md
+
+# ---- Third-party specification snapshot ----
+# Not redistributed. docs/SPEC_PROVENANCE.md records the source, retrieval date
+# and SHA-256 of each document so the pinned profile stays reproducible.
+docs/MCP-specs-2026-07-28/
+
+# ---- Analyzer output ----
+# Reports and preserved acquisition evidence are generated artifacts. They can
+# contain the full contents of a third-party package and must never be committed.
+reports/
+evidence/
+*.tgz
+*.tar.gz
+
+# ---- Secrets and local configuration ----
+# .dev.vars holds the operator API key and both HMAC secrets.
+# .npmrc can hold a registry auth token.
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.npmrc
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- Local data ----
+*.sqlite
+*.sqlite3
+*.db
+
+# ---- Logs and coverage ----
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/
+
+# ---- Editors ----
+.vscode/
+.idea/
+*.swp
+*~
+
+# ---- OS ----
+.DS_Store
+._*
+Thumbs.db
+desktop.ini

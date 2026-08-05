@@ -1,0 +1,27 @@
+{
+  "name": "@sentinel/watch",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Self-hosted release monitoring for public npm MCP servers, built on the Sentinel analyzer.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vahive-tobias/magus-mcpsentinel.git",
+    "directory": "packages/watch"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "mcp-sentinel": "*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260801.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.55.0"
+  }
+}

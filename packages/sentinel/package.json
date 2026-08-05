@@ -1,0 +1,46 @@
+{
+  "name": "mcp-sentinel",
+  "version": "0.2.0",
+  "description": "Deterministic, non-executing evidence reports for public npm MCP servers.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vahive-tobias/magus-mcpsentinel.git",
+    "directory": "packages/sentinel"
+  },
+  "type": "module",
+  "bin": {
+    "sentinel": "dist/src/cli.js"
+  },
+  "//exports": "Only the portable modules are exported. They have no Node built-in dependencies, so a consumer in a constrained runtime can import them. The analyzer itself is intentionally not exported.",
+  "exports": {
+    "./diff": {
+      "types": "./dist/src/diff.d.ts",
+      "default": "./dist/src/diff.js"
+    },
+    "./report-contract": {
+      "types": "./dist/src/report-contract.d.ts",
+      "default": "./dist/src/report-contract.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/src",
+    "schemas",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "start": "node dist/src/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "acorn": "^8.18.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

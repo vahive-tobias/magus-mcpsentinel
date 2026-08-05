@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinel.example/schemas/report-0.2.0.schema.json",
+  "title": "Sentinel evidence report",
+  "description": "A policy-neutral, evidence-linked analysis record for one immutable MCP server artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version",
+    "report_id",
+    "generated_at",
+    "subject",
+    "analysis",
+    "observations",
+    "findings",
+    "limitations"
+  ],
+  "properties": {
+    "format_version": { "const": "0.2.0" },
+    "report_id": { "type": "string", "format": "uuid" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "analysis": { "$ref": "#/$defs/analysis" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/observation" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "comparisons": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/comparison" },
+      "description": "Optional comparisons against a parent artifact or a named lineage baseline."
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/limitation" },
+      "description": "Coverage limits and analyzer failures. An empty array means no known limits beyond the report boundary."
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["server_name", "artifact"],
+      "properties": {
+        "server_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Registry or package-level server identifier. It is not inferred from MCP serverInfo.name."
+        },
+        "publisher_claim": { "type": "string" },
+        "artifact": { "$ref": "#/$defs/artifact" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ecosystem", "package", "version", "sha256", "acquired_at"],
+      "properties": {
+        "ecosystem": { "const": "npm" },
+        "package": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "download_url": { "type": "string", "format": "uri" },
+        "registry_metadata_url": { "type": "string", "format": "uri" },
+        "acquired_at": { "type": "string", "format": "date-time" },
+        "registry_metadata_sha256": { "$ref": "#/$defs/sha256" },
+        "integrity_claim": { "type": "string" },
+        "integrity_verified": { "type": "boolean" }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "protocol_profile", "authorization_profiles", "rule_pack"],
+      "properties": {
+        "engine": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version", "build_sha256"],
+          "properties": {
+            "name": { "const": "sentinel" },
+            "version": { "type": "string", "minLength": 1 },
+            "build_sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "protocol_profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "specification_revision", "local_retrieval_date", "discovery_status"],
+          "properties": {
+            "id": { "const": "mcp-2026-07-28" },
+            "specification_revision": { "const": "2026-07-28" },
+            "local_retrieval_date": { "const": "2026-08-01" },
+            "harness_sha256": { "$ref": "#/$defs/sha256" },
+            "discovery_status": { "enum": ["not_run", "completed", "partial", "failed"] }
+          }
+        },
+        "authorization_profiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "credential_present"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "credential_present": { "type": "boolean" },
+              "description": { "type": "string" }
+            }
+          },
+          "description": "Named test contexts only. Secrets and credential values are never reported."
+        },
+        "rule_pack": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "sha256"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "semantic_analysis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["model_id", "configuration_sha256", "status"],
+            "properties": {
+              "model_id": { "type": "string", "minLength": 1 },
+              "configuration_sha256": { "$ref": "#/$defs/sha256" },
+              "status": { "enum": ["completed", "abstained", "failed", "not_run"] }
+            }
+          }
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "coverage", "evidence", "data"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^observation:[a-z0-9._-]+$" },
+        "kind": {
+          "enum": ["artifact_metadata", "file", "dependency", "code_indicator", "protocol_inventory", "protocol_message", "sandbox_telemetry"]
+        },
+        "coverage": { "enum": ["declared", "advertised", "observed", "inferred"] },
+        "authorization_profile": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "data": {
+          "type": "object",
+          "description": "Kind-specific normalized data. It is canonicalized before hashing and retained with raw evidence."
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "artifact_path": { "type": "string", "minLength": 1 },
+        "byte_range": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "media_type": { "type": "string" },
+        "capture_kind": { "enum": ["artifact_file", "registry_metadata", "protocol_trace", "sandbox_trace", "normalized_content"] }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "severity", "confidence", "detector", "evidence", "summary"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^finding:[a-z0-9._-]+$" },
+        "category": {
+          "enum": ["instruction_override", "credential_solicitation", "hidden_instruction", "social_engineering", "data_exfiltration_request", "unsafe_default", "sensitive_header_parameter", "schema_expansion", "capability_expansion", "dependency_change", "malformed_protocol_data", "other"]
+        },
+        "severity": { "enum": ["info", "low", "medium", "high", "critical"] },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "detector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id", "version"],
+          "properties": {
+            "kind": { "enum": ["rule", "semantic_model", "comparison"] },
+            "id": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "interpretation": { "type": "string" }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["against_artifact_sha256", "kind", "changes"],
+      "properties": {
+        "against_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "kind": { "enum": ["immediate_parent", "lineage_baseline"] },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "summary"],
+            "properties": {
+              "type": { "enum": ["added", "removed", "modified"] },
+              "summary": { "type": "string", "minLength": 1 },
+              "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+            }
+          }
+        }
+      }
+    },
+    "limitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "summary"],
+      "properties": {
+        "code": {
+          "enum": ["anonymous_surface_only", "protocol_discovery_not_run", "discovery_incomplete", "static_tool_extraction_incomplete", "sandbox_start_failed", "network_denied", "resource_not_dereferenced", "tool_calls_not_performed", "semantic_analysis_not_run", "other"]
+        },
+        "summary": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

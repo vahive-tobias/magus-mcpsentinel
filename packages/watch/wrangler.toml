@@ -1,0 +1,12 @@
+name = "magus-mcp-watch"
+main = "src/worker.ts"
+compatibility_date = "2026-08-03"
+
+# Create the D1 database before deployment and replace this placeholder ID.
+[[d1_databases]]
+binding = "DB"
+database_name = "magus-mcp-watch"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[triggers]
+crons = ["17 */6 * * *"]

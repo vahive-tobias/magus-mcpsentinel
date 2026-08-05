@@ -1,0 +1,24 @@
+{
+  "name": "sentinel",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Deterministic, non-executing evidence and change monitoring for public npm MCP servers.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vahive-tobias/magus-mcpsentinel.git"
+  },
+  "homepage": "https://github.com/vahive-tobias/magus-mcpsentinel",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace mcp-sentinel && npm run build --workspace @sentinel/watch",
+    "test": "npm run test --workspace mcp-sentinel && npm run test --workspace @sentinel/watch",
+    "sentinel": "node packages/sentinel/dist/src/cli.js"
+  }
+}
