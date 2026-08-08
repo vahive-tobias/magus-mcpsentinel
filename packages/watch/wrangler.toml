@@ -2,6 +2,17 @@ name = "magus-mcp-watch"
 main = "src/worker.ts"
 compatibility_date = "2026-08-03"
 
+# The analyzer runs in this Worker. It reads gzip and computes digests through
+# node:zlib and node:crypto, both of which workerd implements under this flag —
+# verified by running the analyzer against real published packages, not assumed.
+compatibility_flags = ["nodejs_compat"]
+
+# In-Worker analysis needs a paid Workers plan: a Workers Free invocation gets
+# 10 ms of CPU and analysis costs far more. On the free plan, uncomment this and
+# post reports to /api/reports instead. See README.md.
+# [vars]
+# ANALYZE_IN_WORKER = "false"
+
 # Create the D1 database before deployment and replace this placeholder ID.
 [[d1_databases]]
 binding = "DB"
@@ -10,3 +21,6 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID"
 
 [triggers]
 crons = ["17 */6 * * *"]
+
+[observability]
+enabled = true

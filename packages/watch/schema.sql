@@ -47,10 +47,13 @@ CREATE TABLE IF NOT EXISTS change_notices (
   UNIQUE(target_id, candidate_report_id)
 );
 
+-- `analyzed` is the only status that means a report was produced. `failed` covers
+-- both an error and an artifact too large for this deployment to hold; neither
+-- advances watch_targets.last_seen_version, so neither can be read as "unchanged".
 CREATE TABLE IF NOT EXISTS check_runs (
   id TEXT PRIMARY KEY,
   target_id TEXT NOT NULL REFERENCES watch_targets(id),
-  status TEXT NOT NULL CHECK (status IN ('queued', 'submitted', 'skipped', 'failed')),
+  status TEXT NOT NULL CHECK (status IN ('queued', 'analyzed', 'skipped', 'failed')),
   observed_version TEXT,
   detail TEXT,
   created_at TEXT NOT NULL

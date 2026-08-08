@@ -1,4 +1,4 @@
-import type { ChangeNotice, ChangeNoticeRecord, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
+import type { ChangeNotice, ChangeNoticeRecord, CheckStatus, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
 
 export class WatchRepository {
   public constructor(private readonly db: D1Database) {}
@@ -119,9 +119,28 @@ export class WatchRepository {
     return { ...notice, state, decided_at: now };
   }
 
-  async recordCheck(targetId: string, status: "queued" | "submitted" | "skipped" | "failed", observedVersion?: string, detail?: string): Promise<void> {
+  async recordCheck(targetId: string, status: CheckStatus, observedVersion?: string, detail?: string): Promise<string> {
+    const id = crypto.randomUUID();
     await this.db.prepare(
       "INSERT INTO check_runs (id, target_id, status, observed_version, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)"
-    ).bind(crypto.randomUUID(), targetId, status, observedVersion ?? null, detail ?? null, new Date().toISOString()).run();
+    ).bind(id, targetId, status, observedVersion ?? null, detail ?? null, new Date().toISOString()).run();
+    return id;
+  }
+
+  /**
+   * Record that analysis is about to start, before any of it runs.
+   *
+   * A run that exceeds the platform's CPU limit is terminated without reaching any
+   * later statement, so a check written only on completion would leave no trace at
+   * all. Writing the intent first means an interrupted run is visible as a check
+   * still sitting at `queued`, rather than as nothing having happened.
+   */
+  async beginCheck(targetId: string, observedVersion: string, detail: string): Promise<string> {
+    return this.recordCheck(targetId, "queued", observedVersion, detail);
+  }
+
+  async completeCheck(checkId: string, status: CheckStatus, detail: string): Promise<void> {
+    await this.db.prepare("UPDATE check_runs SET status = ?, detail = ? WHERE id = ?")
+      .bind(status, detail, checkId).run();
   }
 }

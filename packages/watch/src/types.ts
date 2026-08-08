@@ -68,10 +68,25 @@ export interface ChangeNoticeRecord {
   decided_at: string | null;
 }
 
+/**
+ * What one scheduled check did.
+ *
+ * `analyzed` is the only status that means a report exists. `failed` covers both
+ * an error and an artifact this deployment cannot hold; neither advances the
+ * version watermark, so both are retried rather than mistaken for "unchanged".
+ */
+export type CheckStatus = "queued" | "analyzed" | "skipped" | "failed";
+
 export interface Env {
   DB: D1Database;
   OPERATOR_API_KEY: string;
+  /** Signs reports posted to /api/reports by an operator running the CLI by hand. */
   ANALYZER_INGEST_SECRET: string;
-  JOB_SIGNING_SECRET: string;
-  ANALYZER_URL?: string;
+  /**
+   * Set to "false" on Workers Free, where the 10 ms CPU limit per invocation is
+   * far below what analyzing a package costs. The scheduled check then detects
+   * releases and records them as awaiting a report posted to /api/reports.
+   * Defaults to enabled.
+   */
+  ANALYZE_IN_WORKER?: string;
 }

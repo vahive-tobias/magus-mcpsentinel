@@ -1,10 +1,31 @@
-import { hmacHex, sha256Hex, verifyApiKey, verifyHmacSignature } from "./auth.js";
+import { analyzeNpmPackage, isArchiveTooLarge } from "mcp-sentinel/analyze";
+import { sha256Hex, verifyApiKey, verifyHmacSignature } from "./auth.js";
 import { assertSentinelReport } from "mcp-sentinel/report-contract";
 import { createChangeNotice } from "./policy.js";
 import { WatchRepository } from "./repository.js";
-import type { Env, JsonObject, SentinelReport, WatchTargetRecord } from "./types.js";
+import type { ChangeNoticeRecord, Env, JsonObject, SentinelReport, WatchTargetRecord } from "./types.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
+
+/**
+ * Ceiling on the decompressed artifact, well inside the 128 MB an isolate gets.
+ *
+ * Measured against 208 real MCP server packages: artifacts up to 59 MB unpacked
+ * analyze comfortably, 99 MB and above exhaust the isolate. Three of the 208 sit
+ * above this limit. Refusing them at a stated threshold makes that outcome
+ * deterministic and reportable, rather than an out-of-memory failure part-way in.
+ */
+const MAX_UNCOMPRESSED_BYTES = 64 * 1024 * 1024;
+
+/**
+ * Analyses attempted per scheduled run.
+ *
+ * Only a target whose version actually moved is analyzed, so a steady state costs
+ * far less than this. The bound matters on a first run, where every target needs
+ * a baseline at once. A target left over is not lost: its watermark has not moved,
+ * so the next run picks it up.
+ */
+const MAX_ANALYSES_PER_RUN = 8;
 
 /**
  * Body size ceilings. The report endpoint is reachable before any signature has
@@ -13,6 +34,16 @@ const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache
  */
 const MAX_REPORT_BYTES = 4 * 1024 * 1024;
 const MAX_OPERATOR_BYTES = 64 * 1024;
+
+/**
+ * Ceiling on a stored report.
+ *
+ * D1 caps a single row at 2 MB and `report_json` is one column, so a large enough
+ * report fails at INSERT rather than on the way in. Refusing it here reports the
+ * real reason. The largest report measured against real packages was 649 KB, from
+ * an artifact with 3,522 entries.
+ */
+const MAX_STORED_REPORT_BYTES = 1_500_000;
 
 /** Raised when a request body exceeds its declared ceiling. */
 export class BodyTooLargeError extends Error {
@@ -64,32 +95,64 @@ async function ingestReport(request: Request, env: Env, repository: WatchReposit
     return json({ error: "invalid analyzer signature" }, 401);
   }
   const input = parseJson(rawBody);
-  const targetId = requiredString(input, "targetId");
   const report = input.report;
   assertSentinelReport(report);
-  const target = await requiredTarget(repository, targetId);
+  const target = await requiredTarget(repository, requiredString(input, "targetId"));
+  try {
+    const outcome = await recordReport(repository, target, report);
+    return json(outcome, outcome.status === "already_known" ? 200 : 201);
+  } catch (error) {
+    if (error instanceof ReportIdentityError) return json({ error: error.message }, 409);
+    if (error instanceof ReportTooLargeError) return json({ error: error.message }, 413);
+    throw error;
+  }
+}
+
+/** Raised when a report describes a different package than the target it is filed against. */
+class ReportIdentityError extends Error {}
+
+/** Raised when a report is too large to store, before the storage layer rejects it. */
+export class ReportTooLargeError extends Error {}
+
+interface IngestOutcome {
+  status: "already_known" | "baseline_recorded" | "review_required";
+  reportId: string;
+  notice?: ChangeNoticeRecord;
+}
+
+/**
+ * Store a report against a target, and raise a change notice if it moved.
+ *
+ * Both the scheduled check and the report endpoint go through here. Analysis
+ * happening in this Worker rather than in a separate service does not change what
+ * a report means, so it must not reach the database by a different route.
+ */
+async function recordReport(repository: WatchRepository, target: WatchTargetRecord, report: SentinelReport): Promise<IngestOutcome> {
   if (report.subject.artifact.package !== target.package_name) {
-    return json({ error: "report package does not match the target" }, 409);
+    throw new ReportIdentityError("report package does not match the target");
   }
   const reportJson = JSON.stringify(report);
+  if (reportJson.length > MAX_STORED_REPORT_BYTES) {
+    throw new ReportTooLargeError(`Report is ${reportJson.length} bytes, above the ${MAX_STORED_REPORT_BYTES} byte storage limit for a single row.`);
+  }
   const stored = await repository.insertReport({
-    target_id: targetId,
+    target_id: target.id,
     artifact_sha256: report.subject.artifact.sha256,
     package_version: report.subject.artifact.version,
     report_sha256: await sha256Hex(reportJson),
     report_json: reportJson,
     generated_at: report.generated_at
   });
-  if (stored.alreadyKnown) return json({ reportId: stored.report.id, status: "already_known" });
+  if (stored.alreadyKnown) return { status: "already_known", reportId: stored.report.id };
   if (!target.baseline_report_id) {
     await repository.setBaseline(target.id, stored.report.id);
-    return json({ reportId: stored.report.id, status: "baseline_recorded" }, 201);
+    return { status: "baseline_recorded", reportId: stored.report.id };
   }
   const baseline = await repository.reportById(target.baseline_report_id);
   if (!baseline) throw new Error("Watch target references a missing baseline report.");
   const notice = createChangeNotice(parseStoredReport(baseline), report);
   const created = await repository.createNotice(target.id, baseline.id, stored.report.id, notice);
-  return json({ reportId: stored.report.id, notice: created, status: "review_required" }, 201);
+  return { status: "review_required", reportId: stored.report.id, notice: created };
 }
 
 async function decideNotice(request: Request, repository: WatchRepository, noticeId: string | undefined): Promise<Response> {
@@ -101,8 +164,21 @@ async function decideNotice(request: Request, repository: WatchRepository, notic
   return notice ? json({ notice }) : json({ error: "notice not found" }, 404);
 }
 
-async function checkForNewReleases(env: Env): Promise<void> {
+/**
+ * Poll every enabled target and analyze whatever moved.
+ *
+ * The analyzer runs here, in this isolate. It reads the published artifact and
+ * never executes it, exactly as it does from the command line.
+ *
+ * A target whose analysis does not complete keeps its existing watermark, so the
+ * next run retries it. That is deliberate: advancing the watermark on a failure
+ * would turn "we could not look" into "nothing changed", which is the one thing a
+ * change monitor must never report.
+ */
+export async function checkForNewReleases(env: Env): Promise<void> {
   const repository = new WatchRepository(env.DB);
+  let analysesRemaining = MAX_ANALYSES_PER_RUN;
+
   for (const target of await repository.listEnabledTargets()) {
     try {
       const metadata = await fetchNpmLatest(target.package_name);
@@ -110,22 +186,72 @@ async function checkForNewReleases(env: Env): Promise<void> {
         await repository.recordCheck(target.id, "skipped", metadata.version, "No version change.");
         continue;
       }
-      if (!env.ANALYZER_URL) {
-        await repository.recordCheck(target.id, "skipped", metadata.version, "Analyzer URL is not configured.");
+      if (!analysisEnabled(env)) {
+        await repository.recordCheck(target.id, "queued", metadata.version,
+          "Detected. In-Worker analysis is disabled, so this release is awaiting a report posted to /api/reports.");
         continue;
       }
-      const payload = JSON.stringify({ targetId: target.id, packageName: target.package_name, version: metadata.version });
-      const signature = await hmacHex(payload, env.JOB_SIGNING_SECRET);
-      const response = await fetch(env.ANALYZER_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-magus-job-signature": signature },
-        body: payload
-      });
-      await repository.recordCheck(target.id, response.ok ? "submitted" : "failed", metadata.version, response.ok ? "Submitted to analyzer." : `Analyzer returned ${response.status}.`);
+      if (analysesRemaining <= 0) {
+        await repository.recordCheck(target.id, "queued", metadata.version, "Deferred to the next run: this run reached its analysis budget.");
+        continue;
+      }
+      analysesRemaining -= 1;
+      await analyzeAndRecord(repository, target, metadata.version);
     } catch (error) {
       await repository.recordCheck(target.id, "failed", undefined, messageOf(error));
     }
   }
+}
+
+async function analyzeAndRecord(repository: WatchRepository, target: WatchTargetRecord, version: string): Promise<void> {
+  // Written before any analysis runs. Exceeding the platform CPU limit kills the
+  // run outright, so this is the only record that would survive it — a check left
+  // at `queued` with this text is the symptom, and it says so.
+  const checkId = await repository.beginCheck(target.id, version,
+    `Analyzing ${target.package_name}@${version}. A check still showing this text did not finish: on Workers Free the 10 ms CPU limit stops analysis before it completes.`);
+
+  try {
+    const analyzed = await analyzeNpmPackage(
+      { packageName: target.package_name, version },
+      { maxUncompressedBytes: MAX_UNCOMPRESSED_BYTES }
+    );
+    const outcome = await recordReport(repository, target, analyzed.report);
+    await repository.completeCheck(checkId, "analyzed", describeOutcome(outcome, analyzed.entryCount));
+  } catch (error) {
+    // An artifact too large for this host is a limit of where the analyzer runs,
+    // not an observation about the package.
+    await repository.completeCheck(checkId, "failed", explainFailure(error));
+  }
+}
+
+/**
+ * Whether this deployment analyzes releases itself.
+ *
+ * Analysis costs far more than the 10 ms CPU a Workers Free invocation gets, so a
+ * free-plan deployment sets `ANALYZE_IN_WORKER = "false"` and submits reports to
+ * `/api/reports` instead. Defaulting to enabled keeps the paid path working with
+ * no configuration; a free-plan deployment that leaves it on gets checks stranded
+ * at `queued`, which names the cause rather than failing silently.
+ */
+function analysisEnabled(env: Env): boolean {
+  return (env.ANALYZE_IN_WORKER ?? "true").toLowerCase() !== "false";
+}
+
+function explainFailure(error: unknown): string {
+  if (isArchiveTooLarge(error)) {
+    return `Not analyzed: the artifact exceeds this deployment's ${MAX_UNCOMPRESSED_BYTES} byte decompressed limit. ${error.message}`;
+  }
+  if (error instanceof ReportTooLargeError) {
+    return `Not stored: ${error.message}`;
+  }
+  return messageOf(error);
+}
+
+function describeOutcome(outcome: IngestOutcome, entryCount: number): string {
+  const scanned = `${entryCount} archive entries`;
+  if (outcome.status === "already_known") return `Artifact already on record (${scanned}).`;
+  if (outcome.status === "baseline_recorded") return `Baseline recorded (${scanned}).`;
+  return `${outcome.notice?.severity ?? "review"} change notice raised (${scanned}).`;
 }
 
 async function fetchNpmLatest(packageName: string): Promise<{ version: string }> {

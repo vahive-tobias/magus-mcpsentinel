@@ -1,7 +1,10 @@
 # Generate long, unique values. Never commit the real .dev.vars file.
 OPERATOR_API_KEY=replace-with-a-local-operator-key
+# Signs reports posted to /api/reports. The scheduled check runs the analyzer in
+# this Worker and needs no secret; this covers a report submitted separately.
 ANALYZER_INGEST_SECRET=replace-with-a-long-random-secret
-JOB_SIGNING_SECRET=replace-with-a-second-long-random-secret
-# Leave empty in local MVP mode. Set this to the authenticated Sentinel adapter URL
-# once an analyzer service has been deployed.
-ANALYZER_URL=
+
+# Set to "false" on a Workers Free plan, where an invocation gets 10 ms of CPU and
+# analysis needs far more. Watch then detects releases and records them as awaiting
+# a report posted to /api/reports. See README.md, "Which Cloudflare plan you need".
+# ANALYZE_IN_WORKER=false
