@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { readNpmArchive } from "./archive.js";
 import { readNpmArchiveBytes } from "./archive.js";
-import { acquireNpmPackage, parseNpmSpecifier, preserveAcquisitionEvidence } from "./npm-registry.js";
+import { readNpmArchive, preserveAcquisitionEvidence } from "./node-io.js";
+import { acquireNpmPackage, parseNpmSpecifier } from "./npm-registry.js";
 import { createStaticReport } from "./report.js";
 import { validateReport } from "./schema.js";
 import { diffReports } from "./diff.js";

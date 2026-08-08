@@ -18,11 +18,33 @@ docs/PRODUCT_AND_TECHNICAL_PLAN.md
 docs/FIXTURE_PLAN.md
 docs/Project Sentinel.md
 docs/SECURITY_WATCH_NOTES.md
+docs/PLAN_*.md
+
+# Published deliberately, despite living under docs/.
+!docs/change-reports/
+!docs/change-reports/**
 
 # ---- Third-party specification snapshot ----
 # Not redistributed. docs/SPEC_PROVENANCE.md records the source, retrieval date
 # and SHA-256 of each document so the pinned profile stays reproducible.
 docs/MCP-specs-2026-07-28/
+
+# Regenerated on every watch run as the review pull request's body. The baselines
+# beside it are the state worth keeping; this is not.
+.sentinel-watch/notice.md
+
+# ---- Internal working notes ----
+# This repository is public. CLAUDE.md carries pricing strategy, revenue targets
+# and the owner's own position; it is not a document to publish by accident.
+CLAUDE.md
+
+# ---- Build-time generated sources ----
+# Both are rebuilt by `npm run build` before tsc runs, and both are derived
+# entirely from committed inputs: build-info.ts from the analyzer sources,
+# report-validator from schemas/report.schema.json. Committing them would let a
+# stale copy disagree with the code it claims to describe.
+packages/sentinel/src/build-info.ts
+packages/sentinel/src/generated/
 
 # ---- Analyzer output ----
 # Reports and preserved acquisition evidence are generated artifacts. They can

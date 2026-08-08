@@ -1,6 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { ANALYZER_BUILD_SHA256 } from "./build-info.js";
 import type { NpmArchive, TarEntry } from "./archive.js";
 import { extractToolSurface } from "./tool-surface.js";
 import { evaluateRules, RULE_PACK_VERSION, rulePackSha256 } from "./rules.js";
@@ -140,7 +139,7 @@ export async function createStaticReport(archive: NpmArchive, acquisition?: Acqu
       }
     },
     analysis: {
-      engine: { name: "sentinel", version: "0.2.0", build_sha256: await currentModuleSha256() },
+      engine: { name: "sentinel", version: "0.2.0", build_sha256: ANALYZER_BUILD_SHA256 },
       protocol_profile: {
         id: "mcp-2026-07-28",
         specification_revision: "2026-07-28",
@@ -260,10 +259,6 @@ function sortObject(value: JsonObject): JsonObject {
 
 function sha256(value: string | Buffer): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-async function currentModuleSha256(): Promise<string> {
-  return sha256(await readFile(fileURLToPath(import.meta.url)));
 }
 
 function messageOf(error: unknown): string {

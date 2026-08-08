@@ -1,6 +1,4 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 
 const MAX_METADATA_BYTES = 8 * 1024 * 1024;
 const MAX_TARBALL_BYTES = 64 * 1024 * 1024;
@@ -72,26 +70,24 @@ export async function acquireNpmPackage(
   };
 }
 
-export async function preserveAcquisitionEvidence(acquisition: AcquiredNpmPackage, evidenceDirectory: string): Promise<{ metadataPath: string; tarballPath: string }> {
-  await mkdir(evidenceDirectory, { recursive: true });
-  const prefix = `${safeFileComponent(acquisition.request.packageName)}-${safeFileComponent(acquisition.request.version)}`;
-  const metadataPath = join(evidenceDirectory, `${prefix}-metadata-${acquisition.metadataSha256}.json`);
-  const tarballPath = join(evidenceDirectory, `${prefix}-artifact-${acquisition.tarballSha256}.tgz`);
-  await writeNewOrIdentical(metadataPath, acquisition.metadata);
-  await writeNewOrIdentical(tarballPath, acquisition.tarball);
-  return { metadataPath, tarballPath };
-}
-
 async function fetchBytes(fetchImplementation: FetchImplementation, url: string, maximumBytes: number, accept: string): Promise<Buffer> {
   let response: Response;
   try {
     response = await fetchImplementation(url, {
       headers: { accept },
-      redirect: "error",
+      // "manual" rather than "error": both refuse to follow a redirect, but edge
+      // runtimes do not implement "error". The redirect is rejected below instead,
+      // so the analyzer still fetches only the URL it validated.
+      redirect: "manual",
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
     });
   } catch (error) {
     throw new Error(`Request failed for ${url}: ${messageOf(error)}`);
+  }
+  // A redirect could point anywhere, including somewhere the URL checks already
+  // rejected. Status 0 is the opaque redirect some runtimes return instead.
+  if (response.status === 0 || (response.status >= 300 && response.status < 400)) {
+    throw new Error(`Registry request for ${url} was redirected; the analyzer does not follow redirects.`);
   }
   if (!response.ok) {
     throw new Error(`Registry request failed for ${url}: HTTP ${response.status}.`);
@@ -206,30 +202,8 @@ function isSafePackageName(packageName: string): boolean {
   return pattern.test(packageName);
 }
 
-async function writeNewOrIdentical(path: string, contents: Buffer): Promise<void> {
-  try {
-    await writeFile(path, contents, { flag: "wx" });
-  } catch (error) {
-    if (!isCode(error, "EEXIST")) {
-      throw error;
-    }
-    const existing = await readFile(path);
-    if (existing.length !== contents.length || !existing.equals(contents)) {
-      throw new Error(`Evidence path already exists with different content: ${path}`);
-    }
-  }
-}
-
-function safeFileComponent(value: string): string {
-  return value.replace(/[^a-zA-Z0-9._-]+/g, "_");
-}
-
 function sha256(value: Buffer): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-function isCode(error: unknown, code: string): error is NodeJS.ErrnoException {
-  return typeof error === "object" && error !== null && "code" in error && (error as NodeJS.ErrnoException).code === code;
 }
 
 function messageOf(error: unknown): string {

@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
 
 const BLOCK_SIZE = 512;
@@ -18,19 +17,49 @@ export interface NpmArchive {
   entries: TarEntry[];
 }
 
-export async function readNpmArchive(archivePath: string): Promise<NpmArchive> {
-  const compressed = await readFile(archivePath);
-  return readNpmArchiveBytes(compressed);
+export interface ReadArchiveOptions {
+  /**
+   * Ceiling on the decompressed archive. Defaults to `MAX_UNCOMPRESSED_BYTES`.
+   *
+   * A caller running in a memory-constrained runtime must lower this to a value
+   * it can actually hold: the default is a bound on hostile input, not a promise
+   * that the host has that much memory.
+   */
+  maxUncompressedBytes?: number;
 }
 
-export function readNpmArchiveBytes(compressed: Buffer): NpmArchive {
+/** Raised when an archive is larger than the caller said it could handle. */
+export class ArchiveTooLargeError extends Error {
+  public constructor(message: string, public readonly limit: number) {
+    super(message);
+    this.name = "ArchiveTooLargeError";
+  }
+}
+
+export function readNpmArchiveBytes(compressed: Buffer, options: ReadArchiveOptions = {}): NpmArchive {
+  const maxUncompressedBytes = options.maxUncompressedBytes ?? MAX_UNCOMPRESSED_BYTES;
   if (compressed.byteLength > MAX_ARCHIVE_BYTES) {
-    throw new Error(`Archive exceeds the ${MAX_ARCHIVE_BYTES} byte compressed-size limit.`);
+    throw new ArchiveTooLargeError(`Archive exceeds the ${MAX_ARCHIVE_BYTES} byte compressed-size limit.`, MAX_ARCHIVE_BYTES);
+  }
+
+  // An archive too big for this host is a coverage limit to report; a corrupt one
+  // is evidence about the package. They must not arrive as the same error.
+  //
+  // gzip's ISIZE trailer states the decompressed length, which is exact below
+  // 4 GiB and lets the two cases be told apart before any memory is committed.
+  // It is attacker-controlled, so it only classifies: `maxOutputLength` below is
+  // still what enforces the bound.
+  const declaredSize = declaredUncompressedSize(compressed);
+  if (declaredSize !== undefined && declaredSize > maxUncompressedBytes) {
+    throw new ArchiveTooLargeError(
+      `Archive declares ${declaredSize} decompressed bytes, above the ${maxUncompressedBytes} byte limit.`,
+      maxUncompressedBytes
+    );
   }
 
   let tar: Buffer;
   try {
-    tar = gunzipSync(compressed, { maxOutputLength: MAX_UNCOMPRESSED_BYTES });
+    tar = gunzipSync(compressed, { maxOutputLength: maxUncompressedBytes });
   } catch (error) {
     throw new Error(`Unable to safely decompress gzip archive: ${messageOf(error)}`);
   }
@@ -119,6 +148,19 @@ export function readNpmArchiveBytes(compressed: Buffer): NpmArchive {
   }
 
   return { compressed, entries };
+}
+
+/**
+ * Read the decompressed length a gzip member declares in its ISIZE trailer.
+ *
+ * Returns undefined when the input is too short to carry one, or does not start
+ * with the gzip magic — in either case the decompressor is left to reject it.
+ */
+function declaredUncompressedSize(compressed: Buffer): number | undefined {
+  if (compressed.byteLength < 18 || compressed[0] !== 0x1f || compressed[1] !== 0x8b) {
+    return undefined;
+  }
+  return compressed.readUInt32LE(compressed.byteLength - 4);
 }
 
 function readNulTerminated(buffer: Buffer): string {
