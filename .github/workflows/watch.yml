@@ -1,0 +1,79 @@
+
+# Sentinel Watch with no hosting and no bill.
+#
+# Runs the same analyzer and the same severity policy as the Cloudflare monitor.
+# The approved baseline for each package is a committed file, so this repository is
+# the report history and the pull request is the review step: merging accepts the
+# new baseline, closing keeps the old one.
+#
+# Free on public repositories (unlimited Actions minutes) and comfortably inside
+# the 2,000 minutes a month a private repository gets on the Free plan — a run
+# costs a couple of minutes.
+name: Sentinel Watch
+
+on:
+  schedule:
+    # Not on the hour: GitHub drops queued scheduled jobs under load, and the top
+    # of every hour is when that load peaks.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+# Least privilege: enough to push the baseline branch and open the review PR.
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sentinel-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check watched packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install workspace
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check watched packages
+        id: check
+        run: node scripts/watch-check.mjs
+
+      - name: Open or update the review pull request
+        if: steps.check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: ${{ steps.check.outputs.title }}
+        run: |
+          set -euo pipefail
+          git config user.name "sentinel-watch[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BRANCH=sentinel-watch/baseline-update
+          git checkout -B "$BRANCH"
+          git add .sentinel-watch/baselines
+          if git diff --cached --quiet; then
+            echo "No baseline file actually changed; nothing to review."
+            exit 0
+          fi
+          git commit -m "$TITLE"
+          git push --force origin "$BRANCH"
+
+          # One open review at a time. An existing pull request is updated in place
+          # by the push above, so it only needs its body refreshed.
+          if EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number') && [ -n "$EXISTING" ]; then
+            gh pr edit "$EXISTING" --title "$TITLE" --body-file .sentinel-watch/notice.md
+            echo "Updated pull request #$EXISTING"
+          else
+            gh pr create --head "$BRANCH" --title "$TITLE" --body-file .sentinel-watch/notice.md
+          fi

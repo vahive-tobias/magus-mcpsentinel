@@ -9,7 +9,7 @@ previously approved has moved.
 **You deploy it. You hold the data.** It is single-tenant by design — there is no
 hosted service, no accounts to create with anyone else, and no operator in the
 middle. Nothing leaves your infrastructure except requests to the public npm
-registry and to an analyzer you run.
+registry.
 
 It does not call a server safe, execute package code, inspect private packages, or
 accept credentials.
@@ -23,10 +23,10 @@ public npm version change
 scheduled Worker detects the new version
         |
         v
-signed job -> your analyzer (static analysis only)
+the analyzer runs in the Worker (static analysis only, never executes the package)
         |
         v
-signed Sentinel report -> ingestion endpoint
+Sentinel report
         |
         +-- first report: recorded as the baseline
         +-- later report: normalized diff + pending review notice
@@ -43,6 +43,7 @@ but does not silently advance the baseline.
 Watch consumes [`mcp-sentinel`](../sentinel) through its published contract:
 
 ```ts
+import { analyzeNpmPackage } from "mcp-sentinel/analyze";
 import { diffReports } from "mcp-sentinel/diff";
 ```
 
@@ -60,12 +61,11 @@ The dependency runs one way. The analyzer has no knowledge of Watch.
 - HMAC-authenticated report ingestion with a bounded request body.
 - Package identity and report-shape validation.
 - A Cron handler that checks npm `latest`, deduplicates unchanged versions, and
-  submits new versions to an authenticated analyzer endpoint.
+  analyzes new releases in the Worker itself — on a paid plan; see the plan note.
 - Baseline, accept, freeze and ignore states.
 
 ## Not implemented
 
-- The analyzer adapter service that receives jobs and returns signed reports.
 - Email, webhook and GitHub Issue delivery.
 - An R2 evidence store and retention jobs.
 
@@ -102,24 +102,91 @@ VALUES ('11111111-1111-4111-8111-111111111111', 'operator@example.test', 'builde
 The dashboard asks for the `OPERATOR_API_KEY` from `.dev.vars`; it is held only in
 the page's memory for the browser session.
 
-## Analyzer adapter contract
+## Which Cloudflare plan you need
 
-Watch does not run archive analysis. On a detected release it POSTs this signed job
-to `ANALYZER_URL`:
+**Watch requires a paid Cloudflare Workers plan (~$5/month) to analyze packages
+itself.** That is a real constraint on an otherwise free tool, so here it is in
+full rather than in a footnote.
 
-```json
-{"targetId":"uuid","packageName":"@scope/package","version":"1.2.3"}
+> **If you do not want to pay anything, you do not have to.**
+> [`.sentinel-watch`](../../.sentinel-watch) runs the same analyzer and the same
+> severity policy on GitHub Actions, free, with baselines committed to a repository
+> and review as a pull request. It has no package-size limit, so it covers slightly
+> more than this does. Choose that one unless you specifically want an always-on
+> HTTP endpoint, a dashboard, or a database you query directly.
+
+| | Workers Free | Workers Paid |
+| --- | --- | --- |
+| Cron polling, D1, notices, dashboard | Yes | Yes |
+| Analysis inside the Worker | **No** | Yes |
+
+The reason is a single limit: **a Workers Free invocation gets 10 ms of CPU**, for
+scheduled triggers as well as requests. Analysis costs far more. Measured in
+workerd against real published packages, building a report alone — before schema
+validation, hashing, or any D1 work — costs:
+
+| package | compressed | cold | warm |
+| --- | ---: | ---: | ---: |
+| `@upstash/context7-mcp` | 28 KB | 34 ms | 7 ms |
+| `@modelcontextprotocol/server-filesystem` | 18 KB | 65 ms | 8 ms |
+| `@salesforce/mcp` | 186 KB | 19 ms | 12 ms |
+| `@notionhq/notion-mcp-server` | 1.7 MB | 373 ms | 221 ms |
+
+Even the smallest packages sit at or above the whole free-plan budget while warm,
+and a scheduled trigger cannot count on a warm isolate. The median package in a
+208-package sample costs roughly 203 ms. This is not close.
+
+Everything else Watch does fits the free plan comfortably: cron triggers are
+available on it (5 per account), and D1's free tier allows 5 million row reads and
+100,000 row writes per day against a watch list of tens of packages.
+
+### Running on the free plan: detect-only mode
+
+Set `ANALYZE_IN_WORKER = "false"`. Watch then polls, detects a new release, and
+records it as awaiting analysis without downloading the artifact. You produce the
+report yourself and post it to `/api/reports`:
+
+```sh
+sentinel analyze npm "@scope/package@1.2.3" --evidence-dir ./evidence --output report.json
 ```
 
-Your adapter must:
+Run that locally or in CI — both free — then submit it as below. You still get the
+diff and the change notice; you supply the analysis step. The version watermark
+does not advance until a report arrives, so a detected release stays outstanding
+rather than being quietly forgotten.
 
-1. Verify `x-magus-job-signature` as HMAC-SHA-256 over the raw JSON job using
-   `JOB_SIGNING_SECRET`.
-2. Run the Sentinel analyzer against that exact public npm package and version,
-   without executing package code and without credentials.
-3. POST the result to `/api/reports` as `{"targetId":"uuid","report":{...}}`.
-4. Set `x-magus-signature` to the lower-case HMAC-SHA-256 hex digest of the exact
-   request body using `ANALYZER_INGEST_SECRET`.
+If you leave analysis enabled on a free plan, the run is killed mid-analysis. Watch
+writes its check row *before* analysis starts precisely so that this is visible:
+you will find checks left at `queued` whose text names the 10 ms CPU limit. It
+fails loudly, not silently.
+
+## Where the analyzer runs
+
+On a paid plan, in this Worker. There is no separate analyzer service to deploy and
+no `ANALYZER_URL` to configure.
+
+`node:zlib` and `node:crypto` are available under the `nodejs_compat` flag, so the
+analyzer reads a published tarball and produces a report inside the isolate. As
+everywhere else, it never executes the package.
+
+An isolate has 128 MB of memory, which sets a second limit — one that applies on
+either plan. Watch refuses any artifact declaring more than **64 MB decompressed**;
+of 208 real MCP server packages sampled, 3 exceed it. A refused artifact is
+recorded as a `failed` check naming the version and the limit, and **the version
+watermark does not advance**, so the release is retried rather than mistaken for
+"unchanged". To cover one of those packages, analyze it with the CLI and post the
+report as below.
+
+### Posting a report by hand
+
+`/api/reports` remains available for exactly that:
+
+```json
+{"targetId":"uuid","report":{}}
+```
+
+Set `x-magus-signature` to the lower-case HMAC-SHA-256 hex digest of the exact
+request body, keyed with `ANALYZER_INGEST_SECRET`.
 
 Report formats `0.1.0` and `0.2.0` are accepted. A `0.1.0` report carries no tool
 inventory, so a comparison involving one reports `comparison_limited` rather than
@@ -129,10 +196,11 @@ treating an absent inventory as a set of removed tools.
 
 1. Create D1 and copy its ID into `wrangler.toml`.
 2. Apply `schema.sql` remotely with `wrangler d1 execute`.
-3. Set `OPERATOR_API_KEY`, `ANALYZER_INGEST_SECRET` and `JOB_SIGNING_SECRET` with
-   `wrangler secret put`. Never put them in `wrangler.toml`.
-4. Deploy the Worker.
-5. Deploy your authenticated, static-only analyzer adapter and set `ANALYZER_URL`.
+3. Set `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` with `wrangler secret put`.
+   Never put them in `wrangler.toml`.
+4. **On the free plan**, set `ANALYZE_IN_WORKER = "false"` (a plain var, not a
+   secret) and read the detect-only section above. Skip this on a paid plan.
+5. Deploy the Worker. The cron trigger in `wrangler.toml` starts the first check.
 
 Note that `wrangler` bundles `src/worker.ts` with esbuild, which strips types
 without checking them. **`npm run build` is the only typecheck** — do not deploy

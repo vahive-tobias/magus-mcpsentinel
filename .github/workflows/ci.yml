@@ -65,6 +65,49 @@ jobs:
           fi
           echo "OK: diff and report-contract are runtime-agnostic."
 
+      # The analyzer runs inside the monitor's Worker, so everything reachable from
+      # the ./analyze export must work without a filesystem or a subprocess. It may
+      # use node:zlib, node:crypto and node:buffer, which workerd implements under
+      # nodejs_compat; anything else fails at deploy time rather than here.
+      - name: The analyze path stays Worker-compatible
+        run: |
+          set -euo pipefail
+          reachable="src/analyze.ts src/archive.ts src/npm-registry.ts src/report.ts src/rules.ts src/schema.ts src/tool-surface.ts src/report-contract.ts src/build-info.ts"
+          cd packages/sentinel
+          if grep -nE 'from "node:(fs|path|url|child_process|worker_threads|os|net|http|https|vm)' $reachable; then
+            echo "::error::A module on the ./analyze path imports a Node built-in unavailable in a Worker."
+            exit 1
+          fi
+          # node-io.ts is where filesystem access is allowed to live. Reaching it
+          # from the analyze path would put fs back on it by the side door.
+          if grep -n 'node-io' $reachable; then
+            echo "::error::A module on the ./analyze path imports node-io, which uses the filesystem."
+            exit 1
+          fi
+          echo "OK: the analyze path uses only Worker-available built-ins."
+
+      # ajv compiles a schema by generating and evaluating source, which a Worker
+      # refuses outright. Report validation must therefore be precompiled.
+      - name: Report validation needs no runtime code generation
+        run: |
+          set -euo pipefail
+          npm run generate --workspace mcp-sentinel
+          if grep -nE 'new Function|\beval\(' packages/sentinel/src/generated/report-validator.mjs; then
+            echo "::error::The precompiled validator generates code at runtime and will not load in a Worker."
+            exit 1
+          fi
+          if ! grep -qF 'generated/report-validator.mjs' packages/sentinel/src/schema.ts; then
+            echo "::error::schema.ts does not use the precompiled validator."
+            exit 1
+          fi
+          # A type-only ajv import is erased at compile time and is fine. Building a
+          # validator at runtime is what a Worker refuses.
+          if grep -rnE 'new Ajv|\.compile\(' packages/sentinel/src; then
+            echo "::error::A schema is compiled at runtime. Precompile it in scripts/generate-validator.cjs instead."
+            exit 1
+          fi
+          echo "OK: report validation is precompiled."
+
       # The analyzer states what changed; the monitor decides what it is worth.
       # Severity leaking into the analyzer would put product policy in the engine.
       - name: Analyzer assigns no severity

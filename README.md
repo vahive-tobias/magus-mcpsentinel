@@ -37,12 +37,52 @@ Sentinel turns a versioned artifact into a comparable evidence record.
 
 ## Packages
 
-| Package | What it is |
-| --- | --- |
-| [`packages/sentinel`](packages/sentinel) | The analyzer and `sentinel` CLI. Produces evidence reports and compares them. |
-| [`packages/watch`](packages/watch) | A self-hosted monitor. Polls packages you choose, runs the analyzer on new releases, and raises a reviewable change notice. Single-tenant: you deploy it, you hold the data. |
+| Package | What it is | What it needs |
+| --- | --- | --- |
+| [`packages/sentinel`](packages/sentinel) | The analyzer and `sentinel` CLI. Produces evidence reports and compares them. | Node.js 22+. Nothing else — no account, no service, no hosting. |
+| [`packages/watch`](packages/watch) | A self-hosted monitor on Cloudflare Workers and D1. Polls packages you choose, analyzes new releases, and raises a reviewable change notice. Single-tenant: you deploy it, you hold the data. | Workers Paid, ~$5/month. |
+| [`.sentinel-watch`](.sentinel-watch) | The same monitoring, run by GitHub Actions against committed baselines. | A GitHub repository. **No cost.** |
 
 The dependency runs one way. The analyzer does not know the monitor exists.
+
+## Monitoring a package over time — pick your hosting
+
+Three ways to run the same analyzer and the same severity policy. **One of them
+costs nothing**, and it is not a lesser version.
+
+| | [Free — GitHub Actions](.sentinel-watch) | [Cloudflare Worker](packages/watch) |
+| --- | --- | --- |
+| **Cost** | **£0.** Unmetered on public repositories; ~2 min per run against the 2,000 min/month a private repository gets free. | Workers Paid, ~$5/month. |
+| Where state lives | Committed JSON files. Git is the report history. | D1. |
+| How you review | A pull request. Merge accepts the new baseline; close keeps the old one. | An operator dashboard, or the API. |
+| Package size limit | **None.** | 64 MB decompressed — 3 of 208 sampled packages exceed it. |
+| Scheduling | GitHub cron. Can be delayed under load, and pauses after 60 days of repository inactivity. | Cloudflare cron. |
+
+The free option is not a teaser. It has *better* package coverage than the paid
+one, because a GitHub runner is not confined to a Worker's 128 MB isolate — the two
+largest real MCP packages analyze there and cannot analyze in a Worker at all.
+
+```sh
+# the entire free setup: fork, list your packages, enable Actions
+echo '{ "packages": ["@modelcontextprotocol/server-filesystem"] }' > .sentinel-watch/watchlist.json
+```
+
+See [`.sentinel-watch/README.md`](.sentinel-watch) for the honest limits of the
+free path, which are about scheduling, not capability.
+
+### Why the Cloudflare Worker needs a paid plan
+
+Stated plainly rather than buried, because it is the one place this project costs
+money. A Workers **Free** invocation gets **10 ms of CPU** — cron triggers
+included — and analysis costs far more. Measured in the real runtime, building a
+report for the *smallest* real MCP package takes 7–8 ms warm and 34–65 ms cold,
+before schema validation, hashing or any database work; the median package costs
+about 203 ms. No configuration fits that into 10 ms.
+
+Everything else Watch does runs fine on the free plan, so a Workers Free
+deployment can set `ANALYZE_IN_WORKER = "false"` and run detect-only, posting
+reports to `/api/reports` itself. If you leave analysis on, checks are recorded as
+`queued` with text naming the CPU limit — it fails loudly, not silently.
 
 ## Quick start
 

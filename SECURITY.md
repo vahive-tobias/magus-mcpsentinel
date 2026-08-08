@@ -49,20 +49,23 @@ Its own boundary:
 
 - **Public npm package identities only.** It has no mechanism to accept a registry
   token, a private registry URL, or local source paths.
-- **It never runs an analysis itself.** It dispatches a signed job to an analyzer
-  and ingests the resulting report.
-- **Both machine-to-machine paths are authenticated.** Jobs are signed with
-  `JOB_SIGNING_SECRET`; ingested reports must carry a valid HMAC over the exact
-  request body using `ANALYZER_INGEST_SECRET`. An unsigned callback is refused.
+- **It runs the analyzer in its own Worker**, against the published artifact, and
+  never executes package code. No analysis is dispatched anywhere else, so no
+  third service holds your watch list.
+- **Reports submitted over HTTP are authenticated.** `/api/reports` requires a
+  valid HMAC over the exact request body using `ANALYZER_INGEST_SECRET`. An
+  unsigned submission is refused.
+- **An artifact too large for the isolate is refused, not partially analyzed**, and
+  is recorded as a failed check that does not advance the version watermark.
 - **The ingest endpoint is reachable before any signature is checked**, so the body
   it will buffer is capped (4 MB) on both the declared `content-length` and the
   bytes actually read. Operator endpoints are capped at 64 KB.
 - **A failed or delayed check is a failure state**, never rendered as a clean
   result.
 
-If you deploy it, `OPERATOR_API_KEY`, `ANALYZER_INGEST_SECRET` and
-`JOB_SIGNING_SECRET` are yours to generate and protect. Set them with
-`wrangler secret put`; never place them in `wrangler.toml`.
+If you deploy it, `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` are yours to
+generate and protect. Set them with `wrangler secret put`; never place them in
+`wrangler.toml`.
 
 ## What Sentinel does not protect against
 
