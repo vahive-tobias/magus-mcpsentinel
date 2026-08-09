@@ -71,9 +71,20 @@ jobs:
 
           # One open review at a time. An existing pull request is updated in place
           # by the push above, so it only needs its body refreshed.
-          if EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number') && [ -n "$EXISTING" ]; then
+          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
             gh pr edit "$EXISTING" --title "$TITLE" --body-file .sentinel-watch/notice.md
             echo "Updated pull request #$EXISTING"
-          else
-            gh pr create --head "$BRANCH" --title "$TITLE" --body-file .sentinel-watch/notice.md
+            exit 0
+          fi
+
+          # Creating a pull request from Actions is disabled by default on every
+          # repository. The analysis has already succeeded and the branch is
+          # pushed, so nothing is lost — but nobody has been asked to review it,
+          # and an unreviewed change is not a finished one. Fail, and say exactly
+          # what to turn on.
+          if ! gh pr create --head "$BRANCH" --title "$TITLE" --body-file .sentinel-watch/notice.md; then
+            echo "::error::Could not open the review pull request. Enable Settings -> Actions -> General -> Workflow permissions -> 'Allow GitHub Actions to create and approve pull requests'. The baselines are already pushed to the '$BRANCH' branch, so you can also open the pull request by hand:"
+            echo "::error::https://github.com/${GITHUB_REPOSITORY}/compare/${BRANCH}?expand=1"
+            exit 1
           fi

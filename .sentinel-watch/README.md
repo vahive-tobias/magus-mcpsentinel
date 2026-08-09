@@ -18,7 +18,11 @@ ignoring one is a decision you make rather than something that happens by defaul
 1. Fork this repository, or copy this directory and
    [`.github/workflows/watch.yml`](../.github/workflows/watch.yml) into your own.
 2. Add package names to `watchlist.json`.
-3. Enable Actions. The first run records baselines; later runs raise changes.
+3. **Turn on Settings → Actions → General → Workflow permissions → "Allow GitHub
+   Actions to create and approve pull requests".** It is off by default on every
+   repository, and without it the run analyzes the packages and pushes the
+   baselines but cannot open the review — which is the whole point.
+4. Enable Actions. The first run records baselines; later runs raise changes.
 
 Run it anywhere Node runs, with no GitHub involved:
 
