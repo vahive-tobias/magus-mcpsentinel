@@ -46,6 +46,10 @@ export type ChangeKind =
   | "server_identity_changed"
   | "metadata_changed"
   | "file_inventory_changed"
+  | "file_content_changed"
+  | "skill_changed"
+  | "plugin_manifest_changed"
+  | "mcp_declaration_changed"
   | "comparison_limited"
   | "finding_added"
   | "finding_removed";
@@ -87,7 +91,18 @@ export interface Snapshot {
   indicators: Set<string>;
   inventory: ToolInventory | undefined;
   metadata: JsonObject;
-  files: Set<string> | undefined;
+  /**
+   * Every archive path, mapped to the digest of its contents.
+   *
+   * Paths alone were kept here originally, which made a file edited in place
+   * invisible: the inventory was identical, so only the whole-artifact digest
+   * moved and the diff could say "something changed" without saying what. The
+   * digests were always in the report; the comparison simply discarded them.
+   *
+   * A path with no digest is an entry that has no contents — a directory or a
+   * link — and is compared by presence only.
+   */
+  files: Map<string, string | undefined> | undefined;
   findings: Map<string, ReportFinding>;
 }
 
@@ -299,19 +314,114 @@ function compareMetadata(baseline: JsonObject, candidate: JsonObject): ReportCha
 }
 
 /**
- * File inventory differences are summarized, not enumerated. A routine refactor
- * moves dozens of files, and one entry per file would bury what matters.
+ * Files whose path is a declaration rather than an implementation detail.
+ *
+ * The Agent Plugins layout puts a package's declared surface in three fixed
+ * places: `plugin.json` names the plugin, `mcp.json` says which MCP servers it
+ * runs and over what transport, and each `skills/<name>/SKILL.md` is text a
+ * model reads as instructions. A change to any of them alters what an agent
+ * will do without necessarily altering a line of executable code.
+ *
+ * Recognising them is path matching, not inference — the same class of fact as
+ * noticing that `package.json` declared a new script. Nothing here decides
+ * whether a change is dangerous; that ranking belongs to the consumer.
  */
-function compareFiles(baseline: Set<string> | undefined, candidate: Set<string> | undefined): ReportChange[] {
+const PLUGIN_MANIFEST = "plugin.json";
+const MCP_DECLARATION = "mcp.json";
+const SKILL_FILE = /^skills\/[^/]+\/SKILL\.md$/;
+
+/** npm archives root every entry at `package/`; plugin paths are relative to the root. */
+function pluginPath(archivePath: string): string {
+  return archivePath.startsWith("package/") ? archivePath.slice("package/".length) : archivePath;
+}
+
+function declaredSurfaceKind(archivePath: string): ChangeKind | undefined {
+  const path = pluginPath(archivePath);
+  if (path === PLUGIN_MANIFEST) return "plugin_manifest_changed";
+  if (path === MCP_DECLARATION) return "mcp_declaration_changed";
+  if (SKILL_FILE.test(path)) return "skill_changed";
+  return undefined;
+}
+
+/**
+ * How many changed paths to name before summarising.
+ *
+ * A routine release edits dozens of files and one entry per file would bury
+ * what matters, but a bare count is not evidence. Naming a bounded sample keeps
+ * the change readable while still pointing somewhere.
+ */
+const NAMED_PATH_LIMIT = 10;
+
+/**
+ * File inventory differences are summarized, not enumerated — except for the
+ * declared-surface files above, which are named individually because a single
+ * one of them changing is the whole point of watching a package.
+ */
+function compareFiles(
+  baseline: Map<string, string | undefined> | undefined,
+  candidate: Map<string, string | undefined> | undefined
+): ReportChange[] {
   if (!baseline || !candidate) return [];
-  const added = [...candidate].filter((path) => !baseline.has(path)).sort();
-  const removed = [...baseline].filter((path) => !candidate.has(path)).sort();
-  if (added.length === 0 && removed.length === 0) return [];
-  return [{
-    kind: "file_inventory_changed",
-    summary: `File inventory changed: ${added.length} added, ${removed.length} removed.`,
-    detail: { added, removed }
-  }];
+
+  const added = [...candidate.keys()].filter((path) => !baseline.has(path)).sort();
+  const removed = [...baseline.keys()].filter((path) => !candidate.has(path)).sort();
+
+  // Same path, different contents. Only comparable where both sides recorded a
+  // digest; an entry without one carries no contents to have changed.
+  const edited = [...candidate.entries()]
+    .filter(([path, digest]) => {
+      if (!baseline.has(path)) return false;
+      const before = baseline.get(path);
+      return before !== undefined && digest !== undefined && before !== digest;
+    })
+    .map(([path]) => path)
+    .sort();
+
+  const changes: ReportChange[] = [];
+
+  // A declared-surface file gets its own change, whether it appeared, vanished
+  // or was rewritten, so a consumer can rank it without parsing a summary.
+  for (const [path, state] of [
+    ...added.map((path) => [path, "added"] as const),
+    ...removed.map((path) => [path, "removed"] as const),
+    ...edited.map((path) => [path, "modified"] as const)
+  ]) {
+    const kind = declaredSurfaceKind(path);
+    if (!kind) continue;
+    changes.push({
+      kind,
+      summary: `${pluginPath(path)} was ${state}.`,
+      detail: {
+        path,
+        state,
+        ...(state === "modified"
+          ? { baselineSha256: baseline.get(path), candidateSha256: candidate.get(path) }
+          : {})
+      }
+    });
+  }
+
+  if (added.length > 0 || removed.length > 0) {
+    changes.push({
+      kind: "file_inventory_changed",
+      summary: `File inventory changed: ${added.length} added, ${removed.length} removed.`,
+      detail: { added, removed }
+    });
+  }
+
+  if (edited.length > 0) {
+    changes.push({
+      kind: "file_content_changed",
+      summary: `${edited.length} file${edited.length === 1 ? "" : "s"} changed contents without changing the inventory.`,
+      detail: {
+        count: edited.length,
+        paths: edited.slice(0, NAMED_PATH_LIMIT),
+        truncated: edited.length > NAMED_PATH_LIMIT
+      }
+    });
+  }
+
+  return changes;
 }
 
 function compareFindings(baseline: Map<string, ReportFinding>, candidate: Map<string, ReportFinding>): ReportChange[] {
@@ -369,14 +479,16 @@ function metadataFrom(observations: ReportObservation[]): JsonObject {
   return Object.fromEntries(Object.entries(record.data).filter(([key]) => !VOLATILE_METADATA.has(key)));
 }
 
-function filesFrom(observations: ReportObservation[]): Set<string> | undefined {
+function filesFrom(observations: ReportObservation[]): Map<string, string | undefined> | undefined {
   const record = observations.find((item) => item.id === OBSERVATION_IDS.fileInventory);
   if (!record || !Array.isArray(record.data.entries)) return undefined;
-  const paths = new Set<string>();
+  const files = new Map<string, string | undefined>();
   for (const entry of record.data.entries) {
-    if (isRecord(entry) && isString(entry.path)) paths.add(entry.path);
+    if (isRecord(entry) && isString(entry.path)) {
+      files.set(entry.path, isString(entry.sha256) ? entry.sha256 : undefined);
+    }
   }
-  return paths;
+  return files;
 }
 
 function shortHash(value: string): string {
