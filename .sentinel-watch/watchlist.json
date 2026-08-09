@@ -1,1 +1,7 @@
-{"packages":[]}
+{
+  "packages": [
+    "@modelcontextprotocol/server-filesystem",
+    "@upstash/context7-mcp",
+    "@notionhq/notion-mcp-server"
+  ]
+}
