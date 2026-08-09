@@ -4,8 +4,13 @@
 
 Report suspected vulnerabilities privately. Do not open a public issue.
 
-Use GitHub's private vulnerability reporting on this repository, or contact the
-maintainer directly. Please include the affected version, a description, and a
+Use GitHub's private vulnerability reporting on this repository, or email:
+
+- **mcpsentinel@aivare.ai** — the analyzer and the `sentinel` CLI
+- **mcpwatch@aivare.ai** — the monitor
+
+Either address reaches the maintainer; use whichever fits, and do not worry about
+picking wrong. Please include the affected version, a description, and a
 reproducer if you have one.
 
 Acknowledgement is on a best-effort basis. This is a small project without a

@@ -170,7 +170,17 @@ severity mapping on top; you can replace it.
 Early. The report format is versioned and will change; `format_version` is bumped
 whenever it does, and old reports are never silently reinterpreted.
 
-Maintained by its authors. Not currently accepting external contributions.
+Maintained by its authors. **Code contributions are not accepted**: a tool that
+audits supply chains should not have an unvetted one, and the parts most worth
+attacking here — the rule pack, the severity policy, the archive reader — are
+exactly the parts a drive-by change would touch.
+
+Reports are welcome, and are the most useful thing you can send: a package where
+extraction failed, a false positive, a change class that went unreported. Those
+improve the published coverage figure and [LIMITATIONS.md](docs/LIMITATIONS.md),
+which is where this project's credibility actually sits. See
+[SECURITY.md](SECURITY.md) for how to reach us, privately for anything
+exploitable.
 
 If you want help wiring this into your stack, or a review of what your MCP surface
 actually looks like, that is something we offer as a paid service. The tool itself
