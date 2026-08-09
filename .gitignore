@@ -33,6 +33,11 @@ docs/MCP-specs-2026-07-28/
 # beside it are the state worth keeping; this is not.
 .sentinel-watch/notice.md
 
+# ---- Research notes pasted from third-party sources ----
+# Other people's specification text, kept for reference while assessing it. Not
+# ours to redistribute, and not a claim this project makes.
+docs/Agent Plugin manifest.txt
+
 # ---- Internal working notes ----
 # This repository is public. CLAUDE.md carries pricing strategy, revenue targets
 # and the owner's own position; it is not a document to publish by accident.
