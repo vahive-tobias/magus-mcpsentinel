@@ -63,6 +63,9 @@ wrangler.private.toml
 packages/*/wrangler.private.toml
 
 # ---- Secrets and local configuration ----
+# A local record of secrets that were installed on a deployed Worker. Worker
+# secrets are write-only, so this is the only copy.
+*.secrets.local
 # .dev.vars holds the operator API key and both HMAC secrets.
 # .npmrc can hold a registry auth token.
 .dev.vars
