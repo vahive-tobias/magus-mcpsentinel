@@ -57,6 +57,13 @@ const MAX_OPERATOR_BYTES = 64 * 1024;
  */
 const MAX_STORED_REPORT_BYTES = 1_500_000;
 
+/**
+ * Ceiling on the registry document read to count skipped releases. Packages with
+ * thousands of versions exist; the count is worth having but never worth an
+ * unbounded buffer, and going without it costs only a sentence.
+ */
+const MAX_PACKUMENT_BYTES = 3 * 1024 * 1024;
+
 /** Raised when a request body exceeds its declared ceiling. */
 export class BodyTooLargeError extends Error {
   public constructor(public readonly limit: number) {
@@ -195,6 +202,15 @@ async function recordReport(repository: WatchRepository, target: WatchTargetReco
   const baseline = await repository.reportById(target.baseline_report_id);
   if (!baseline) throw new Error("Watch target references a missing baseline report.");
   const notice = createChangeNotice(parseStoredReport(baseline), report);
+
+  // The check runs on a schedule and only sees `latest`, so releases published
+  // and superseded between runs are never analyzed. Saying so on the notice keeps
+  // "we compared these two" from reading as "we saw everything in between".
+  const skipped = await releasesBetween(target.package_name, baseline.package_version, report.subject.artifact.version);
+  if (skipped !== undefined && skipped > 0) {
+    notice.summary += ` ${skipped} release${skipped === 1 ? " was" : "s were"} published in between and not analyzed individually.`;
+  }
+
   const created = await repository.createNotice(target.id, baseline.id, stored.report.id, notice);
   return {
     status: "review_required",
@@ -379,6 +395,57 @@ async function fetchNpmLatest(packageName: string): Promise<{ version: string }>
   if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${packageName}.`);
   const metadata = parseJson(await response.text());
   return { version: requiredString(metadata, "version") };
+}
+
+/**
+ * How many versions were published between two, and never analyzed.
+ *
+ * The check runs on a schedule and only ever sees `latest`, so a package that
+ * ships several times between runs has releases that are never fetched, never
+ * diffed and never stored. That is a real limit, and the notice says so rather
+ * than implying every release was examined — some packages publish many times a
+ * day, so the gap can be large.
+ *
+ * Returns undefined when it cannot be established. A count that might be wrong is
+ * worse than no count, so nothing is reported unless the registry supplied
+ * publish times for both endpoints.
+ */
+async function releasesBetween(packageName: string, from: string, to: string): Promise<number | undefined> {
+  try {
+    const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(packageName).replace("%40", "@")}`, {
+      // Deliberately the full document. The abbreviated `install-v1` form is far
+      // smaller but omits `time`, which is the only field this needs — asking for
+      // it returns a document that always yields no count, silently.
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(15_000)
+    });
+    if (!response.ok) return undefined;
+    // A package with thousands of versions has a large document, and this is a
+    // nicety rather than the check itself. Refuse to buffer an unbounded one.
+    const declared = Number(response.headers.get("content-length"));
+    if (Number.isFinite(declared) && declared > MAX_PACKUMENT_BYTES) return undefined;
+    const body = await response.text();
+    if (body.length > MAX_PACKUMENT_BYTES) return undefined;
+
+    const document = parseJson(body);
+    const times = document.time;
+    if (!isRecord(times)) return undefined;
+
+    const start = Date.parse(String(times[from] ?? ""));
+    const end = Date.parse(String(times[to] ?? ""));
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return undefined;
+
+    let between = 0;
+    for (const [version, published] of Object.entries(times)) {
+      if (version === "created" || version === "modified" || version === from || version === to) continue;
+      const at = Date.parse(String(published));
+      if (Number.isFinite(at) && at > start && at < end) between += 1;
+    }
+    return between;
+  } catch {
+    // A count is a nicety. Failing to get one must never fail the check.
+    return undefined;
+  }
 }
 
 async function requiredTarget(repository: WatchRepository, id: string): Promise<WatchTargetRecord> {
