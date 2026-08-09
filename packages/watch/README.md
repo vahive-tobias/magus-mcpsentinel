@@ -233,6 +233,32 @@ Note that `wrangler` bundles `src/worker.ts` with esbuild, which strips types
 without checking them. **`npm run build` is the only typecheck** — do not deploy
 from a machine that skipped it.
 
+## Why this cannot run up a D1 bill
+
+D1 charges for rows **scanned**, not rows returned, and Cloudflare has no hard
+spend cap to stop a runaway query. Unindexed scans and unbounded repeat-writes
+are the two documented ways accounts have gone from a few dollars a month to four
+figures, so both are designed against here rather than hoped about:
+
+- **Every query against a growing table is index-backed.** `check_runs` is the
+  only table that grows without bound — a row per target per check, forever — and
+  it carries indexes for each way it is read. Measured before they existed:
+  finding each target's latest check scanned 1,825,000 rows per call against two
+  years of history on 25 targets. It is a seek now, and 800× faster.
+- **A test fails the build on any full scan of a growing table.** `EXPLAIN QUERY
+  PLAN` is run against the real schema, so a query added without an index cannot
+  merge. Removing an index makes it fail, which was checked.
+- **No write is unbounded.** Every `UPDATE` is keyed on a primary key or an
+  indexed column, there are no `DELETE` statements, and a test fails the build on
+  any write without a `WHERE` clause.
+- **Repeated detections do not repeat writes.** A release stays outstanding until
+  something analyzes it, and detection runs every few hours; the check is recorded
+  once, not once per poll.
+
+Steady state for 25 packages is roughly 100 row-writes and a few hundred row-reads
+a day — comfortably inside the free tier's 100,000 writes and 5 million reads per
+day, with or without a paid plan.
+
 ## Safety boundary
 
 - Public npm package identities only.

@@ -221,6 +221,12 @@ export async function checkForNewReleases(env: Env): Promise<void> {
         await repository.recordCheck(target.id, "skipped", metadata.version, "No version change.");
         continue;
       }
+      // A release stays outstanding until something analyzes it, and detection
+      // runs every few hours. Re-recording the same pending state each time would
+      // write rows forever and say nothing new.
+      if (await repository.hasOpenCheck(target.id, metadata.version)) {
+        continue;
+      }
       if (!analysisEnabled(env)) {
         await repository.recordCheck(target.id, "queued", metadata.version,
           "Detected. In-Worker analysis is disabled, so this release is awaiting a report posted to /api/reports.");

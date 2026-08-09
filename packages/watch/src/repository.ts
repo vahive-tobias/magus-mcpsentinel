@@ -155,6 +155,22 @@ export class WatchRepository {
     }));
   }
 
+  /**
+   * True when this target already has an outstanding check for this version.
+   *
+   * Detection runs every few hours, but a release stays outstanding until someone
+   * analyzes it. Without this the monitor writes an identical `queued` row on
+   * every run for as long as that takes — the same unbounded-redundant-write
+   * pattern that has produced real runaway D1 bills elsewhere. One row per
+   * outstanding release is all the information there is.
+   */
+  async hasOpenCheck(targetId: string, version: string): Promise<boolean> {
+    const row = await this.db.prepare(
+      "SELECT id FROM check_runs WHERE target_id = ? AND status = 'queued' AND observed_version = ? LIMIT 1"
+    ).bind(targetId, version).first<{ id: string }>();
+    return row !== null;
+  }
+
   async recordCheck(targetId: string, status: CheckStatus, observedVersion?: string, detail?: string): Promise<string> {
     const id = crypto.randomUUID();
     await this.db.prepare(
