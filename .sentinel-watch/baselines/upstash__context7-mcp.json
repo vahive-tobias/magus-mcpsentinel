@@ -1,0 +1,346 @@
+{
+  "format_version": "0.2.0",
+  "report_id": "1ed6f022-d1a6-4566-a284-83c7214ec8a4",
+  "generated_at": "2026-08-09T06:08:00.394Z",
+  "subject": {
+    "server_name": "io.github.upstash/context7",
+    "publisher_claim": "@upstash",
+    "artifact": {
+      "ecosystem": "npm",
+      "package": "@upstash/context7-mcp",
+      "version": "4.0.0",
+      "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
+      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.0.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.0",
+      "acquired_at": "2026-08-09T06:08:00.370Z",
+      "registry_metadata_sha256": "76ded7222807295786c4278dcdef308675d3d524cf2fce12ba9077614e86e4a6",
+      "integrity_claim": "sha512-7TlB85xbKbSHzI4G//3Qm+g8ryW11WZLd7PAOFdH5IxzAv1Yk+lcSBgDM4lDoYHXltzSwK7iUciiFNbFj7493Q==",
+      "integrity_verified": true
+    }
+  },
+  "analysis": {
+    "engine": {
+      "name": "sentinel",
+      "version": "0.2.0",
+      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+    },
+    "protocol_profile": {
+      "id": "mcp-2026-07-28",
+      "specification_revision": "2026-07-28",
+      "local_retrieval_date": "2026-08-01",
+      "discovery_status": "not_run"
+    },
+    "authorization_profiles": [
+      {
+        "id": "none",
+        "credential_present": false,
+        "description": "No credentials were supplied."
+      }
+    ],
+    "rule_pack": {
+      "version": "0.1.0",
+      "sha256": "302d85219dda34199bd2402fcc94ba34233152fe996a128e0b332ac3efef24b3"
+    },
+    "semantic_analysis": []
+  },
+  "observations": [
+    {
+      "id": "observation:package-metadata",
+      "kind": "artifact_metadata",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb",
+          "artifact_path": "package/package.json",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "name": "@upstash/context7-mcp",
+        "version": "4.0.0",
+        "mcpName": "io.github.upstash/context7",
+        "description": "MCP server for Context7",
+        "bin": {
+          "context7-mcp": "dist/index.js"
+        },
+        "scripts": {
+          "build": "tsc && chmod 755 dist/index.js",
+          "test": "pnpm exec vitest run",
+          "typecheck": "tsc --noEmit",
+          "lint": "eslint .",
+          "lint:check": "eslint .",
+          "format": "prettier --write .",
+          "format:check": "prettier --check .",
+          "dev": "tsc --watch",
+          "start": "node dist/index.js --transport http",
+          "pack-mcpb": "pnpm install && pnpm run build && rm -rf node_modules && pnpm install --prod && cp mcpb/manifest.json manifest.json && cp mcpb/.mcpbignore .mcpbignore && cp ../../public/icon.png icon.png && mcpb validate manifest.json && mcpb pack . mcpb/context7.mcpb && rm manifest.json .mcpbignore icon.png && pnpm install"
+        },
+        "engines": {
+          "node": ">=20.18.1"
+        }
+      }
+    },
+    {
+      "id": "observation:file-inventory",
+      "kind": "file",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "entry_count": 12,
+        "regular_file_bytes": 95009,
+        "entries": [
+          {
+            "path": "package/dist/index.js",
+            "type": "file",
+            "size": 23049,
+            "sha256": "8ed7998617cd610bd538416634166770d9eca1ff2f12975920ed314f066de1ef"
+          },
+          {
+            "path": "package/dist/lib/api.js",
+            "type": "file",
+            "size": 5945,
+            "sha256": "16417e0ff8520eb2b455a24566cc9c5dae8926ec25e1bf0007d8a46a0f37d60f"
+          },
+          {
+            "path": "package/dist/lib/auth/auth-prompt.js",
+            "type": "file",
+            "size": 4162,
+            "sha256": "9d6ef90e4a7cb750b6502dba7eb1ba4bd7236379d724bbd164ef70982e696460"
+          },
+          {
+            "path": "package/dist/lib/client-ip.js",
+            "type": "file",
+            "size": 2056,
+            "sha256": "88d8680311e6cde15208defc019ed4a75a7e2df690e89a588ef4786cd551003f"
+          },
+          {
+            "path": "package/dist/lib/constants.js",
+            "type": "file",
+            "size": 1063,
+            "sha256": "8d6aca5875a6b2b7f0181ce5907e98e611d5c177439a8eb56250147ae2760c32"
+          },
+          {
+            "path": "package/dist/lib/encryption.js",
+            "type": "file",
+            "size": 2057,
+            "sha256": "900e8581677754570dc1874cc05f20033e62c5b66f178a47f307a87eb720e083"
+          },
+          {
+            "path": "package/dist/lib/jwt.js",
+            "type": "file",
+            "size": 3772,
+            "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5"
+          },
+          {
+            "path": "package/dist/lib/types.js",
+            "type": "file",
+            "size": 11,
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "path": "package/dist/lib/utils.js",
+            "type": "file",
+            "size": 3942,
+            "sha256": "edeb5a9e74a8e4c81e6072b4830c31d050c5bca2045aa6b84c140778d8c0dd77"
+          },
+          {
+            "path": "package/LICENSE",
+            "type": "file",
+            "size": 1079,
+            "sha256": "85cfb556dc2b22b55d2565674fcdaac82f3f2f6b7a928d27003132721bb6736c"
+          },
+          {
+            "path": "package/package.json",
+            "type": "file",
+            "size": 1876,
+            "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb"
+          },
+          {
+            "path": "package/README.md",
+            "type": "file",
+            "size": 45997,
+            "sha256": "7af66e09cddc0ea518f97cdee817274f28f001177271785d216db1299b640bf5"
+          }
+        ]
+      }
+    },
+    {
+      "id": "observation:registry-metadata",
+      "kind": "artifact_metadata",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "76ded7222807295786c4278dcdef308675d3d524cf2fce12ba9077614e86e4a6",
+          "capture_kind": "registry_metadata"
+        }
+      ],
+      "data": {
+        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.0",
+        "requested_package": "@upstash/context7-mcp",
+        "requested_version": "4.0.0",
+        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.0.tgz",
+        "integrity_claim": "sha512-7TlB85xbKbSHzI4G//3Qm+g8ryW11WZLd7PAOFdH5IxzAv1Yk+lcSBgDM4lDoYHXltzSwK7iUciiFNbFj7493Q==",
+        "integrity_verified": true
+      }
+    },
+    {
+      "id": "observation:runtime-dependencies",
+      "kind": "dependency",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb",
+          "artifact_path": "package/package.json",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "dependencies": {
+          "@modelcontextprotocol/node": "2.0.0",
+          "@modelcontextprotocol/server": "2.0.0",
+          "@types/express": "^5.0.4",
+          "commander": "^13.1.0",
+          "express": "^5.1.0",
+          "jose": "^6.2.3",
+          "undici": "^7.0.0",
+          "zod": "^4.4.3"
+        }
+      }
+    },
+    {
+      "id": "observation:network-api-53ada3e716b390a3",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "16417e0ff8520eb2b455a24566cc9c5dae8926ec25e1bf0007d8a46a0f37d60f",
+          "artifact_path": "package/dist/lib/api.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            3853,
+            3859
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:network-api-f7290244a97e2fb4",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "8ed7998617cd610bd538416634166770d9eca1ff2f12975920ed314f066de1ef",
+          "artifact_path": "package/dist/index.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            19443,
+            19449
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:network-api-1d7c277b867e6664",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5",
+          "artifact_path": "package/dist/lib/jwt.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            1057,
+            1063
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:static-tool-inventory",
+      "kind": "protocol_inventory",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "extraction": "static_source_analysis",
+        "complete": true,
+        "incompleteness": [],
+        "scanned_files": [
+          "package/dist/index.js",
+          "package/dist/lib/api.js",
+          "package/dist/lib/auth/auth-prompt.js",
+          "package/dist/lib/client-ip.js",
+          "package/dist/lib/constants.js",
+          "package/dist/lib/encryption.js",
+          "package/dist/lib/jwt.js",
+          "package/dist/lib/types.js",
+          "package/dist/lib/utils.js"
+        ],
+        "tools": [
+          {
+            "name": "query-docs",
+            "discovery": "registration",
+            "artifact_path": "package/dist/index.js",
+            "byte_range": [
+              10099,
+              12467
+            ],
+            "description_sha256": "0ad4a5e4f24c62473be1e3dca954fbd685b3c10af757550bf525b52bf0134327",
+            "description_repr": "string_literal",
+            "input_schema_sha256": "e1f907f9bc34e8e5674a9cc34668ae715c784adc16498d947b02ab63d76477b6",
+            "input_schema_repr": "source_text"
+          },
+          {
+            "name": "resolve-library-id",
+            "discovery": "registration",
+            "artifact_path": "package/dist/index.js",
+            "byte_range": [
+              6003,
+              10093
+            ],
+            "description_sha256": "6d85cad96641caacff07e8c20523a1455fa5f89f776681ca9f81dcda58b0468d",
+            "description_repr": "string_literal",
+            "input_schema_sha256": "bfbf196f629386c923d46f1f7929f1c29ea702c2c4c8364ece2b9998af08861a",
+            "input_schema_repr": "source_text"
+          }
+        ]
+      }
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    {
+      "code": "protocol_discovery_not_run",
+      "summary": "M1 performs static artifact inspection only; no MCP protocol session was opened."
+    },
+    {
+      "code": "tool_calls_not_performed",
+      "summary": "No tools were invoked."
+    },
+    {
+      "code": "semantic_analysis_not_run",
+      "summary": "No semantic model analysis was run."
+    }
+  ]
+}

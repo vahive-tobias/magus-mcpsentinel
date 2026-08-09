@@ -1,0 +1,609 @@
+{
+  "format_version": "0.2.0",
+  "report_id": "17bd1367-2bd0-4a82-9cd9-03db375d0859",
+  "generated_at": "2026-08-09T06:08:01.107Z",
+  "subject": {
+    "server_name": "@notionhq/notion-mcp-server",
+    "publisher_claim": "@notionhq",
+    "artifact": {
+      "ecosystem": "npm",
+      "package": "@notionhq/notion-mcp-server",
+      "version": "2.5.1",
+      "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+      "download_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
+      "acquired_at": "2026-08-09T06:08:00.622Z",
+      "registry_metadata_sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
+      "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+      "integrity_verified": true
+    }
+  },
+  "analysis": {
+    "engine": {
+      "name": "sentinel",
+      "version": "0.2.0",
+      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+    },
+    "protocol_profile": {
+      "id": "mcp-2026-07-28",
+      "specification_revision": "2026-07-28",
+      "local_retrieval_date": "2026-08-01",
+      "discovery_status": "not_run"
+    },
+    "authorization_profiles": [
+      {
+        "id": "none",
+        "credential_present": false,
+        "description": "No credentials were supplied."
+      }
+    ],
+    "rule_pack": {
+      "version": "0.1.0",
+      "sha256": "302d85219dda34199bd2402fcc94ba34233152fe996a128e0b332ac3efef24b3"
+    },
+    "semantic_analysis": []
+  },
+  "observations": [
+    {
+      "id": "observation:package-metadata",
+      "kind": "artifact_metadata",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "artifact_path": "package/package.json",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "name": "@notionhq/notion-mcp-server",
+        "version": "2.5.1",
+        "description": "Official MCP server for Notion API",
+        "main": "index.js",
+        "bin": {
+          "notion-mcp-server": "bin/cli.mjs"
+        },
+        "scripts": {
+          "build": "tsc -build && node scripts/build-cli.js",
+          "dev": "tsx watch scripts/start-server.ts",
+          "test": "NODE_ENV=test vitest run",
+          "test:watch": "NODE_ENV=test vitest",
+          "test:coverage": "NODE_ENV=test vitest run --coverage"
+        }
+      }
+    },
+    {
+      "id": "observation:file-inventory",
+      "kind": "file",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "entry_count": 51,
+        "regular_file_bytes": 3039434,
+        "entries": [
+          {
+            "path": "package/.dockerignore",
+            "type": "file",
+            "size": 42,
+            "sha256": "315799254bfd75c3b1bd8e00dd4a44a3346304b53a2ffa985bdeb2f8defd2f03"
+          },
+          {
+            "path": "package/.github/pull_request_template.md",
+            "type": "file",
+            "size": 172,
+            "sha256": "5e961ec241be4f659b142fe691280cb68aa82420cf4c167b18ad6be3f16f1135"
+          },
+          {
+            "path": "package/.github/workflows/ci.yml",
+            "type": "file",
+            "size": 919,
+            "sha256": "ab948a07ce8b7327a7713713ea77bf4e944fd46d55bb137dc667e4b6cdc08418"
+          },
+          {
+            "path": "package/.github/workflows/increment-version.yml",
+            "type": "file",
+            "size": 2128,
+            "sha256": "aa8739792a9a1897546a617b64ba7f658febd387fed7c310ff59472428e5b44b"
+          },
+          {
+            "path": "package/.github/workflows/publish.yml",
+            "type": "file",
+            "size": 1886,
+            "sha256": "63f91d53216a083632d7e03b3a4d6ede1e27fec3605fd8757c8160c26b5b1a3b"
+          },
+          {
+            "path": "package/bin/cli.mjs",
+            "type": "file",
+            "size": 1404967,
+            "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0"
+          },
+          {
+            "path": "package/CLAUDE.md",
+            "type": "file",
+            "size": 2413,
+            "sha256": "7320c27269b81d76e2df6e38fd3f48b2de8b40e227842139d19ebf9f04821eaf"
+          },
+          {
+            "path": "package/docker-compose.yml",
+            "type": "file",
+            "size": 107,
+            "sha256": "23a5c26a2a4b8ebdea83168fa1f11b61d750d7f434b1276d2eb0c5533914d61e"
+          },
+          {
+            "path": "package/Dockerfile",
+            "type": "file",
+            "size": 957,
+            "sha256": "9097ee99329f61f79642bb7e42737ede947f380630d94e67085080026503a4c8"
+          },
+          {
+            "path": "package/docs/images/connections.png",
+            "type": "file",
+            "size": 599779,
+            "sha256": "73c734551661906d1be6ece71c73ddd6781f48f66febaea02bf642b74ab6731e"
+          },
+          {
+            "path": "package/docs/images/integration-access.png",
+            "type": "file",
+            "size": 148103,
+            "sha256": "78bec9a6d4bfe3c9aac874dea828252cd9ba1406bf3a082e66af6dfdf253921a"
+          },
+          {
+            "path": "package/docs/images/integrations-capabilities.png",
+            "type": "file",
+            "size": 240329,
+            "sha256": "da7e7a58bd2604a8f8c48f25aeac0b60f58043fcff068c1c495b989bef734bfd"
+          },
+          {
+            "path": "package/docs/images/integrations-creation.png",
+            "type": "file",
+            "size": 98512,
+            "sha256": "b99792b418f72162b57011a8f6b2c050d7f7282513cbb1048723fa5499d1554f"
+          },
+          {
+            "path": "package/docs/images/page-access-edit.png",
+            "type": "file",
+            "size": 200307,
+            "sha256": "e9ca2f6030fd6b1043690792fac4f44d3f43af558e6815b6cf651dc930f8ab7a"
+          },
+          {
+            "path": "package/LICENSE",
+            "type": "file",
+            "size": 1060,
+            "sha256": "2fd3e5272a40483e9cc8140136b4438708a496ea2da2537b98f0f2bbb68148ee"
+          },
+          {
+            "path": "package/package.json",
+            "type": "file",
+            "size": 1737,
+            "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea"
+          },
+          {
+            "path": "package/README.md",
+            "type": "file",
+            "size": 16267,
+            "sha256": "8dd7a5336a9e5044840c0109dd53a379b28402b6e23956bd0099d0f79bc3add7"
+          },
+          {
+            "path": "package/RELEASING.md",
+            "type": "file",
+            "size": 1727,
+            "sha256": "8436327ea16d9da06cf60493e006723c2f11cb8e981927d70609f02706f6f663"
+          },
+          {
+            "path": "package/scripts/build-cli.js",
+            "type": "file",
+            "size": 811,
+            "sha256": "4e823e9f992def37e1c5bc2fe467edb042288c3174c5aed1f6f9a1d8edbdd23d"
+          },
+          {
+            "path": "package/scripts/notion-openapi.json",
+            "type": "file",
+            "size": 85302,
+            "sha256": "d33548174dfc6ebad012fc73b1483532c7887d8c97fd6deb62d56c742e96baba"
+          },
+          {
+            "path": "package/scripts/server-options.test.ts",
+            "type": "file",
+            "size": 3423,
+            "sha256": "033127c8166e3ef4ba3fe45b6135ec8efb31f8e48321cf253af52ddd4fa6d59f"
+          },
+          {
+            "path": "package/scripts/server-options.ts",
+            "type": "file",
+            "size": 7065,
+            "sha256": "a2d68f783da0bc14fc2df2677d273a9cea7fd640a38d629e493682b573850aa2"
+          },
+          {
+            "path": "package/scripts/start-server.ts",
+            "type": "file",
+            "size": 10802,
+            "sha256": "b11c66a16bdf65472f8782561c377b9b7ec05db30fbde40734a0bb82bd1aee08"
+          },
+          {
+            "path": "package/src/init-server.ts",
+            "type": "file",
+            "size": 1428,
+            "sha256": "2eeca6eb4d79ac3473883e789f2bfbd8f1b1077311c8883a856acbf5cb7be0c4"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/auth/index.ts",
+            "type": "file",
+            "size": 51,
+            "sha256": "d43adc789fad9ec4914e9986edb2cfad84b11ffc2d5614bf6770ca696b04c977"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/auth/template.ts",
+            "type": "file",
+            "size": 761,
+            "sha256": "6d829a91a7a8eb7ed168e7b441d56d7d2c7e61be0a62dccd3daa641932d18041"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/auth/types.ts",
+            "type": "file",
+            "size": 484,
+            "sha256": "5b0737cd3db4ec7fd645b38c3f7a5eaf1c17c854ef482f10901ba2d875ff1665"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/__tests__/http-client-upload.test.ts",
+            "type": "file",
+            "size": 6397,
+            "sha256": "a576fa3a246fa483a197163c489a38beaeba912859e6178150e29b052b26594c"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/__tests__/http-client.headers.test.ts",
+            "type": "file",
+            "size": 3201,
+            "sha256": "a20a5bd1488ae50359ffef3a822808963ff3b609bd48e0b93a9820c5b14d589b"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/__tests__/http-client.integration.test.ts",
+            "type": "file",
+            "size": 9149,
+            "sha256": "17c147cfde152aeee00fabeaad187f96c0c1230f151f1b7f6140d622f038c513"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/__tests__/http-client.test.ts",
+            "type": "file",
+            "size": 14660,
+            "sha256": "51a620ec7f76995956aabd3377d7490b1e587b8e5e39d2dc8b2970d759c68181"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/__tests__/test-server.ts",
+            "type": "file",
+            "size": 1540,
+            "sha256": "e8a1982072731ded2f6b712dace045b3d20aa05a28ad4d44fd862175da198dd2"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/http-client.ts",
+            "type": "file",
+            "size": 8258,
+            "sha256": "388640e020591babec78c88471b3318a7df1a211422254110311a7d08a86da0b"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/client/polyfill-headers.ts",
+            "type": "file",
+            "size": 1087,
+            "sha256": "1cbf9ccc719248551153621ec3a9aadb4a1b0545dc09ff2ead02ee7c2380427f"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/index.ts",
+            "type": "file",
+            "size": 167,
+            "sha256": "0ba0f570577f9ccce4e869072fd054ee570ec6e1e5fb4961c5cdc5d1563801cc"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/LICENSE",
+            "type": "file",
+            "size": 1501,
+            "sha256": "4027283bbe746da63dc4703f30e1a95feb186bbccde842e332178dc3983b9061"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/mcp/__tests__/proxy.test.ts",
+            "type": "file",
+            "size": 33860,
+            "sha256": "c98ab705a2f7284f7e58529ec8e9a2c0f47ca9a89e04e7ab1fe5c32961c6aa5a"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/mcp/__tests__/token.test.ts",
+            "type": "file",
+            "size": 3795,
+            "sha256": "b6023211c5cfe7a7c0a76a62ad96dc146d98d045dd0fe3b60c4cdc93b92a2952"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/mcp/proxy.ts",
+            "type": "file",
+            "size": 11487,
+            "sha256": "9cd280d1d87077d4ea88035c21840035e05b047466e9ca6b254df3988e91a2f4"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/mcp/token.ts",
+            "type": "file",
+            "size": 4549,
+            "sha256": "dda544bf580f4523ce65f5281616f31cf9927fe581ef15ca644031aaf4097956"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/__snapshots__/notion-spec.snapshot.test.ts.snap",
+            "type": "file",
+            "size": 7954,
+            "sha256": "c8b2b32440ad7acd2bf35fa62bec23a522352d8f0f75a3203cb2520850d7c40f"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/file-upload.test.ts",
+            "type": "file",
+            "size": 2507,
+            "sha256": "34d98d2f9a84a813bd09eb30182aa5962e6e1cc24d0d4c9856dc8034ab48eb71"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/notion-markdown-tools.test.ts",
+            "type": "file",
+            "size": 2335,
+            "sha256": "5cb4fcc05a1a9b377d0573fe79e830ad1d258bf415b84f755c685759c09a3f51"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/notion-spec.snapshot.test.ts",
+            "type": "file",
+            "size": 1817,
+            "sha256": "463d0b9f5b91b12d61fa7c00c9f630bacfcaba63b27ef5b453234e4fd031c124"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/parser-multipart.test.ts",
+            "type": "file",
+            "size": 21101,
+            "sha256": "0244b496e840578c1236d2293a98f96975b08fb540e71789c77e8d84165a1b8d"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/__tests__/parser.test.ts",
+            "type": "file",
+            "size": 51329,
+            "sha256": "f3839a3b70d5b3238b388198b7e32397b0fcd414a42a6364dfa575a1b4b1f94e"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/file-upload.ts",
+            "type": "file",
+            "size": 1466,
+            "sha256": "efac2b66e2b064a50738bf8ef1a5dc281a11c0be542433b05f202b13d2763fad"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/openapi/parser.ts",
+            "type": "file",
+            "size": 17091,
+            "sha256": "b7109dfabc2fa12b97c29a8f7b8c126dc60c9fcfcb9e829fb09321b5ac8193bc"
+          },
+          {
+            "path": "package/src/openapi-mcp-server/README.md",
+            "type": "file",
+            "size": 1876,
+            "sha256": "2e08720388e9044e93a79091706c6b09bbe4e93b222986c18be44f9ca71f837a"
+          },
+          {
+            "path": "package/tsconfig.json",
+            "type": "file",
+            "size": 622,
+            "sha256": "b2535e5299e39903948802c39b83fdb6ad24ceb6528f00561d42140113244e2f"
+          },
+          {
+            "path": "package/vitest.config.ts",
+            "type": "file",
+            "size": 146,
+            "sha256": "54230003d3ff045e64a8a8fec75f74085a17834a5a7c82438e8e143a81108dd5"
+          }
+        ]
+      }
+    },
+    {
+      "id": "observation:registry-metadata",
+      "kind": "artifact_metadata",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
+          "capture_kind": "registry_metadata"
+        }
+      ],
+      "data": {
+        "metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
+        "requested_package": "@notionhq/notion-mcp-server",
+        "requested_version": "2.5.1",
+        "tarball_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
+        "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+        "integrity_verified": true
+      }
+    },
+    {
+      "id": "observation:runtime-dependencies",
+      "kind": "dependency",
+      "coverage": "declared",
+      "evidence": [
+        {
+          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "artifact_path": "package/package.json",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "dependencies": {
+          "@modelcontextprotocol/sdk": "^1.29.0",
+          "axios": "^1.8.4",
+          "express": "^4.21.2",
+          "form-data": "^4.0.1",
+          "mustache": "^4.2.0",
+          "node-fetch": "^3.3.2",
+          "openapi-client-axios": "^7.5.5",
+          "openapi-schema-validator": "^12.1.3",
+          "openapi-types": "^12.1.3",
+          "which": "^5.0.0",
+          "yargs": "^17.7.2",
+          "zod": "3.24.1"
+        }
+      }
+    },
+    {
+      "id": "observation:network-api-8c2edb341e1078cc",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
+          "artifact_path": "package/bin/cli.mjs",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            1398265,
+            1398271
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:filesystem-api-7329639c09accdcc",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
+          "artifact_path": "package/bin/cli.mjs",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            799564,
+            799581
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "filesystem-api",
+        "description": "Source references a filesystem API."
+      }
+    },
+    {
+      "id": "observation:process-spawn-api-214c0ae3cc593862",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
+          "artifact_path": "package/bin/cli.mjs",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            6401,
+            6406
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "process-spawn-api",
+        "description": "Source references a process-spawning API."
+      }
+    },
+    {
+      "id": "observation:filesystem-api-7660ed71c12a58d8",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "388640e020591babec78c88471b3318a7df1a211422254110311a7d08a86da0b",
+          "artifact_path": "package/src/openapi-mcp-server/client/http-client.ts",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            4523,
+            4540
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "filesystem-api",
+        "description": "Source references a filesystem API."
+      }
+    },
+    {
+      "id": "observation:network-api-328b4acdb67ce796",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "b11c66a16bdf65472f8782561c377b9b7ec05db30fbde40734a0bb82bd1aee08",
+          "artifact_path": "package/scripts/start-server.ts",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            9743,
+            9749
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:process-spawn-api-61c590a61326e21e",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "dda544bf580f4523ce65f5281616f31cf9927fe581ef15ca644031aaf4097956",
+          "artifact_path": "package/src/openapi-mcp-server/mcp/token.ts",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            3982,
+            3987
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "process-spawn-api",
+        "description": "Source references a process-spawning API."
+      }
+    },
+    {
+      "id": "observation:static-tool-inventory",
+      "kind": "protocol_inventory",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "capture_kind": "artifact_file"
+        }
+      ],
+      "data": {
+        "extraction": "static_source_analysis",
+        "complete": false,
+        "incompleteness": [
+          "no_recognized_registration_pattern",
+          "typescript_source_not_parsed"
+        ],
+        "scanned_files": [
+          "package/bin/cli.mjs",
+          "package/scripts/build-cli.js"
+        ],
+        "tools": []
+      }
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    {
+      "code": "protocol_discovery_not_run",
+      "summary": "M1 performs static artifact inspection only; no MCP protocol session was opened."
+    },
+    {
+      "code": "tool_calls_not_performed",
+      "summary": "No tools were invoked."
+    },
+    {
+      "code": "semantic_analysis_not_run",
+      "summary": "No semantic model analysis was run."
+    },
+    {
+      "code": "static_tool_extraction_incomplete",
+      "summary": "The declared tool surface could not be fully resolved from source (no_recognized_registration_pattern, typescript_source_not_parsed). Treat the inventory as a lower bound, not a complete list."
+    }
+  ]
+}
