@@ -89,18 +89,31 @@ Then, in this directory:
 
 ```sh
 cp .dev.vars.example .dev.vars   # fill in your own secrets
-npx wrangler d1 create sentinel-watch
-# copy the returned database_id into wrangler.toml
-npx wrangler d1 execute sentinel-watch --local --file=./schema.sql
+wrangler d1 execute magus-mcp-watch --local --file=./schema.sql
 npm run dev
 ```
 
-Create an account row for local testing:
+**Local development needs no Cloudflare account and no real database.** `--local`
+runs against a SQLite file that wrangler manages, and the committed
+`wrangler.toml` placeholder is never dereferenced. Do not run `d1 create` or edit
+`wrangler.toml` to get started — that is deployment, it is covered below, and
+putting a real `database_id` in the committed file fails CI.
+
+Create an account and a watch target for local testing:
 
 ```sql
 INSERT INTO accounts (id, email, plan, created_at)
-VALUES ('11111111-1111-4111-8111-111111111111', 'operator@example.test', 'builder', '2026-08-05T00:00:00.000Z');
+VALUES ('11111111-1111-4111-8111-111111111111', 'operator@example.test', 'builder', '2026-08-09T00:00:00.000Z');
 ```
+
+Trigger the scheduled check without waiting for the cron:
+
+```sh
+curl "http://127.0.0.1:8787/cdn-cgi/local/scheduled"
+```
+
+On Windows PowerShell, a bare `wrangler` resolves to a `.ps1` shim that the
+default execution policy blocks. Use `.\node_modules\.bin\wrangler.cmd` instead.
 
 The dashboard asks for the `OPERATOR_API_KEY` from `.dev.vars`; it is held only in
 the page's memory for the browser session.
@@ -203,9 +216,16 @@ analyzer that dies mid-run simply leaves the work for the next one.
 Set `x-magus-signature` to the lower-case HMAC-SHA-256 hex digest of the exact
 request body, keyed with `ANALYZER_INGEST_SECRET`.
 
-Report formats `0.1.0` and `0.2.0` are accepted. A `0.1.0` report carries no tool
-inventory, so a comparison involving one reports `comparison_limited` rather than
-treating an absent inventory as a set of removed tools.
+**Ingestion accepts report formats `0.1.0` and `0.2.0`**, so baselines recorded by
+an older analyzer stay comparable. A `0.1.0` report carries no tool inventory, so a
+comparison involving one reports `comparison_limited` rather than treating an
+absent inventory as a set of removed tools.
+
+That is deliberately wider than what the analyzer *writes*. `sentinel analyze`
+emits `0.2.0` only, and validates its own output against a schema pinned to that
+exact version — which is what catches the analyzer shipping a stale format. So
+reading is permissive and writing is exact; a stored `0.1.0` report is perfectly
+valid input here and would correctly fail the analyzer's generation-time check.
 
 ## Deployment
 

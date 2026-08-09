@@ -9,6 +9,9 @@
     "directory": "packages/sentinel"
   },
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "sentinel": "dist/src/cli.js"
   },

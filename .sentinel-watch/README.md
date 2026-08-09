@@ -15,8 +15,10 @@ ignoring one is a decision you make rather than something that happens by defaul
 
 ## Use it
 
-1. Fork this repository, or copy this directory and
-   [`.github/workflows/watch.yml`](../.github/workflows/watch.yml) into your own.
+1. **Fork this repository.** Copying just this directory and
+   [`.github/workflows/watch.yml`](../.github/workflows/watch.yml) is not enough:
+   [`scripts/watch-check.mjs`](../scripts/watch-check.mjs) imports the analyzer and
+   the severity policy from the workspace, so it needs the whole thing.
 2. Add package names to `watchlist.json`.
 3. **Turn on Settings → Actions → General → Workflow permissions → "Allow GitHub
    Actions to create and approve pull requests".** It is off by default on every

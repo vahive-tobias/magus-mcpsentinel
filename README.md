@@ -19,11 +19,13 @@ sentinel diff old-report.json new-report.json
 
 ```text
 @modelcontextprotocol/server-filesystem: 2026.1.14 -> 2026.7.10
-5 change(s):
+6 change(s):
   [artifact_changed] Artifact digest changed: e5635c070c21… → c17c1da371c8….
   [dependency_changed] Changed runtime dependency @modelcontextprotocol/sdk: ^1.25.2 → ^1.29.0.
+  [dependency_changed] Changed runtime dependency diff: ^5.1.0 → ^8.0.3.
   [dependency_removed] Removed runtime dependency zod-to-json-schema@^3.23.5.
   [tool_description_changed] Tool read_media_file description changed.
+  [file_content_changed] 6 files changed contents without changing the inventory.
 ```
 
 ## Why
