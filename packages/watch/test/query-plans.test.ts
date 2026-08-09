@@ -20,7 +20,10 @@ import { fileURLToPath } from "node:url";
  * forever, while check_runs gains a row per target per scheduled check.
  */
 
-const UNBOUNDED_TABLES = ["check_runs", "analysis_reports"];
+// Tables that grow for as long as the monitor runs. watch_targets and accounts
+// are deliberately absent: they hold tens of rows by design, so scanning them
+// costs the same in ten years as it does today.
+const UNBOUNDED_TABLES = ["check_runs", "analysis_reports", "change_notices"];
 
 /**
  * Resolve a file relative to the package root.
@@ -95,6 +98,23 @@ const QUERIES: Record<string, [string, unknown[]]> = {
   ],
   "reportById": [
     "SELECT * FROM analysis_reports WHERE id = ?", ["r1"]
+  ],
+  "listUndeliveredNotices": [
+    `SELECT * FROM change_notices
+      WHERE delivery_state IN ('pending', 'failed') AND delivery_attempts < ?
+      ORDER BY detected_at ASC LIMIT ?`, [6, 20]
+  ],
+  "recordDelivery": [
+    `UPDATE change_notices SET delivery_state = ?, delivery_detail = ?,
+        delivery_attempts = delivery_attempts + 1,
+        delivered_at = CASE WHEN ? = 'sent' THEN ? ELSE delivered_at END
+      WHERE id = ?`, ["sent", "d", "sent", "now", "n1"]
+  ],
+  "listNotices": [
+    "SELECT * FROM change_notices ORDER BY detected_at DESC LIMIT 100", []
+  ],
+  "decideNotice": [
+    "SELECT * FROM change_notices WHERE id = ?", ["n1"]
   ]
 };
 

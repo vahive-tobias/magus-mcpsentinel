@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { gzipSync } from "node:zlib";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { checkForNewReleases } from "../src/worker.js";
 import { WatchRepository } from "../src/repository.js";
 import type { Env, WatchTargetRecord } from "../src/types.js";
@@ -307,5 +309,21 @@ test("a release with a report already stored is no longer pending", async () => 
     query,
     /NOT EXISTS \( SELECT 1 FROM analysis_reports r WHERE r\.target_id = t\.id AND r\.package_version = c\.observed_version \)/,
     "pending must exclude releases that already have a report, or work is redelivered forever"
+  );
+});
+
+// Regression: deliverOutstandingNotices was written and never called. TypeScript
+// does not complain about an unused function, so it compiled clean and silently
+// retried nothing. An end-to-end run caught it; this keeps it caught.
+test("the scheduled check retries notices that were never delivered", async () => {
+  // The compiled module, not the source: this asserts the call survives into what
+  // actually ships, which is the thing that was missing.
+  const source = readFileSync(fileURLToPath(new URL("../src/worker.js", import.meta.url)), "utf8");
+  const scheduled = source.slice(source.indexOf("export async function checkForNewReleases"));
+  const body = scheduled.slice(0, scheduled.indexOf("\n}\n"));
+  assert.match(
+    body,
+    /await deliverOutstandingNotices\(env, repository\)/,
+    "a notice that failed to send is only ever retried from the scheduled check"
   );
 });

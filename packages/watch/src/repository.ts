@@ -1,4 +1,4 @@
-import type { ChangeNotice, ChangeNoticeRecord, CheckStatus, PendingAnalysis, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
+import type { ChangeNotice, ChangeNoticeRecord, CheckStatus, DeliveryState, PendingAnalysis, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
 
 export class WatchRepository {
   public constructor(private readonly db: D1Database) {}
@@ -91,7 +91,13 @@ export class WatchRepository {
       changes_json: JSON.stringify(notice.changes),
       state: "pending_review",
       detected_at: detectedAt,
-      decided_at: null
+      decided_at: null,
+      // The row is inserted undelivered on purpose. Delivery is attempted after
+      // it exists, so a notice is never lost because sending failed.
+      delivery_state: "pending",
+      delivery_attempts: 0,
+      delivered_at: null,
+      delivery_detail: null
     };
     await this.db.prepare(
       `INSERT INTO change_notices (id, target_id, baseline_report_id, candidate_report_id, severity, summary, changes_json, state, detected_at, decided_at)
@@ -101,6 +107,36 @@ export class WatchRepository {
       record.summary, record.changes_json, record.state, record.detected_at, record.decided_at
     ).run();
     return record;
+  }
+
+  /**
+   * Notices that have not reached anyone yet.
+   *
+   * A notice sitting undelivered is a failure state, so it is retried on every
+   * scheduled check rather than being written off after one attempt. The attempt
+   * cap stops a permanently misconfigured channel retrying forever; the row keeps
+   * its last error either way, so the reason stays visible.
+   */
+  async listUndeliveredNotices(maxAttempts: number, limit: number): Promise<ChangeNoticeRecord[]> {
+    const result = await this.db.prepare(
+      `SELECT * FROM change_notices
+        WHERE delivery_state IN ('pending', 'failed')
+          AND delivery_attempts < ?
+        ORDER BY detected_at ASC
+        LIMIT ?`
+    ).bind(maxAttempts, limit).all<ChangeNoticeRecord>();
+    return result.results;
+  }
+
+  async recordDelivery(noticeId: string, state: DeliveryState, detail: string): Promise<void> {
+    await this.db.prepare(
+      `UPDATE change_notices
+          SET delivery_state = ?,
+              delivery_detail = ?,
+              delivery_attempts = delivery_attempts + 1,
+              delivered_at = CASE WHEN ? = 'sent' THEN ? ELSE delivered_at END
+        WHERE id = ?`
+    ).bind(state, detail, state, new Date().toISOString(), noticeId).run();
   }
 
   async listNotices(): Promise<ChangeNoticeRecord[]> {

@@ -1,4 +1,5 @@
 import { analyzeNpmPackage, isArchiveTooLarge } from "mcp-sentinel/analyze";
+import { deliverNotice, deliveryConfigured } from "./notify.js";
 import { sha256Hex, verifyApiKey, verifyHmacSignature } from "./auth.js";
 import { assertSentinelReport } from "mcp-sentinel/report-contract";
 import { createChangeNotice } from "./policy.js";
@@ -26,6 +27,17 @@ const MAX_UNCOMPRESSED_BYTES = 64 * 1024 * 1024;
  * so the next run picks it up.
  */
 const MAX_ANALYSES_PER_RUN = 8;
+
+/**
+ * How hard to retry an undelivered notice.
+ *
+ * A notice nobody received is a failure state, so delivery is retried on every
+ * scheduled check rather than attempted once. The cap stops a permanently
+ * misconfigured channel retrying forever; the row keeps its last error either
+ * way, so a notice never quietly becomes "handled".
+ */
+const MAX_DELIVERY_ATTEMPTS = 6;
+const MAX_DELIVERIES_PER_RUN = 20;
 
 /**
  * Body size ceilings. The report endpoint is reachable before any signature has
@@ -102,7 +114,9 @@ async function ingestReport(request: Request, env: Env, repository: WatchReposit
   try {
     const outcome = await recordReport(repository, target, report);
     await resolveIfPending(repository, target, report, outcome);
-    return json(outcome, outcome.status === "already_known" ? 200 : 201);
+    if (outcome.delivery) await deliver(env, repository, outcome.delivery);
+    const { delivery: _delivery, ...body } = outcome;
+    return json(body, outcome.status === "already_known" ? 200 : 201);
   } catch (error) {
     if (error instanceof ReportIdentityError) return json({ error: error.message }, 409);
     if (error instanceof ReportTooLargeError) return json({ error: error.message }, 413);
@@ -135,10 +149,19 @@ class ReportIdentityError extends Error {}
 /** Raised when a report is too large to store, before the storage layer rejects it. */
 export class ReportTooLargeError extends Error {}
 
+interface PendingDelivery {
+  target: WatchTargetRecord;
+  notice: ChangeNoticeRecord;
+  baselineVersion: string;
+  candidateVersion: string;
+}
+
 interface IngestOutcome {
   status: "already_known" | "baseline_recorded" | "review_required";
   reportId: string;
   notice?: ChangeNoticeRecord;
+  /** Present when this ingest produced a notice that still needs sending. */
+  delivery?: PendingDelivery;
 }
 
 /**
@@ -173,7 +196,53 @@ async function recordReport(repository: WatchRepository, target: WatchTargetReco
   if (!baseline) throw new Error("Watch target references a missing baseline report.");
   const notice = createChangeNotice(parseStoredReport(baseline), report);
   const created = await repository.createNotice(target.id, baseline.id, stored.report.id, notice);
-  return { status: "review_required", reportId: stored.report.id, notice: created };
+  return {
+    status: "review_required",
+    reportId: stored.report.id,
+    notice: created,
+    delivery: { target, notice: created, baselineVersion: baseline.package_version, candidateVersion: report.subject.artifact.version }
+  };
+}
+
+/**
+ * Send a notice, and record what happened either way.
+ *
+ * Delivery is attempted only after the notice is stored, so a send failure
+ * cannot lose the notice itself — the row survives with its error, and the
+ * scheduled check retries it.
+ */
+async function deliver(env: Env, repository: WatchRepository, pending: PendingDelivery): Promise<void> {
+  const outcome = await deliverNotice(env, pending.target, pending.notice, {
+    baseline: pending.baselineVersion,
+    candidate: pending.candidateVersion
+  });
+  await repository.recordDelivery(pending.notice.id, outcome.state, outcome.detail);
+}
+
+/**
+ * Retry notices that have not reached anyone.
+ *
+ * Runs on every scheduled check. A notice whose delivery never succeeded is not
+ * a finished piece of work, and nothing else would ever pick it up.
+ */
+async function deliverOutstandingNotices(env: Env, repository: WatchRepository): Promise<void> {
+  if (!deliveryConfigured(env)) return;
+  const outstanding = await repository.listUndeliveredNotices(MAX_DELIVERY_ATTEMPTS, MAX_DELIVERIES_PER_RUN);
+  for (const notice of outstanding) {
+    const target = await repository.targetById(notice.target_id);
+    const baseline = await repository.reportById(notice.baseline_report_id);
+    const candidate = await repository.reportById(notice.candidate_report_id);
+    if (!target || !baseline || !candidate) {
+      await repository.recordDelivery(notice.id, "failed", "The notice references a target or report that no longer exists.");
+      continue;
+    }
+    await deliver(env, repository, {
+      target,
+      notice,
+      baselineVersion: baseline.package_version,
+      candidateVersion: candidate.package_version
+    });
+  }
 }
 
 /**
@@ -237,14 +306,18 @@ export async function checkForNewReleases(env: Env): Promise<void> {
         continue;
       }
       analysesRemaining -= 1;
-      await analyzeAndRecord(repository, target, metadata.version);
+      await analyzeAndRecord(env, repository, target, metadata.version);
     } catch (error) {
       await repository.recordCheck(target.id, "failed", undefined, messageOf(error));
     }
   }
+
+  // Notices that never reached anyone, including ones raised while the provider
+  // was unreachable. Nothing else would ever pick these up.
+  await deliverOutstandingNotices(env, repository);
 }
 
-async function analyzeAndRecord(repository: WatchRepository, target: WatchTargetRecord, version: string): Promise<void> {
+async function analyzeAndRecord(env: Env, repository: WatchRepository, target: WatchTargetRecord, version: string): Promise<void> {
   // Written before any analysis runs. Exceeding the platform CPU limit kills the
   // run outright, so this is the only record that would survive it — a check left
   // at `queued` with this text is the symptom, and it says so.
@@ -257,6 +330,7 @@ async function analyzeAndRecord(repository: WatchRepository, target: WatchTarget
       { maxUncompressedBytes: MAX_UNCOMPRESSED_BYTES }
     );
     const outcome = await recordReport(repository, target, analyzed.report);
+    if (outcome.delivery) await deliver(env, repository, outcome.delivery);
     await repository.completeCheck(checkId, "analyzed", describeOutcome(outcome, analyzed.entryCount));
   } catch (error) {
     // An artifact too large for this host is a limit of where the analyzer runs,

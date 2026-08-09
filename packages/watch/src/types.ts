@@ -55,6 +55,14 @@ export interface StoredReportRecord {
   received_at: string;
 }
 
+/**
+ * Whether the notice reached anyone.
+ *
+ * Deliberately separate from review state: a notice nobody received is not the
+ * same as one nobody has decided on. `pending` and `failed` are both retried.
+ */
+export type DeliveryState = "pending" | "sent" | "failed" | "not_configured";
+
 export interface ChangeNoticeRecord {
   id: string;
   target_id: string;
@@ -66,6 +74,10 @@ export interface ChangeNoticeRecord {
   state: "pending_review" | "accepted" | "frozen" | "ignored";
   detected_at: string;
   decided_at: string | null;
+  delivery_state: DeliveryState;
+  delivery_attempts: number;
+  delivered_at: string | null;
+  delivery_detail: string | null;
 }
 
 /**
@@ -105,4 +117,13 @@ export interface Env {
    * extra surface.
    */
   ANALYZER_POLL_KEY?: string;
+  /**
+   * Email delivery, via Resend. All three are required together; with any of them
+   * missing a notice is recorded as `not_configured` rather than silently unsent.
+   */
+  RESEND_API_KEY?: string;
+  NOTIFY_FROM?: string;
+  NOTIFY_TO?: string;
+  /** Overrides the Resend endpoint. Exists so delivery can be exercised against a stub. */
+  RESEND_ENDPOINT?: string;
 }

@@ -63,6 +63,9 @@ The dependency runs one way. The analyzer has no knowledge of Watch.
 - A Cron handler that checks npm `latest`, deduplicates unchanged versions, and
   analyzes new releases in the Worker itself — on a paid plan; see the plan note.
 - Baseline, accept, freeze and ignore states.
+- Email delivery of the change notice, with a per-notice delivery state and
+  retries on every scheduled check. An undelivered notice is a failure state,
+  never a clean result.
 
 ## Not implemented
 

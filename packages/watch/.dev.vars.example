@@ -12,3 +12,10 @@ ANALYZER_INGEST_SECRET=replace-with-a-long-random-secret
 # not exist. Deliberately not OPERATOR_API_KEY: an analyzer reads pending work and
 # submits reports, and should not be able to create targets or accept notices.
 # ANALYZER_POLL_KEY=replace-with-a-third-long-random-secret
+
+# Email delivery, via Resend. All three are required together; with any missing,
+# a notice is recorded as 'not_configured' rather than silently unsent.
+# NOTIFY_FROM must be on a domain verified in your Resend account.
+# RESEND_API_KEY=re_your_key
+# NOTIFY_FROM=watch@yourdomain.example
+# NOTIFY_TO=you@yourdomain.example

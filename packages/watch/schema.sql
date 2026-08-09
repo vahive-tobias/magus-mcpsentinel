@@ -1,5 +1,12 @@
 -- MAGUS MCP Watch v0.1 D1 schema
 -- Public npm package sources only. No customer credentials are stored.
+--
+-- This creates a database. It does not migrate one. `CREATE TABLE IF NOT EXISTS`
+-- is a no-op against a table that already exists, so a column added here never
+-- reaches a deployed database by re-running this file — the run fails on the
+-- first index that references the new column, which is confusing rather than
+-- informative. After the first deployment, a schema change needs an explicit
+-- ALTER TABLE run against that database, or a fresh one.
 
 CREATE TABLE IF NOT EXISTS accounts (
   id TEXT PRIMARY KEY,
@@ -44,6 +51,14 @@ CREATE TABLE IF NOT EXISTS change_notices (
   state TEXT NOT NULL DEFAULT 'pending_review' CHECK (state IN ('pending_review', 'accepted', 'frozen', 'ignored')),
   detected_at TEXT NOT NULL,
   decided_at TEXT,
+  -- Delivery is tracked separately from review, because a notice nobody received
+  -- is not the same as one nobody has decided on yet. `pending` and `failed` are
+  -- both retried; `not_configured` records that no channel was set up, so an
+  -- undelivered notice is never mistaken for a delivered one.
+  delivery_state TEXT NOT NULL DEFAULT 'pending' CHECK (delivery_state IN ('pending', 'sent', 'failed', 'not_configured')),
+  delivery_attempts INTEGER NOT NULL DEFAULT 0,
+  delivered_at TEXT,
+  delivery_detail TEXT,
   UNIQUE(target_id, candidate_report_id)
 );
 
@@ -81,3 +96,13 @@ CREATE INDEX IF NOT EXISTS idx_notices_target_detected ON change_notices(target_
 CREATE INDEX IF NOT EXISTS idx_check_runs_target_created ON check_runs(target_id, created_at DESC, id DESC);
 CREATE INDEX IF NOT EXISTS idx_check_runs_target_status_version ON check_runs(target_id, status, observed_version);
 CREATE INDEX IF NOT EXISTS idx_check_runs_created ON check_runs(created_at);
+
+-- Retrying undelivered notices runs on every scheduled check, so it must be a
+-- seek. Partial, because the rows it looks for are the rare ones: almost every
+-- notice ends up 'sent', and those are exactly the rows worth not indexing.
+CREATE INDEX IF NOT EXISTS idx_notices_undelivered ON change_notices(delivery_state, detected_at)
+  WHERE delivery_state IN ('pending', 'failed');
+
+-- The dashboard's most-recent-first listing. Without this it sorts the whole
+-- table on every load, which is cheap today and grows with every change found.
+CREATE INDEX IF NOT EXISTS idx_notices_detected ON change_notices(detected_at DESC);
