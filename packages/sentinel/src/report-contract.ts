@@ -11,9 +11,30 @@
  * import it and the diff alongside it.
  */
 
+/**
+ * The format this build *writes*.
+ *
+ * `schemas/report.schema.json` pins `format_version` to this exact value, so a
+ * freshly generated report that does not carry it fails validation. That is the
+ * intended behaviour: the schema's job is to catch the analyzer emitting
+ * something stale, not to admit every report ever written.
+ */
 export const FORMAT_VERSION = "0.2.0";
 
-/** Report formats this build can interpret. Anything else is refused, not guessed at. */
+/**
+ * The formats this build can *read*. Anything else is refused, not guessed at.
+ *
+ * Deliberately wider than `FORMAT_VERSION`, and the difference is load-bearing:
+ * a monitor holds baselines recorded by older builds, and a baseline that stops
+ * being comparable silently loses the history a change notice is measured
+ * against. Reading is permissive; writing is exact.
+ *
+ * So `validateReport` (schema, generation-time, exact) and `assertSentinelReport`
+ * (shape, read-time, permissive) disagreeing about `0.1.0` is correct. Widening
+ * the schema to match this list would let the analyzer emit an outdated format
+ * unnoticed — the failure this split exists to prevent. `format-contract.test.ts`
+ * holds the two in step.
+ */
 export const SUPPORTED_FORMATS: readonly string[] = ["0.1.0", "0.2.0"];
 
 /** Stable observation identifiers. Changing one is a format change. */
