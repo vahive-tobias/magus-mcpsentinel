@@ -209,13 +209,73 @@ treating an absent inventory as a set of removed tools.
 
 ## Deployment
 
-1. Create D1 and copy its ID into `wrangler.toml`.
-2. Apply `schema.sql` remotely with `wrangler d1 execute`.
-3. Set `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` with `wrangler secret put`.
-   Never put them in `wrangler.toml`.
-4. **On the free plan**, set `ANALYZE_IN_WORKER = "false"` (a plain var, not a
-   secret) and read the detect-only section above. Skip this on a paid plan.
-5. Deploy the Worker. The cron trigger in `wrangler.toml` starts the first check.
+Written after doing it, so it includes the parts that are not obvious.
+
+**1. Authenticate.** Being signed in to Cloudflare in a browser does *not*
+authenticate the CLI:
+
+```sh
+wrangler login && wrangler whoami
+```
+
+On Windows PowerShell, a bare `wrangler` or `npx` resolves to a `.ps1` shim that
+the default execution policy blocks. Use `.\node_modules\.bin\wrangler.cmd`
+instead — a batch file is not subject to that policy, and there is no need to
+weaken a machine security setting to work around it.
+
+**2. Create the database and keep its ID out of git.**
+
+```sh
+wrangler d1 create magus-mcp-watch
+npm run deploy:init          # copies wrangler.toml -> wrangler.private.toml
+```
+
+Put the returned `database_id` in `wrangler.private.toml`, which is gitignored.
+The committed `wrangler.toml` keeps its placeholder, and CI fails if that changes.
+A `database_id` is an identifier rather than a credential — it grants nobody
+access — but it ties a public repository to a private account.
+
+**3. Apply the schema.**
+
+```sh
+wrangler d1 execute magus-mcp-watch --remote --file=schema.sql -c wrangler.private.toml
+```
+
+`schema.sql` *creates* a database; it does not migrate one. After this first run,
+a new column needs an explicit `ALTER TABLE` — re-running the file will fail on
+the first index that references it.
+
+**4. Deploy, then set secrets.** Secrets attach to a Worker that already exists,
+so deploy first:
+
+```sh
+npm run deploy
+```
+
+Then set `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` (both long random
+values), plus `RESEND_API_KEY`, `NOTIFY_FROM` and `NOTIFY_TO` for email.
+`wrangler secret put` prompts interactively; `wrangler secret bulk file.json`
+takes them from a JSON file if a prompt is awkward — delete the file afterwards.
+
+Worker secrets are **write-only**: once set they cannot be read back, so keep
+your own copy of anything you generated. Allow a few seconds for a new secret to
+propagate; a route gated on one can 404 briefly after it is set.
+
+**5. Confirm it runs.** The cron in your config starts the first check. A row in
+`check_runs` with status `analyzed` means the whole path works:
+
+```sh
+wrangler d1 execute magus-mcp-watch --remote -c wrangler.private.toml \
+  --command "SELECT status, observed_version, detail FROM check_runs ORDER BY created_at;"
+```
+
+### Email, specifically
+
+The API key comes from **Resend**, not Cloudflare. Cloudflare only hosts the DNS
+records that verify the domain, which is what Resend's auto-configuration writes.
+`NOTIFY_FROM` must be on that verified domain, but the mailbox itself does not
+have to exist — sending does not require it. If you enabled sending only, replies
+to a notice will bounce; set a `reply_to` you actually read if that matters.
 
 Note that `wrangler` bundles `src/worker.ts` with esbuild, which strips types
 without checking them. **`npm run build` is the only typecheck** — do not deploy

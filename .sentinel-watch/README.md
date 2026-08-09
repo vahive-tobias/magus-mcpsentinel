@@ -34,6 +34,16 @@ node scripts/watch-check.mjs
 That is the whole program. A cron entry on any machine works as well as a hosted
 scheduler, and the exit code is non-zero only when nothing could be checked.
 
+## If the run analyzes but opens no pull request
+
+`gh pr create` fails with a GraphQL permissions error until you enable
+**Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to
+create and approve pull requests"**. It is off by default on every repository.
+
+The baselines are already committed and pushed to the `sentinel-watch/baseline-update`
+branch when this happens, so nothing is lost — open the pull request by hand, or
+turn the setting on and let the next run do it.
+
 ## Honest limits
 
 - **Scheduled workflows are disabled after 60 days without repository activity**
