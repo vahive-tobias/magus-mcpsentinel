@@ -3,9 +3,10 @@ OPERATOR_API_KEY=replace-with-a-local-operator-key
 # Signs reports posted to /api/reports, by an external analyzer or by hand.
 ANALYZER_INGEST_SECRET=replace-with-a-long-random-secret
 
-# Set to "false" on a Workers Free plan, where an invocation gets 10 ms of CPU and
-# analysis needs far more. Also set it when running the hybrid pipeline, so this
-# Worker detects releases and something else analyzes them.
+# Set to "false" to stop this Worker analyzing releases itself, so it only detects
+# them and something else does the work — the hybrid pipeline. Workers Free handles
+# ordinary packages fine; this is for packages above the plan's ceiling. See the
+# measured table in README.md.
 # ANALYZE_IN_WORKER=false
 
 # Enables GET /api/pending for an external analyzer. Without it that route does

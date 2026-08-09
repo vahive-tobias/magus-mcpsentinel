@@ -162,7 +162,7 @@ function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
     Artifact digest, file inventory, dependencies, scripts and entrypoints are recorded in full on every release.
     The tool inventory is recovered from source and can be incomplete; a missing tool is never reported as a removed one.
   </p>
-  <p style="margin:16px 0 0;font-size:12px;color:#98a2b3;font-family:ui-monospace,monospace">${escapeHtml(notice.id)}</p>
+  <p style="margin:16px 0 0;font-size:12px;color:#98a2b3">Notice ID <span style="font-family:ui-monospace,monospace">${escapeHtml(notice.id)}</span> &mdash; quote this to look the notice up, accept it, or freeze it.</p>
 </div>
 </body></html>`;
 }
