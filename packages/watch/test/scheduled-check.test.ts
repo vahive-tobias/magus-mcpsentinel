@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { gzipSync } from "node:zlib";
 import { checkForNewReleases } from "../src/worker.js";
+import { WatchRepository } from "../src/repository.js";
 import type { Env, WatchTargetRecord } from "../src/types.js";
 
 /**
@@ -247,4 +248,64 @@ test("work beyond the per-run budget is deferred, not dropped", async () => {
   assert.ok(attempted > 0 && deferred > 0, `expected some analyzed and some deferred, got ${attempted}/${deferred}`);
   assert.ok(checks.every((check) => check.version === "2.0.0"), "each record names the observed version");
   assert.deepEqual(watermarkWrites, []);
+});
+
+// The hybrid pipeline hands work to an analyzer running elsewhere. Only the most
+// recent check decides: a target already analyzed, or failed for another reason,
+// must not be handed out again.
+test("pending analyses are the targets whose latest check is still queued", async () => {
+  const rows = [{ target_id: "t1", package_name: "pending-mcp", observed_version: "2.0.0" }];
+  const statements: string[] = [];
+  const database = {
+    prepare(sql: string) {
+      statements.push(sql);
+      const statement = {
+        bind: () => statement,
+        first: async () => null,
+        run: async () => ({ success: true }),
+        all: async () => ({ results: rows })
+      };
+      return statement;
+    }
+  };
+
+  const repository = new WatchRepository(database as unknown as D1Database);
+  const pending = await repository.listPendingAnalyses();
+
+  assert.deepEqual(pending, [{ targetId: "t1", packageName: "pending-mcp", version: "2.0.0" }]);
+
+  const query = statements.join(" ");
+  assert.match(query, /status = 'queued'/, "only a queued check counts as pending");
+  assert.match(query, /ORDER BY created_at DESC, id DESC LIMIT 1/, "only the latest check per target is consulted");
+  assert.match(query, /t\.enabled = 1/, "a disabled target is never handed out");
+});
+
+// Regression: the first version of this query keyed only on the latest check's
+// status. A report arriving through /api/reports is not a check, so the queued
+// row stayed queued and the same release was handed to the analyzer on every
+// poll, forever. The existence of a report for that version is what decides it.
+test("a release with a report already stored is no longer pending", async () => {
+  const statements: string[] = [];
+  const database = {
+    prepare(sql: string) {
+      statements.push(sql);
+      const statement = {
+        bind: () => statement,
+        first: async () => null,
+        run: async () => ({ success: true }),
+        all: async () => ({ results: [] })
+      };
+      return statement;
+    }
+  };
+
+  const repository = new WatchRepository(database as unknown as D1Database);
+  await repository.listPendingAnalyses();
+
+  const query = statements.join(" ").replace(/\s+/g, " ");
+  assert.match(
+    query,
+    /NOT EXISTS \( SELECT 1 FROM analysis_reports r WHERE r\.target_id = t\.id AND r\.package_version = c\.observed_version \)/,
+    "pending must exclude releases that already have a report, or work is redelivered forever"
+  );
 });

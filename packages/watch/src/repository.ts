@@ -1,4 +1,4 @@
-import type { ChangeNotice, ChangeNoticeRecord, CheckStatus, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
+import type { ChangeNotice, ChangeNoticeRecord, CheckStatus, PendingAnalysis, StoredReportRecord, WatchTargetInput, WatchTargetRecord } from "./types.js";
 
 export class WatchRepository {
   public constructor(private readonly db: D1Database) {}
@@ -119,6 +119,42 @@ export class WatchRepository {
     return { ...notice, state, decided_at: now };
   }
 
+  /**
+   * Releases detected but not yet analyzed.
+   *
+   * A target qualifies when its most recent check is still `queued` — the state
+   * detect-only mode leaves behind. Reading the latest check rather than any
+   * queued check matters: a target that was later analyzed, or that failed for
+   * some other reason, must not be handed out again.
+   *
+   * The absence of a report for that exact version is what actually decides it.
+   * Without that clause the same release is handed out on every poll forever,
+   * because a report arriving through /api/reports is not itself a check. The
+   * status is the hint; the report is the fact.
+   */
+  async listPendingAnalyses(): Promise<PendingAnalysis[]> {
+    const result = await this.db.prepare(
+      `SELECT t.id AS target_id, t.package_name, c.observed_version
+         FROM watch_targets t
+         JOIN check_runs c ON c.id = (
+           SELECT id FROM check_runs WHERE target_id = t.id ORDER BY created_at DESC, id DESC LIMIT 1
+         )
+        WHERE t.enabled = 1
+          AND c.status = 'queued'
+          AND c.observed_version IS NOT NULL
+          AND NOT EXISTS (
+            SELECT 1 FROM analysis_reports r
+             WHERE r.target_id = t.id AND r.package_version = c.observed_version
+          )
+        ORDER BY c.created_at ASC`
+    ).all<{ target_id: string; package_name: string; observed_version: string }>();
+    return result.results.map((row) => ({
+      targetId: row.target_id,
+      packageName: row.package_name,
+      version: row.observed_version
+    }));
+  }
+
   async recordCheck(targetId: string, status: CheckStatus, observedVersion?: string, detail?: string): Promise<string> {
     const id = crypto.randomUUID();
     await this.db.prepare(
@@ -137,6 +173,18 @@ export class WatchRepository {
    */
   async beginCheck(targetId: string, observedVersion: string, detail: string): Promise<string> {
     return this.recordCheck(targetId, "queued", observedVersion, detail);
+  }
+
+  /**
+   * Close out a check that was waiting on a report from elsewhere.
+   *
+   * Without this the check log shows a release as `queued` forever, even though
+   * its report arrived — the state is correct but unreadable to an operator.
+   */
+  async resolvePendingCheck(targetId: string, version: string, detail: string): Promise<void> {
+    await this.db.prepare(
+      "UPDATE check_runs SET status = 'analyzed', detail = ? WHERE target_id = ? AND observed_version = ? AND status = 'queued'"
+    ).bind(detail, targetId, version).run();
   }
 
   async completeCheck(checkId: string, status: CheckStatus, detail: string): Promise<void> {

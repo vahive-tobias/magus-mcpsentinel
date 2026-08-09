@@ -190,12 +190,38 @@ jobs:
             echo "::error::.dev.vars is committed. It holds live secrets."
             exit 1
           fi
-          if grep -rnE '(OPERATOR_API_KEY|ANALYZER_INGEST_SECRET|JOB_SIGNING_SECRET)[[:space:]]*=[[:space:]]*["'\'']?[A-Za-z0-9+/_-]{16,}' \
+          if grep -rnE '(OPERATOR_API_KEY|ANALYZER_INGEST_SECRET|ANALYZER_POLL_KEY)[[:space:]]*=[[:space:]]*["'\'']?[A-Za-z0-9+/_-]{16,}' \
               --exclude='*.example' --exclude-dir=.git --exclude-dir=node_modules . 2>/dev/null; then
             echo "::error::A secret value appears to be committed."
             exit 1
           fi
           echo "OK: no committed secret values."
+
+      # This repository is public; the Cloudflare account behind it is not. An
+      # account_id or a real database_id is an identifier rather than a credential
+      # and grants nobody access, but it ties the two together, so it stays out.
+      # Deploy from a gitignored wrangler.private.toml instead.
+      - name: No Cloudflare account is identified
+        run: |
+          set -euo pipefail
+          if ! grep -q 'REPLACE_WITH_D1_DATABASE_ID' packages/watch/wrangler.toml; then
+            echo "::error::packages/watch/wrangler.toml no longer holds the database_id placeholder. Deploy from wrangler.private.toml and revert this file."
+            exit 1
+          fi
+          if grep -rn 'account_id' --include='wrangler*.toml' . 2>/dev/null; then
+            echo "::error::A Cloudflare account_id is committed."
+            exit 1
+          fi
+          if git ls-files | grep -q 'wrangler.private.toml'; then
+            echo "::error::wrangler.private.toml is committed. It holds real deployment identifiers."
+            exit 1
+          fi
+          if grep -rnE '(CLOUDFLARE|CF)_API_TOKEN[[:space:]]*[=:][[:space:]]*["'\'']?[A-Za-z0-9_-]{20,}' \
+              --exclude-dir=.git --exclude-dir=node_modules . 2>/dev/null; then
+            echo "::error::A Cloudflare API token appears to be committed."
+            exit 1
+          fi
+          echo "OK: no Cloudflare account identifiers or tokens committed."
 
   end-to-end:
     name: Real package end to end

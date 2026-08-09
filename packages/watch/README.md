@@ -177,6 +177,33 @@ watermark does not advance**, so the release is retried rather than mistaken for
 "unchanged". To cover one of those packages, analyze it with the CLI and post the
 report as below.
 
+## The hybrid: this monitor as the control plane, analysis elsewhere
+
+Analysis is the expensive part; everything else the monitor does is cheap. So the
+two halves can be split, which is worth doing at scale even on a paid plan:
+
+```text
+Cloudflare Worker                     wherever you like (GitHub Actions is free)
+  cron detects a new release  ──▶  GET  /api/pending
+  stores reports, raises notices    ◀──  POST /api/reports   (analyzes, signs, submits)
+  serves the dashboard
+```
+
+Set `ANALYZE_IN_WORKER = "false"` and `ANALYZER_POLL_KEY`, then run
+[`scripts/analyze-pending.mjs`](../../scripts/analyze-pending.mjs) anywhere Node
+runs — [`.github/workflows/analyze-pending.yml`](../../.github/workflows/analyze-pending.yml)
+does it on a schedule for nothing.
+
+What this buys, beyond cost: a runner is not confined to a Worker's 128 MB
+isolate, so the packages this monitor has to refuse are analyzed normally.
+
+`GET /api/pending` exists **only when `ANALYZER_POLL_KEY` is set** — otherwise it
+returns 404, so a deployment not using this exposes no extra surface. Its
+credential is deliberately not `OPERATOR_API_KEY`: an analyzer needs to see what
+is outstanding and submit a report, not create targets or accept notices. A
+release stops being pending once a report for that exact version is stored, so an
+analyzer that dies mid-run simply leaves the work for the next one.
+
 ### Posting a report by hand
 
 `/api/reports` remains available for exactly that:

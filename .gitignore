@@ -54,6 +54,14 @@ evidence/
 *.tgz
 *.tar.gz
 
+# ---- Deployment configuration that identifies a real Cloudflare account ----
+# The committed wrangler.toml keeps the placeholder database_id. Deploy from a
+# private copy instead, so the real identifiers never sit in a public repository.
+# They are identifiers rather than credentials, but they link this repo to an
+# account, and `npm run deploy` uses this file.
+wrangler.private.toml
+packages/*/wrangler.private.toml
+
 # ---- Secrets and local configuration ----
 # .dev.vars holds the operator API key and both HMAC secrets.
 # .npmrc can hold a registry auth token.

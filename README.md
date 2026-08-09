@@ -52,7 +52,7 @@ costs nothing**, and it is not a lesser version.
 
 | | [Free — GitHub Actions](.sentinel-watch) | [Cloudflare Worker](packages/watch) |
 | --- | --- | --- |
-| **Cost** | **£0.** Unmetered on public repositories; ~2 min per run against the 2,000 min/month a private repository gets free. | Workers Paid, ~$5/month. |
+| **Cost** | **Nothing.** Unmetered on public repositories; ~2 min per run against the 2,000 min/month a private repository gets free. | Workers Paid, ~US$5/month. |
 | Where state lives | Committed JSON files. Git is the report history. | D1. |
 | How you review | A pull request. Merge accepts the new baseline; close keeps the old one. | An operator dashboard, or the API. |
 | Package size limit | **None.** | 64 MB decompressed — 3 of 208 sampled packages exceed it. |

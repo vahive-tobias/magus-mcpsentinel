@@ -1,10 +1,14 @@
 # Generate long, unique values. Never commit the real .dev.vars file.
 OPERATOR_API_KEY=replace-with-a-local-operator-key
-# Signs reports posted to /api/reports. The scheduled check runs the analyzer in
-# this Worker and needs no secret; this covers a report submitted separately.
+# Signs reports posted to /api/reports, by an external analyzer or by hand.
 ANALYZER_INGEST_SECRET=replace-with-a-long-random-secret
 
 # Set to "false" on a Workers Free plan, where an invocation gets 10 ms of CPU and
-# analysis needs far more. Watch then detects releases and records them as awaiting
-# a report posted to /api/reports. See README.md, "Which Cloudflare plan you need".
+# analysis needs far more. Also set it when running the hybrid pipeline, so this
+# Worker detects releases and something else analyzes them.
 # ANALYZE_IN_WORKER=false
+
+# Enables GET /api/pending for an external analyzer. Without it that route does
+# not exist. Deliberately not OPERATOR_API_KEY: an analyzer reads pending work and
+# submits reports, and should not be able to create targets or accept notices.
+# ANALYZER_POLL_KEY=replace-with-a-third-long-random-secret

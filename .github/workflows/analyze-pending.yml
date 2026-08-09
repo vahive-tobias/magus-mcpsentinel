@@ -1,0 +1,55 @@
+
+# The compute half of the hybrid pipeline.
+#
+# The Cloudflare monitor detects releases and holds the state; this does the
+# analysis, free, and posts the reports back. Enable it only if that monitor is
+# deployed with ANALYZE_IN_WORKER=false and ANALYZER_POLL_KEY set — otherwise
+# there is nothing to poll, and the Worker analyzes its own work.
+#
+# Required repository secrets:
+#   WATCH_URL                the deployed Worker's origin, e.g. https://magus-mcp-watch.example.workers.dev
+#   ANALYZER_POLL_KEY        matches the Worker's ANALYZER_POLL_KEY; reads pending work
+#   ANALYZER_INGEST_SECRET   matches the Worker's; signs the reports posted back
+name: Analyze pending releases
+
+on:
+  schedule:
+    # Offset from the monitor's own cron so detection has happened first, and off
+    # the hour because GitHub drops queued scheduled jobs under load.
+    - cron: "43 */6 * * *"
+  workflow_dispatch:
+
+# This job reads from and writes to an external service. It needs nothing in the
+# repository itself.
+permissions:
+  contents: read
+
+concurrency:
+  group: analyze-pending
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    name: Analyze what the monitor detected
+    runs-on: ubuntu-latest
+    # Without a configured monitor there is nothing to poll, and the secret would
+    # be empty rather than wrong. Skip rather than fail a fork's scheduled run.
+    if: vars.HYBRID_PIPELINE_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build --workspace mcp-sentinel
+
+      - name: Analyze and submit
+        env:
+          WATCH_URL: ${{ secrets.WATCH_URL }}
+          ANALYZER_POLL_KEY: ${{ secrets.ANALYZER_POLL_KEY }}
+          ANALYZER_INGEST_SECRET: ${{ secrets.ANALYZER_INGEST_SECRET }}
+        run: node scripts/analyze-pending.mjs

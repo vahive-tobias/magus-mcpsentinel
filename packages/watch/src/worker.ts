@@ -61,6 +61,7 @@ export default {
       if (request.method === "GET" && url.pathname === "/") return htmlResponse();
       if (request.method === "GET" && url.pathname === "/health") return json({ ok: true, service: "magus-mcp-watch" });
       if (url.pathname === "/api/reports" && request.method === "POST") return ingestReport(request, env, repository);
+      if (url.pathname === "/api/pending" && request.method === "GET") return listPending(request, env, repository);
       if (!await verifyApiKey(request, env.OPERATOR_API_KEY)) return json({ error: "operator authentication required" }, 401);
       if (url.pathname === "/api/targets" && request.method === "GET") return json({ targets: await repository.listTargets() });
       if (url.pathname === "/api/notices" && request.method === "GET") return json({ notices: await repository.listNotices() });
@@ -100,12 +101,32 @@ async function ingestReport(request: Request, env: Env, repository: WatchReposit
   const target = await requiredTarget(repository, requiredString(input, "targetId"));
   try {
     const outcome = await recordReport(repository, target, report);
+    await resolveIfPending(repository, target, report, outcome);
     return json(outcome, outcome.status === "already_known" ? 200 : 201);
   } catch (error) {
     if (error instanceof ReportIdentityError) return json({ error: error.message }, 409);
     if (error instanceof ReportTooLargeError) return json({ error: error.message }, 413);
     throw error;
   }
+}
+
+/**
+ * Work for an external analyzer: releases detected but not yet analyzed.
+ *
+ * Exists only when `ANALYZER_POLL_KEY` is configured. A deployment that analyzes
+ * in the Worker, or that submits reports by hand, never serves this route at all
+ * rather than serving an authenticated-but-useless one.
+ *
+ * It is read-only, and its credential is not the operator key: an analyzer needs
+ * to see what is outstanding and post a report, not create targets or accept
+ * notices on someone's behalf.
+ */
+async function listPending(request: Request, env: Env, repository: WatchRepository): Promise<Response> {
+  if (!env.ANALYZER_POLL_KEY) return json({ error: "not found" }, 404);
+  if (!await verifyApiKey(request, env.ANALYZER_POLL_KEY)) {
+    return json({ error: "analyzer authentication required" }, 401);
+  }
+  return json({ pending: await repository.listPendingAnalyses() });
 }
 
 /** Raised when a report describes a different package than the target it is filed against. */
@@ -153,6 +174,20 @@ async function recordReport(repository: WatchRepository, target: WatchTargetReco
   const notice = createChangeNotice(parseStoredReport(baseline), report);
   const created = await repository.createNotice(target.id, baseline.id, stored.report.id, notice);
   return { status: "review_required", reportId: stored.report.id, notice: created };
+}
+
+/**
+ * A report arriving for a release that was waiting on one closes that check.
+ *
+ * Whether it came from an external analyzer or from an operator running the CLI
+ * makes no difference: the release is no longer outstanding.
+ */
+async function resolveIfPending(repository: WatchRepository, target: WatchTargetRecord, report: SentinelReport, outcome: IngestOutcome): Promise<void> {
+  await repository.resolvePendingCheck(
+    target.id,
+    report.subject.artifact.version,
+    `Report received from an external analyzer (${outcome.status}).`
+  );
 }
 
 async function decideNotice(request: Request, repository: WatchRepository, noticeId: string | undefined): Promise<Response> {

@@ -77,6 +77,13 @@ export interface ChangeNoticeRecord {
  */
 export type CheckStatus = "queued" | "analyzed" | "skipped" | "failed";
 
+/** A release the monitor detected but has not analyzed. */
+export interface PendingAnalysis {
+  targetId: string;
+  packageName: string;
+  version: string;
+}
+
 export interface Env {
   DB: D1Database;
   OPERATOR_API_KEY: string;
@@ -89,4 +96,13 @@ export interface Env {
    * Defaults to enabled.
    */
   ANALYZE_IN_WORKER?: string;
+  /**
+   * Credential for an external analyzer to read pending work from /api/pending.
+   *
+   * Distinct from OPERATOR_API_KEY, which can also create targets and decide
+   * notices — a runner needs neither. When unset the endpoint does not exist at
+   * all, so a deployment that is not running a external analyzer exposes no
+   * extra surface.
+   */
+  ANALYZER_POLL_KEY?: string;
 }

@@ -14,7 +14,9 @@
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test dist/test/*.test.js",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "//deploy": "Deploys from wrangler.private.toml, which is gitignored and holds the real D1 database_id. The committed wrangler.toml keeps a placeholder so this public repository never identifies a Cloudflare account.",
+    "deploy": "wrangler deploy -c wrangler.private.toml",
+    "deploy:init": "node -e \"const fs=require('fs');if(fs.existsSync('wrangler.private.toml')){console.log('wrangler.private.toml already exists.');process.exit(0)}fs.copyFileSync('wrangler.toml','wrangler.private.toml');console.log('Created wrangler.private.toml. Put your real database_id in it; it is gitignored.')\""
   },
   "dependencies": {
     "mcp-sentinel": "*"
