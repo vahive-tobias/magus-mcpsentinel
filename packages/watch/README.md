@@ -61,7 +61,7 @@ The dependency runs one way. The analyzer has no knowledge of Watch.
 - HMAC-authenticated report ingestion with a bounded request body.
 - Package identity and report-shape validation.
 - A Cron handler that checks npm `latest`, deduplicates unchanged versions, and
-  analyzes new releases in the Worker itself — on a paid plan; see the plan note.
+  analyzes new releases in the Worker itself.
 - Baseline, accept, freeze and ignore states.
 - Email delivery of the change notice, with a per-notice delivery state and
   retries on every scheduled check. An undelivered notice is a failure state,
@@ -69,7 +69,7 @@ The dependency runs one way. The analyzer has no knowledge of Watch.
 
 ## Not implemented
 
-- Email, webhook and GitHub Issue delivery.
+- Webhook and GitHub Issue delivery. Email works; no other channel exists.
 - An R2 evidence store and retention jobs.
 
 Multi-tenancy, customer accounts and billing are **not planned**. This is a
@@ -107,61 +107,46 @@ the page's memory for the browser session.
 
 ## Which Cloudflare plan you need
 
-**Watch requires a paid Cloudflare Workers plan (~$5/month) to analyze packages
-itself.** That is a real constraint on an otherwise free tool, so here it is in
-full rather than in a footnote.
+**Workers Free analyzes ordinary MCP servers.** Measured on a real free-plan
+deployment against the live registry, not inferred:
 
-> **If you do not want to pay anything, you do not have to.**
-> [`.sentinel-watch`](../../.sentinel-watch) runs the same analyzer and the same
-> severity policy on GitHub Actions, free, with baselines committed to a repository
-> and review as a pull request. It has no package-size limit, so it covers slightly
-> more than this does. Choose that one unless you specifically want an always-on
-> HTTP endpoint, a dashboard, or a database you query directly.
+| package | compressed | unpacked | entries | result |
+| --- | ---: | ---: | ---: | --- |
+| `@modelcontextprotocol/server-filesystem` | 18 KB | 69 KB | 7 | analyzed |
+| `@upstash/context7-mcp` | 28 KB | 95 KB | 12 | analyzed |
+| `@salesforce/mcp` | 186 KB | 0.8 MB | 36 | analyzed |
+| `@notionhq/notion-mcp-server` | 1.7 MB | 2.9 MB | 51 | analyzed |
+| `@sentry/mcp-server` | 2.3 MB | 11 MB | 160 | analyzed |
+| `agentic-flow` | 3.4 MB | 13.7 MB | 1,669 | **run cut short** |
 
-| | Workers Free | Workers Paid |
-| --- | --- | --- |
-| Cron polling, D1, notices, dashboard | Yes | Yes |
-| Analysis inside the Worker | **No** | Yes |
+The ceiling sits somewhere above 11 MB unpacked. File count predicts it better
+than size: the package that failed is only marginally bigger than the one before
+it, but carries ten times the entries.
 
-The reason is a single limit: **a Workers Free invocation gets 10 ms of CPU**, for
-scheduled triggers as well as requests. Analysis costs far more. Measured in
-workerd against real published packages, building a report alone — before schema
-validation, hashing, or any D1 work — costs:
+> **This section previously said the opposite.** It claimed a free plan could not
+> analyze anything, because a Workers Free invocation gets 10 ms of CPU and the
+> smallest package measured 7-8 ms. The measurements were real but the comparison
+> was not: they were **wall-clock times from `wrangler dev`, held against a
+> CPU-time limit**. Those are different quantities, and dev-mode wall time counts
+> work production does not bill. The claim was never run against a deployed
+> free-tier Worker until it was, and it failed immediately.
 
-| package | compressed | cold | warm |
-| --- | ---: | ---: | ---: |
-| `@upstash/context7-mcp` | 28 KB | 34 ms | 7 ms |
-| `@modelcontextprotocol/server-filesystem` | 18 KB | 65 ms | 8 ms |
-| `@salesforce/mcp` | 186 KB | 19 ms | 12 ms |
-| `@notionhq/notion-mcp-server` | 1.7 MB | 373 ms | 221 ms |
+A paid plan raises the ceiling to this deployment's own 64 MB decompressed limit,
+which exists because an isolate has 128 MB of memory. Of 208 real MCP server
+packages sampled, 3 exceed that.
 
-Even the smallest packages sit at or above the whole free-plan budget while warm,
-and a scheduled trigger cannot count on a warm isolate. The median package in a
-208-package sample costs roughly 203 ms. This is not close.
+### When a package is too big for the plan
 
-Everything else Watch does fits the free plan comfortably: cron triggers are
-available on it (5 per account), and D1's free tier allows 5 million row reads and
-100,000 row writes per day against a watch list of tens of packages.
+The run is cut short mid-analysis. Watch writes its check row *before* analysis
+starts precisely so this stays visible: the check is left at `queued` saying the
+run did not finish, and **the version watermark does not advance**, so the release
+is retried rather than counted as unchanged. Verified on a real free-tier
+deployment, not just in tests.
 
-### Running on the free plan: detect-only mode
-
-Set `ANALYZE_IN_WORKER = "false"`. Watch then polls, detects a new release, and
-records it as awaiting analysis without downloading the artifact. You produce the
-report yourself and post it to `/api/reports`:
-
-```sh
-sentinel analyze npm "@scope/package@1.2.3" --evidence-dir ./evidence --output report.json
-```
-
-Run that locally or in CI — both free — then submit it as below. You still get the
-diff and the change notice; you supply the analysis step. The version watermark
-does not advance until a report arrives, so a detected release stays outstanding
-rather than being quietly forgotten.
-
-If you leave analysis enabled on a free plan, the run is killed mid-analysis. Watch
-writes its check row *before* analysis starts precisely so that this is visible:
-you will find checks left at `queued` whose text names the 10 ms CPU limit. It
-fails loudly, not silently.
+To cover those packages without paying, set `ANALYZE_IN_WORKER = "false"` and let
+something else do the analysis — either the free
+[GitHub Actions monitor](../../.sentinel-watch) or the paired runner described
+below. Neither is constrained by a Worker's limits.
 
 ## Where the analyzer runs
 

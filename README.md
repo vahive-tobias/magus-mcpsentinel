@@ -40,7 +40,7 @@ Sentinel turns a versioned artifact into a comparable evidence record.
 | Package | What it is | What it needs |
 | --- | --- | --- |
 | [`packages/sentinel`](packages/sentinel) | The analyzer and `sentinel` CLI. Produces evidence reports and compares them. | Node.js 22+. Nothing else — no account, no service, no hosting. |
-| [`packages/watch`](packages/watch) | A self-hosted monitor on Cloudflare Workers and D1. Polls packages you choose, analyzes new releases, and raises a reviewable change notice. Single-tenant: you deploy it, you hold the data. | Workers Paid, ~$5/month. |
+| [`packages/watch`](packages/watch) | A self-hosted monitor on Cloudflare Workers and D1. Polls packages you choose, analyzes new releases, and raises a reviewable change notice. Single-tenant: you deploy it, you hold the data. | Workers Free handles ordinary packages; ~US$5/month lifts the ceiling. |
 | [`.sentinel-watch`](.sentinel-watch) | The same monitoring, run by GitHub Actions against committed baselines. | A GitHub repository. **No cost.** |
 
 The dependency runs one way. The analyzer does not know the monitor exists.
@@ -52,10 +52,10 @@ costs nothing**, and it is not a lesser version.
 
 | | [Free — GitHub Actions](.sentinel-watch) | [Cloudflare Worker](packages/watch) |
 | --- | --- | --- |
-| **Cost** | **Nothing.** Unmetered on public repositories; ~2 min per run against the 2,000 min/month a private repository gets free. | Workers Paid, ~US$5/month. |
+| **Cost** | **Nothing.** Unmetered on public repositories; ~2 min per run against the 2,000 min/month a private repository gets free. | Runs on Workers Free for ordinary packages; ~US$5/month lifts the ceiling. |
 | Where state lives | Committed JSON files. Git is the report history. | D1. |
 | How you review | A pull request. Merge accepts the new baseline; close keeps the old one. | An operator dashboard, or the API. |
-| Package size limit | **None.** | 64 MB decompressed — 3 of 208 sampled packages exceed it. |
+| Package size limit | **None.** | 64 MB decompressed on a paid plan; around 11 MB unpacked on the free plan. |
 | Scheduling | GitHub cron. Can be delayed under load, and pauses after 60 days of repository inactivity. | Cloudflare cron. |
 
 The free option is not a teaser. It has *better* package coverage than the paid
@@ -70,19 +70,37 @@ echo '{ "packages": ["@modelcontextprotocol/server-filesystem"] }' > .sentinel-w
 See [`.sentinel-watch/README.md`](.sentinel-watch) for the honest limits of the
 free path, which are about scheduling, not capability.
 
-### Why the Cloudflare Worker needs a paid plan
+### What the Cloudflare Worker does on a free plan
 
-Stated plainly rather than buried, because it is the one place this project costs
-money. A Workers **Free** invocation gets **10 ms of CPU** — cron triggers
-included — and analysis costs far more. Measured in the real runtime, building a
-report for the *smallest* real MCP package takes 7–8 ms warm and 34–65 ms cold,
-before schema validation, hashing or any database work; the median package costs
-about 203 ms. No configuration fits that into 10 ms.
+**More than expected.** Measured on a real Workers Free deployment, analyzing real
+packages from the live registry:
 
-Everything else Watch does runs fine on the free plan, so a Workers Free
-deployment can set `ANALYZE_IN_WORKER = "false"` and run detect-only, posting
-reports to `/api/reports` itself. If you leave analysis on, checks are recorded as
-`queued` with text naming the CPU limit — it fails loudly, not silently.
+| package | compressed | unpacked | entries | result |
+| --- | ---: | ---: | ---: | --- |
+| `@modelcontextprotocol/server-filesystem` | 18 KB | 69 KB | 7 | analyzed |
+| `@salesforce/mcp` | 186 KB | 0.8 MB | 36 | analyzed |
+| `@notionhq/notion-mcp-server` | 1.7 MB | 2.9 MB | 51 | analyzed |
+| `@sentry/mcp-server` | 2.3 MB | 11 MB | 160 | analyzed |
+| `agentic-flow` | 3.4 MB | 13.7 MB | 1,669 | **run cut short** |
+
+So a free plan analyzes ordinary MCP servers without trouble, and stops somewhere
+above 11 MB unpacked. Entry count tracks the limit better than size does: the
+package that failed is barely larger than the one before it but has ten times the
+files.
+
+An earlier version of this section claimed a free plan could not analyze anything,
+on the grounds that a Workers Free invocation gets 10 ms of CPU while the smallest
+package needed 7–8 ms. That was wrong. The mistake was measuring **wall-clock time
+in `wrangler dev` and comparing it against a CPU-time limit** — different
+quantities, and dev-mode wall time includes work production does not bill. The
+figures were real; the conclusion drawn from them was never tested against a
+deployed free-tier Worker until it was, and it did not survive.
+
+A package too big for the plan is recorded as a `queued` check saying the run did
+not finish, and **the version watermark does not advance**, so it is retried rather
+than counted as unchanged. To cover those packages on a free plan, set
+`ANALYZE_IN_WORKER = "false"` and let the [free analyzer](.sentinel-watch) or a
+[paired runner](packages/watch) do the work — neither is constrained this way.
 
 ## Quick start
 

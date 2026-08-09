@@ -321,8 +321,10 @@ async function analyzeAndRecord(env: Env, repository: WatchRepository, target: W
   // Written before any analysis runs. Exceeding the platform CPU limit kills the
   // run outright, so this is the only record that would survive it — a check left
   // at `queued` with this text is the symptom, and it says so.
+  // States the observation, not a cause. A run can be cut short for more than one
+  // reason, and naming the wrong one sends the reader somewhere useless.
   const checkId = await repository.beginCheck(target.id, version,
-    `Analyzing ${target.package_name}@${version}. A check still showing this text did not finish: on Workers Free the 10 ms CPU limit stops analysis before it completes.`);
+    `Analyzing ${target.package_name}@${version}. A check still showing this text did not finish — the run was cut short before analysis completed, most often because the artifact was too large for the plan this Worker is on.`);
 
   try {
     const analyzed = await analyzeNpmPackage(
