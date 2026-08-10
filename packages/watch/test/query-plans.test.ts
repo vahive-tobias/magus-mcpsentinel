@@ -144,13 +144,93 @@ test("finding a target's latest check is a seek, not a scan", () => {
   );
 });
 
+interface StringLiteral {
+  value: string;
+  start: number;
+  end: number;
+}
+
+interface ScannedSource {
+  literals: StringLiteral[];
+  /** The source with comment text blanked out, offsets preserved. */
+  withoutComments: string;
+}
+
+/**
+ * Every string literal in a TypeScript source, in all three quote forms.
+ *
+ * This replaced a regex that matched only double-quoted strings. `recordDelivery`
+ * writes its UPDATE as a template literal, so that statement was never checked —
+ * and a `DELETE FROM check_runs` added in backticks passed the suite green.
+ * Offsets are kept because the coverage assertion below needs them.
+ */
+function scan(source: string): ScannedSource {
+  const literals: StringLiteral[] = [];
+  const withoutComments = source.split("");
+  let index = 0;
+  const blank = (from: number, to: number): void => {
+    for (let at = from; at < to; at += 1) if (withoutComments[at] !== "\n") withoutComments[at] = " ";
+  };
+  while (index < source.length) {
+    const character = source[index]!;
+    if (character === "/" && source[index + 1] === "/") {
+      const end = source.indexOf("\n", index);
+      const stop = end < 0 ? source.length : end;
+      blank(index, stop);
+      index = stop;
+      continue;
+    }
+    if (character === "/" && source[index + 1] === "*") {
+      const end = source.indexOf("*/", index + 2);
+      const stop = end < 0 ? source.length : end + 2;
+      blank(index, stop);
+      index = stop;
+      continue;
+    }
+    if (character === '"' || character === "'" || character === "`") {
+      const start = index;
+      index += 1;
+      let value = "";
+      while (index < source.length && source[index] !== character) {
+        if (source[index] === "\\") {
+          value += source[index + 1] ?? "";
+          index += 2;
+          continue;
+        }
+        value += source[index];
+        index += 1;
+      }
+      index += 1;
+      literals.push({ value, start, end: index });
+      continue;
+    }
+    index += 1;
+  }
+  return { literals, withoutComments: withoutComments.join("") };
+}
+
 // An UPDATE or DELETE without a WHERE clause rewrites every row. That has emptied
 // real accounts' budgets in seconds, and it is worth failing the build over.
 test("no statement in the repository writes without a WHERE clause", () => {
   const source = readFileSync(packageFile("src/repository.ts"), "utf8");
-  const writes = source.match(/"(UPDATE|DELETE)[^"]*"/g) ?? [];
+  const { literals, withoutComments } = scan(source);
+
+  const writes = literals.filter((literal) => /^\s*(UPDATE|DELETE)\b/i.test(literal.value));
   assert.ok(writes.length > 0, "expected to find write statements to check");
-  for (const statement of writes) {
-    assert.match(statement, /WHERE/i, `unbounded write: ${statement}`);
+  for (const write of writes) {
+    assert.match(write.value, /WHERE/i, `unbounded write: ${write.value}`);
+  }
+
+  // The assertion above is only worth as much as the scan feeding it, and a guard
+  // that checks a subset reports the same green as one that checks everything.
+  // So: every write keyword in the file must sit inside a literal that was read.
+  // One that does not means SQL arrived by a route this test cannot see.
+  for (const match of withoutComments.matchAll(/\b(UPDATE|DELETE)\b/gi)) {
+    const offset = match.index ?? -1;
+    const covered = literals.some((literal) => offset > literal.start && offset < literal.end);
+    assert.ok(
+      covered,
+      `a ${match[0]} at offset ${offset} is outside every string literal this test read, so it was never checked`
+    );
   }
 });
