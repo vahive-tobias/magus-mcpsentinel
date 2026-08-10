@@ -19,6 +19,7 @@ docs/FIXTURE_PLAN.md
 docs/Project Sentinel.md
 docs/SECURITY_WATCH_NOTES.md
 docs/PLAN_*.md
+docs/HANDOVER.md
 
 # Published deliberately, despite living under docs/.
 !docs/change-reports/
