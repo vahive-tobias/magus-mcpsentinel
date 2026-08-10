@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { FORMAT_VERSION, OBSERVATION_IDS, OBSERVATION_KINDS } from "mcp-sentinel/report-contract";
 import type { ReportObservation, SentinelReport } from "mcp-sentinel/report-contract";
-import { createChangeNotice } from "../src/policy.js";
+import { CLASSIFIED_COVERAGE_LOSS_REASONS, createChangeNotice } from "../src/policy.js";
 
 const HASH_A = "a".repeat(64);
 const HASH_B = "b".repeat(64);
@@ -21,6 +24,7 @@ interface Options {
   indicators?: string[];
   tools?: ToolFixture[];
   toolsComplete?: boolean;
+  toolsIncompleteness?: string[];
   metadata?: Record<string, unknown>;
 }
 
@@ -53,7 +57,7 @@ function report(options: Options): SentinelReport {
       id: OBSERVATION_IDS.staticToolInventory,
       kind: OBSERVATION_KINDS.protocolInventory,
       coverage: "inferred",
-      data: { complete: options.toolsComplete ?? true, incompleteness: [], tools: options.tools }
+      data: { complete: options.toolsComplete ?? true, incompleteness: options.toolsIncompleteness ?? [], tools: options.tools }
     });
   }
 
@@ -181,6 +185,69 @@ test("every change carries a severity", () => {
   assert.ok(notice.changes.length >= 5);
   assert.equal(notice.changes.every((c) => ["info", "review", "high"].includes(c.severity)), true);
   assert.equal(notice.severity, "high");
+});
+
+const baselineForCoverage = report({ version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: true });
+
+function coverageSeverity(reasons: string[]): string | undefined {
+  return createChangeNotice(
+    baselineForCoverage,
+    report({ version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }], toolsComplete: false, toolsIncompleteness: reasons })
+  ).changes.find((c) => c.kind === "coverage_regressed")?.severity;
+}
+
+// A surface that stopped being declared readably is the package moving; a shape
+// our extractor cannot reach is us. Only the first ranks as capability-level.
+test("coverage lost by the package is high; coverage lost to our own reach is review", () => {
+  for (const reason of [
+    "source_file_failed_to_parse",
+    "source_file_exceeded_parse_size_limit",
+    "registration_name_not_static",
+    "list_tools_handler_not_static",
+    "list_tools_array_not_static",
+    "list_tools_array_uses_spread",
+    "list_tools_entry_not_static",
+    "list_tools_entry_name_not_static"
+  ]) {
+    assert.equal(coverageSeverity([reason]), "high", `${reason} should rank high`);
+  }
+
+  for (const reason of [
+    "typescript_source_not_parsed",
+    "no_recognized_registration_pattern",
+    "tools_inferred_from_definitions_only"
+  ]) {
+    assert.equal(coverageSeverity([reason]), "review", `${reason} should rank review`);
+  }
+});
+
+test("the strongest reason decides, and an unrecorded one is still not benign", () => {
+  assert.equal(coverageSeverity(["no_recognized_registration_pattern", "source_file_failed_to_parse"]), "high");
+  assert.equal(coverageSeverity([]), "review");
+  assert.equal(coverageSeverity(["a_reason_from_a_newer_analyzer"]), "review");
+});
+
+/**
+ * The classification must cover every reason the analyzer can actually emit.
+ *
+ * Written by hand first against the five reasons visible in the extractor's
+ * top-level function, which missed seven added deeper in the same file — every one
+ * of them a tool list that became computed rather than declared, which is the shape
+ * this finding exists to catch. They took the fallback and ranked as `review`.
+ * Reading them out of the source is what makes that a failure rather than a guess.
+ */
+test("every reason the extractor can emit is classified", () => {
+  let directory = dirname(fileURLToPath(import.meta.url));
+  while (!existsSync(join(directory, "package.json"))) directory = dirname(directory);
+  const extractor = join(directory, "..", "sentinel", "src", "tool-surface.ts");
+  assert.ok(existsSync(extractor), `expected to find the extractor at ${extractor}`);
+
+  const source = readFileSync(extractor, "utf8");
+  const emitted = [...source.matchAll(/incompleteness\.add\("([a-z_]+)"\)/g)].map((match) => match[1]!);
+  assert.ok(emitted.length > 0, "expected to find reason codes in the extractor");
+
+  const unclassified = [...new Set(emitted)].filter((reason) => !CLASSIFIED_COVERAGE_LOSS_REASONS.includes(reason));
+  assert.deepEqual(unclassified, [], `unclassified coverage-loss reasons: ${unclassified.join(", ")}`);
 });
 
 test("refuses to compare different package identities", () => {

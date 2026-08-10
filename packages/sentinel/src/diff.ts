@@ -50,6 +50,7 @@ export type ChangeKind =
   | "skill_changed"
   | "plugin_manifest_changed"
   | "mcp_declaration_changed"
+  | "coverage_regressed"
   | "comparison_limited"
   | "finding_added"
   | "finding_removed";
@@ -81,6 +82,14 @@ export interface ToolRecord {
 export interface ToolInventory {
   tools: Map<string, ToolRecord>;
   complete: boolean;
+  /**
+   * Why extraction fell short, in the extractor's own reason codes.
+   *
+   * Empty when extraction was complete, and also when a report predates the field
+   * or omits it: it is written by the analyzer but not required by the schema, so
+   * absence means "not stated" rather than "nothing went wrong".
+   */
+  incompleteness: string[];
 }
 
 export interface Snapshot {
@@ -252,6 +261,21 @@ function compareTools(baseline: ToolInventory | undefined, candidate: ToolInvent
         detail: { tool: name }
       });
     }
+  }
+
+  // A surface that could be read and now cannot is itself the signal: minification,
+  // bundling and a move to dynamic registration all produce it, and all three are
+  // what precedes a rug-pull. The `comparison_limited` below reports that a
+  // conclusion was withheld, which is true whenever this release is incomplete; a
+  // surface that was never complete has not moved and is not reported here.
+  if (baseline.complete && !candidate.complete) {
+    changes.push({
+      kind: "coverage_regressed",
+      summary: candidate.incompleteness.length > 0
+        ? `Tool extraction was complete for the baseline and is incomplete for this release: ${candidate.incompleteness.join(", ")}.`
+        : "Tool extraction was complete for the baseline and is incomplete for this release; no reason was recorded.",
+      detail: { reasons: candidate.incompleteness }
+    });
   }
 
   if (!candidate.complete) {
@@ -470,7 +494,10 @@ function inventoryFrom(observations: ReportObservation[]): ToolInventory | undef
     }
     tools.set(tool.name, tool);
   }
-  return { tools, complete: record.data.complete === true };
+  const incompleteness = Array.isArray(record.data.incompleteness)
+    ? record.data.incompleteness.filter(isString)
+    : [];
+  return { tools, complete: record.data.complete === true, incompleteness };
 }
 
 function metadataFrom(observations: ReportObservation[]): JsonObject {

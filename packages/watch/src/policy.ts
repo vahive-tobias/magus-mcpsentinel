@@ -15,6 +15,40 @@ import type { ChangeNotice, Severity, WatchChange } from "./types.js";
 const HIGH_RISK_INDICATORS = new Set(["process-spawn-api", "network-api"]);
 
 /**
+ * How much a lost tool surface matters, by the extractor's reason for losing it.
+ *
+ * The line is whose property the loss is. `high` means the package stopped
+ * declaring its surface in a form anything can read — either the source itself
+ * became unreadable, or the tool list moved from a literal to something computed
+ * at runtime. Those are obfuscation, minification and dynamic registration, which
+ * are the three shapes a rug-pull arrives in.
+ *
+ * `review` means our extractor ran out of reach: it does not parse TypeScript, it
+ * recognises a fixed set of registration shapes, and it falls back to definition
+ * literals with weaker provenance. A refactor produces those as readily as
+ * concealment does, and the package may not have moved at all.
+ *
+ * Every reason the analyzer can emit must appear here. `policy.test.ts` reads them
+ * out of the extractor and fails on any that does not — an unclassified reason
+ * would otherwise take the fallback below and rank as though it were understood.
+ */
+const COVERAGE_LOSS_SEVERITY: Record<string, Severity> = {
+  source_file_failed_to_parse: "high",
+  source_file_exceeded_parse_size_limit: "high",
+  registration_name_not_static: "high",
+  list_tools_handler_not_static: "high",
+  list_tools_array_not_static: "high",
+  list_tools_array_uses_spread: "high",
+  list_tools_entry_not_static: "high",
+  list_tools_entry_name_not_static: "high",
+  typescript_source_not_parsed: "review",
+  no_recognized_registration_pattern: "review",
+  tools_inferred_from_definitions_only: "review"
+};
+
+export const CLASSIFIED_COVERAGE_LOSS_REASONS = Object.keys(COVERAGE_LOSS_SEVERITY);
+
+/**
  * Default severity per change kind.
  *
  * `high`   — the effective capability handed to an agent has grown, or code now
@@ -52,7 +86,10 @@ const SEVERITY: Record<ChangeKind, Severity> = {
   // every notice and teach the reader to ignore all of them.
   file_content_changed: "info",
   finding_removed: "info",
-  comparison_limited: "info"
+  comparison_limited: "info",
+  // Raised by reason in `severityFor`. A package that got harder to read is worth
+  // more than context, and an unrecorded reason must not read as the benign case.
+  coverage_regressed: "review"
 };
 
 export function createChangeNotice(baselineReport: SentinelReport, candidateReport: SentinelReport): ChangeNotice {
@@ -89,6 +126,17 @@ function severityFor(change: ReportChange): Severity {
 
   if (change.kind === "finding_added") {
     return detail.severity === "high" || detail.severity === "critical" ? "high" : "review";
+  }
+
+  if (change.kind === "coverage_regressed") {
+    // Several reasons can arrive together and the strongest decides. A reason this
+    // policy does not know is a report from a newer analyzer than this monitor:
+    // it still lost coverage, so it ranks as a change to read rather than as noise.
+    const reasons = Array.isArray(detail.reasons) ? detail.reasons : [];
+    const severities = reasons
+      .filter((reason): reason is string => typeof reason === "string")
+      .map((reason) => COVERAGE_LOSS_SEVERITY[reason] ?? "review");
+    return severities.includes("high") ? "high" : "review";
   }
 
   // A declared-surface file that appeared hands the agent something it did not

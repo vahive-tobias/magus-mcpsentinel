@@ -20,6 +20,7 @@ interface Options {
   indicators?: string[];
   tools?: ToolFixture[];
   toolsComplete?: boolean;
+  toolsIncompleteness?: string[];
   metadata?: Record<string, unknown>;
   files?: string[];
 }
@@ -61,7 +62,7 @@ function report(options: Options): SentinelReport {
       id: OBSERVATION_IDS.staticToolInventory,
       kind: OBSERVATION_KINDS.protocolInventory,
       coverage: "inferred",
-      data: { complete: options.toolsComplete ?? true, incompleteness: [], tools: options.tools }
+      data: { complete: options.toolsComplete ?? true, incompleteness: options.toolsIncompleteness ?? [], tools: options.tools }
     });
   }
 
@@ -157,6 +158,58 @@ test("treats a missing tool as inconclusive when extraction was incomplete", () 
   const result = diffReports(baseline, candidate);
   assert.equal(result.changes.some((change) => change.kind === "tool_removed"), false);
   assert.equal(result.limited, true);
+});
+
+test("a surface that could be read and now cannot is reported, with the reason", () => {
+  const baseline = report({ version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: true });
+  const candidate = report({
+    version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }],
+    toolsComplete: false, toolsIncompleteness: ["source_file_exceeded_parse_size_limit"]
+  });
+
+  const change = diffReports(baseline, candidate).changes.find((c) => c.kind === "coverage_regressed");
+  assert.ok(change, "a complete-to-incomplete transition should be reported");
+  assert.deepEqual(change.detail?.reasons, ["source_file_exceeded_parse_size_limit"]);
+});
+
+// The distinction the diff used to collapse: both of these emit `comparison_limited`,
+// and only the transition above is a change in the package.
+test("a surface that was never complete has not regressed", () => {
+  const baseline = report({ version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: false });
+  const candidate = report({ version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }], toolsComplete: false });
+
+  const result = diffReports(baseline, candidate);
+  assert.equal(result.changes.some((c) => c.kind === "coverage_regressed"), false);
+  assert.equal(result.changes.some((c) => c.kind === "comparison_limited"), true);
+});
+
+test("extraction that stayed complete, or recovered, is not a regression", () => {
+  const complete = report({ version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: true });
+  const recovered = report({ version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }], toolsComplete: true });
+  const partial = report({ version: "0.9.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: false });
+
+  for (const [baseline, candidate] of [[complete, recovered], [partial, recovered]] as const) {
+    const result = diffReports(baseline, candidate);
+    assert.equal(result.changes.some((c) => c.kind === "coverage_regressed"), false);
+  }
+});
+
+test("a regression with no reason recorded is still reported", () => {
+  const baseline = report({ version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }], toolsComplete: true });
+  const candidate = report({ version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }], toolsComplete: false, toolsIncompleteness: [] });
+
+  const change = diffReports(baseline, candidate).changes.find((c) => c.kind === "coverage_regressed");
+  assert.ok(change, "an unrecorded reason must not suppress the finding");
+  assert.deepEqual(change.detail?.reasons, []);
+});
+
+test("a missing inventory is still not a coverage regression", () => {
+  const baseline = report({ version: "1.0.0", sha256: HASH_A });
+  const candidate = report({ version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }], toolsComplete: false });
+
+  const result = diffReports(baseline, candidate);
+  assert.equal(result.changes.some((c) => c.kind === "coverage_regressed"), false);
+  assert.equal(result.changes.find((c) => c.kind === "comparison_limited")?.detail?.reason, "missing_inventory");
 });
 
 test("reports a real removal when both extractions are complete", () => {
