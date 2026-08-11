@@ -60,90 +60,6 @@ function fullScansOfGrowingTables(steps: string[]): string[] {
   });
 }
 
-/**
- * Every statement the repository issues against a table that grows.
- *
- * Kept in step with `repository.ts` by hand. A query added there and not here is
- * unguarded, which is what the last assertion in this file is about.
- */
-const QUERIES: Record<string, [string, unknown[]]> = {
-  "listPendingAnalyses": [
-    `SELECT t.id AS target_id, t.package_name, c.observed_version
-       FROM watch_targets t
-       JOIN check_runs c ON c.id = (
-         SELECT id FROM check_runs WHERE target_id = t.id ORDER BY created_at DESC, id DESC LIMIT 1
-       )
-      WHERE t.enabled = 1
-        AND c.status = 'queued'
-        AND c.observed_version IS NOT NULL
-        AND NOT EXISTS (
-          SELECT 1 FROM analysis_reports r
-           WHERE r.target_id = t.id AND r.package_version = c.observed_version
-        )
-      ORDER BY c.created_at ASC`, []
-  ],
-  "hasOpenCheck": [
-    "SELECT id FROM check_runs WHERE target_id = ? AND status = 'queued' AND observed_version = ? LIMIT 1",
-    ["t1", "1.0.0"]
-  ],
-  "resolvePendingCheck": [
-    "UPDATE check_runs SET status = 'analyzed', detail = ? WHERE target_id = ? AND observed_version = ? AND status = 'queued'",
-    ["d", "t1", "1.0.0"]
-  ],
-  "completeCheck": [
-    "UPDATE check_runs SET status = ?, detail = ? WHERE id = ?", ["analyzed", "d", "c1"]
-  ],
-  "insertReport duplicate check": [
-    "SELECT * FROM analysis_reports WHERE target_id = ? AND artifact_sha256 = ?", ["t1", "abc"]
-  ],
-  "reportById": [
-    "SELECT * FROM analysis_reports WHERE id = ?", ["r1"]
-  ],
-  "listUndeliveredNotices": [
-    `SELECT * FROM change_notices
-      WHERE delivery_state IN ('pending', 'failed') AND delivery_attempts < ?
-      ORDER BY detected_at ASC LIMIT ?`, [6, 20]
-  ],
-  "recordDelivery": [
-    `UPDATE change_notices SET delivery_state = ?, delivery_detail = ?,
-        delivery_attempts = delivery_attempts + 1,
-        delivered_at = CASE WHEN ? = 'sent' THEN ? ELSE delivered_at END
-      WHERE id = ?`, ["sent", "d", "sent", "now", "n1"]
-  ],
-  "listNotices": [
-    "SELECT * FROM change_notices ORDER BY detected_at DESC LIMIT 100", []
-  ],
-  "decideNotice": [
-    "SELECT * FROM change_notices WHERE id = ?", ["n1"]
-  ]
-};
-
-for (const [name, [sql, parameters]] of Object.entries(QUERIES)) {
-  test(`${name} does not scan a table that grows without bound`, () => {
-    const steps = plan(sql, parameters);
-    const scans = fullScansOfGrowingTables(steps);
-    assert.deepEqual(
-      scans, [],
-      `Query plan reads a growing table in full, which D1 bills per row:\n  ${steps.join("\n  ")}`
-    );
-  });
-}
-
-// Regression, with a number attached: before check_runs was indexed, finding each
-// target's latest check ran a full scan once per target — 1,825,000 rows read per
-// call against two years of six-hourly checks on 25 targets, and rising.
-test("finding a target's latest check is a seek, not a scan", () => {
-  const steps = plan(QUERIES["listPendingAnalyses"]![0], []);
-  const subquery = steps.findIndex((step) => step.includes("CORRELATED SCALAR SUBQUERY"));
-  assert.ok(subquery >= 0, "the latest-check lookup should still be a correlated subquery");
-  // "COVERING INDEX" is the stronger form — every column the lookup needs lives in
-  // the index, so no table row is touched at all. Either satisfies this.
-  assert.ok(
-    steps.slice(subquery).some((step) => /USING (COVERING )?INDEX idx_check_runs_target_created/.test(step)),
-    `the latest-check lookup must use its index:\n  ${steps.join("\n  ")}`
-  );
-});
-
 interface StringLiteral {
   value: string;
   start: number;
@@ -208,6 +124,72 @@ function scan(source: string): ScannedSource {
   }
   return { literals, withoutComments: withoutComments.join("") };
 }
+
+interface RepositoryStatement {
+  label: string;
+  sql: string;
+  parameters: unknown[];
+}
+
+/**
+ * Every SQL statement the repository issues, read out of its source.
+ *
+ * This was a hand-kept copy of the statements, and it carried the weakness in a
+ * comment: a query added to `repository.ts` and not copied here was unguarded. The
+ * copy could also drift the other way — an edited query would leave this file
+ * asserting a clean plan for SQL the repository no longer ran. Extracting removes
+ * both, and it covers the statements the copy never listed at all, among them
+ * `decideNotice`'s UPDATE and every INSERT.
+ */
+function repositoryStatements(): RepositoryStatement[] {
+  const source = readFileSync(packageFile("src/repository.ts"), "utf8");
+  return scan(source).literals
+    .map((literal) => literal.value.trim())
+    .filter((value) => /^(SELECT|INSERT|UPDATE|DELETE)\b/i.test(value))
+    .map((sql) => ({
+      label: sql.replace(/\s+/g, " ").slice(0, 64),
+      sql,
+      // The values cannot change the plan, but the statement will not prepare
+      // without one per placeholder.
+      parameters: Array.from({ length: (sql.match(/\?/g) ?? []).length }, () => 1)
+    }));
+}
+
+const STATEMENTS = repositoryStatements();
+
+test("the repository's SQL was found at all", () => {
+  // Extraction that silently returns nothing would leave every assertion below
+  // vacuously true, which is the failure this whole file exists to avoid.
+  assert.ok(STATEMENTS.length > 0, "expected to find SQL statements in repository.ts");
+});
+
+for (const { label, sql, parameters } of STATEMENTS) {
+  test(`does not scan a growing table: ${label}`, () => {
+    const steps = plan(sql, parameters);
+    assert.deepEqual(
+      fullScansOfGrowingTables(steps), [],
+      `Query plan reads a growing table in full, which D1 bills per row:\n  ${steps.join("\n  ")}`
+    );
+  });
+}
+
+// Regression, with a number attached: before check_runs was indexed, finding each
+// target's latest check ran a full scan once per target — 1,825,000 rows read per
+// call against two years of six-hourly checks on 25 targets, and rising.
+test("finding a target's latest check is a seek, not a scan", () => {
+  const latestCheck = STATEMENTS.find((statement) => statement.sql.includes("ORDER BY created_at DESC, id DESC LIMIT 1"));
+  assert.ok(latestCheck, "the latest-check lookup is no longer in the repository in the shape this pins");
+
+  const steps = plan(latestCheck.sql, latestCheck.parameters);
+  const subquery = steps.findIndex((step) => step.includes("CORRELATED SCALAR SUBQUERY"));
+  assert.ok(subquery >= 0, "the latest-check lookup should still be a correlated subquery");
+  // "COVERING INDEX" is the stronger form — every column the lookup needs lives in
+  // the index, so no table row is touched at all. Either satisfies this.
+  assert.ok(
+    steps.slice(subquery).some((step) => /USING (COVERING )?INDEX idx_check_runs_target_created/.test(step)),
+    `the latest-check lookup must use its index:\n  ${steps.join("\n  ")}`
+  );
+});
 
 // An UPDATE or DELETE without a WHERE clause rewrites every row. That has emptied
 // real accounts' budgets in seconds, and it is worth failing the build over.
