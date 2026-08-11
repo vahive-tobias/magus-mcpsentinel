@@ -132,6 +132,23 @@ function namedItems(change: WatchChange): { items: NamedItem[]; omitted: number 
   return { items, omitted };
 }
 
+/**
+ * How a severity reads to someone who does not work in this vocabulary.
+ *
+ * `info` is the one that matters: it is a machine word that tells a reader
+ * nothing, and on a page that most people meet once, next to a package they are
+ * deciding whether to upgrade, "Context" says what it actually is. The stored
+ * values are unchanged — this is presentation, and the API still speaks
+ * `high`/`review`/`info`.
+ *
+ * The public watch page uses these same three words. One product, one language.
+ */
+const SEVERITY_LABEL: Record<string, string> = {
+  high: "Worth reading",
+  review: "Review",
+  info: "Context"
+};
+
 const SEVERITY_NOTE: Record<string, string> = {
   high: "The capability this server declares has grown, or code now runs that did not run before.",
   review: "Something you approved has changed. Worth reading before you upgrade.",
@@ -152,7 +169,7 @@ function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
     ""
   ];
   for (const change of changes) {
-    lines.push(`  [${change.severity}] ${change.kind}`);
+    lines.push(`  [${SEVERITY_LABEL[change.severity] ?? change.severity}] ${change.kind}`);
     lines.push(`      ${change.summary}`);
     const { items, omitted } = namedItems(change);
     for (const item of items) lines.push(`        ${item.marker ? `${item.marker} ` : ""}${item.value}`);
@@ -194,7 +211,7 @@ function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
         </ul>`;
     return `
     <tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;color:${SEVERITY_COLOUR[change.severity] ?? "#475467"};font-weight:600;vertical-align:top">${escapeHtml(change.severity)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;color:${SEVERITY_COLOUR[change.severity] ?? "#475467"};font-weight:600;vertical-align:top">${escapeHtml(SEVERITY_LABEL[change.severity] ?? change.severity)}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;font-family:ui-monospace,monospace;font-size:13px;vertical-align:top">${escapeHtml(change.kind)}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eaecf0">${escapeHtml(change.summary)}${named}</td>
     </tr>`;

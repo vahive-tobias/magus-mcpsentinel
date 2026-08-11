@@ -193,6 +193,28 @@ test("a notice stored before details were carried still renders", async () => {
   }
 });
 
+/**
+ * The reader sees the same three words here as on the public watch page.
+ *
+ * `info` was the reason for doing this: a machine word next to a package someone
+ * is deciding whether to upgrade, which tells them nothing about what to do with
+ * it. The stored values are untouched — the API still speaks high/review/info.
+ */
+test("severities are worded for a reader, in both bodies", async () => {
+  for (const body of await bodies([
+    { kind: 'install_script_changed', severity: 'high', summary: 'Added install script: node setup.js' },
+    { kind: 'artifact_changed', severity: 'review', summary: 'Artifact digest changed: aaaa… → bbbb….' },
+    { kind: 'file_content_changed', severity: 'info', summary: '2 files changed contents without changing the inventory.' }
+  ])) {
+    assert.match(body, /Worth reading/);
+    assert.match(body, /Review/);
+    assert.match(body, /Context/);
+    // The severity column must not still be printing the raw value beside them.
+    assert.doesNotMatch(body, /\[info\]/);
+    assert.doesNotMatch(body, />info</);
+  }
+});
+
 test("a provider rejection is recorded as failed, with the provider's reason", async () => {
   const restore = stubFetch(() => new Response(JSON.stringify({ message: "domain is not verified" }), { status: 403 }));
   const outcome = await deliverNotice(configuredEnv(), TARGET, notice("review", CHANGES), VERSIONS);
