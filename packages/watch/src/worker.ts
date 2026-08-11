@@ -85,6 +85,10 @@ export default {
       if (url.pathname === "/api/targets" && request.method === "GET") return json({ targets: await repository.listTargets() });
       if (url.pathname === "/api/notices" && request.method === "GET") return json({ notices: await repository.listNotices() });
       if (url.pathname === "/api/targets" && request.method === "POST") return createTarget(request, repository);
+      // `/api/reports` alone is the ingest route above, matched exactly, so a read
+      // of one report cannot fall through to it.
+      const reportMatch = url.pathname.match(/^\/api\/reports\/([0-9a-f-]{36})$/i);
+      if (reportMatch && request.method === "GET") return readReport(repository, reportMatch[1]!);
       const decisionMatch = url.pathname.match(/^\/api\/notices\/([0-9a-f-]{36})\/decision$/i);
       if (decisionMatch && request.method === "POST") return decideNotice(request, repository, decisionMatch[1]);
       return json({ error: "not found" }, 404);
@@ -99,6 +103,25 @@ export default {
     ctx.waitUntil(checkForNewReleases(env));
   }
 } satisfies ExportedHandler<Env>;
+
+/**
+ * One stored report, as stored.
+ *
+ * A notice records which two reports it compared but not the version strings
+ * themselves, so this is what resolves "3.23.6 → 3.23.8" for anything rendering a
+ * notice outside the Worker. It returns the row unchanged rather than a summary:
+ * the report is the evidence, and a consumer that has to trust our paraphrase of
+ * it cannot verify anything.
+ *
+ * Operator-authenticated, deliberately. A public build can read it with the key
+ * held as a build secret and publish the result as static files; that keeps the
+ * evidence available without putting a readable route on the internet.
+ */
+async function readReport(repository: WatchRepository, id: string): Promise<Response> {
+  const report = await repository.reportById(id);
+  if (!report) return json({ error: "not found" }, 404);
+  return json({ report });
+}
 
 async function createTarget(request: Request, repository: WatchRepository): Promise<Response> {
   const body = await readJson(request);
