@@ -93,6 +93,33 @@ test("a delivered notice carries the evidence, and no verdict", async () => {
   assert.match(String(sent.text), /can be incomplete/, "states that the tool inventory may be partial");
 });
 
+/**
+ * The stored summary is the only place the monitor can say something the diff
+ * cannot know — how many other releases were published between these versions.
+ *
+ * Both renderers rebuilt a change count from `changes.length` instead, so anything
+ * appended to the summary reached the database and stopped there. Found from a real
+ * notice: firecrawl-mcp 3.23.6 to 3.23.8, with 3.23.7 published in between and no
+ * mention of it in the email.
+ */
+test("the notice's own summary reaches the reader", async () => {
+  let sent: Record<string, unknown> = {};
+  const restore = stubFetch((_url, init) => {
+    sent = JSON.parse(String(init.body));
+    return new Response(JSON.stringify({ id: "email-1" }), { status: 200 });
+  });
+
+  const record = notice("review", CHANGES);
+  record.summary = "@scope/example-mcp@2.0.0 has 2 reviewable changes from 1.4.0."
+    + " 1 other release was published between these two versions.";
+  await deliverNotice(configuredEnv(), TARGET, record, VERSIONS);
+  restore();
+
+  for (const body of [String(sent.text), String(sent.html)]) {
+    assert.match(body, /1 other release was published between these two versions\./);
+  }
+});
+
 test("a provider rejection is recorded as failed, with the provider's reason", async () => {
   const restore = stubFetch(() => new Response(JSON.stringify({ message: "domain is not verified" }), { status: 403 }));
   const outcome = await deliverNotice(configuredEnv(), TARGET, notice("review", CHANGES), VERSIONS);

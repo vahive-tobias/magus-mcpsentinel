@@ -203,12 +203,17 @@ async function recordReport(repository: WatchRepository, target: WatchTargetReco
   if (!baseline) throw new Error("Watch target references a missing baseline report.");
   const notice = createChangeNotice(parseStoredReport(baseline), report);
 
-  // The check runs on a schedule and only sees `latest`, so releases published
-  // and superseded between runs are never analyzed. Saying so on the notice keeps
-  // "we compared these two" from reading as "we saw everything in between".
-  const skipped = await releasesBetween(target.package_name, baseline.package_version, report.subject.artifact.version);
-  if (skipped !== undefined && skipped > 0) {
-    notice.summary += ` ${skipped} release${skipped === 1 ? " was" : "s were"} published in between and not analyzed individually.`;
+  // The check runs on a schedule and only sees `latest`, so a diff spanning several
+  // releases must not read as "we saw everything in between".
+  //
+  // This states only what the registry was asked: how many other versions were
+  // published between these two. It deliberately does not claim they went
+  // unanalyzed — a package that releases twice inside one baseline window can have
+  // had the middle release analyzed under its own notice, and this count, taken
+  // from the registry rather than from what is stored, cannot tell the difference.
+  const between = await releasesBetween(target.package_name, baseline.package_version, report.subject.artifact.version);
+  if (between !== undefined && between > 0) {
+    notice.summary += ` ${between} other release${between === 1 ? " was" : "s were"} published between these two versions.`;
   }
 
   const created = await repository.createNotice(target.id, baseline.id, stored.report.id, notice);

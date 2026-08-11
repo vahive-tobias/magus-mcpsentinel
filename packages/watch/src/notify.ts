@@ -96,7 +96,10 @@ function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
     "",
     SEVERITY_NOTE[notice.severity] ?? SEVERITY_NOTE.review,
     "",
-    `${changes.length} change${changes.length === 1 ? "" : "s"} from the baseline you approved:`,
+    // The stored summary, not a count rebuilt here. Anything the monitor appends
+    // to it — the count of releases published between these two versions, for one
+    // — reached the database and never the reader while this line said `changes.length`.
+    notice.summary,
     ""
   ];
   for (const change of changes) {
@@ -146,6 +149,7 @@ function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
   <p style="margin:0 0 20px;padding:12px 14px;border-radius:8px;background:#f9fafb;border-left:3px solid ${SEVERITY_COLOUR[notice.severity] ?? "#475467"};font-size:14px">
     ${escapeHtml(SEVERITY_NOTE[notice.severity] ?? SEVERITY_NOTE.review ?? "")}
   </p>
+  <p style="margin:0 0 16px;font-size:14px;color:#101828">${escapeHtml(notice.summary)}</p>
   <table style="width:100%;border-collapse:collapse;font-size:14px">
     <thead><tr>
       <th align="left" style="padding:0 12px 8px;font-size:12px;color:#667085;text-transform:uppercase;letter-spacing:.05em">Severity</th>
