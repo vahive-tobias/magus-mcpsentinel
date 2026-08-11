@@ -120,6 +120,79 @@ test("the notice's own summary reaches the reader", async () => {
   }
 });
 
+async function bodies(changes: unknown[]): Promise<string[]> {
+  let sent: Record<string, unknown> = {};
+  const restore = stubFetch((_url, init) => {
+    sent = JSON.parse(String(init.body));
+    return new Response(JSON.stringify({ id: "email-1" }), { status: 200 });
+  });
+  await deliverNotice(configuredEnv(), TARGET, notice("review", changes), VERSIONS);
+  restore();
+  return [String(sent.text), String(sent.html)];
+}
+
+/**
+ * A notice that states a count while holding the names is the tool asking the
+ * reader to come and ask. Found in a real notice: firecrawl-mcp reported "1 added,
+ * 0 removed" for a release that added `dist/www-authenticate.js`, under a column
+ * headed Detail, with the name sitting unrendered in the change it came from.
+ */
+test("a change names the files behind its count", async () => {
+  for (const body of await bodies([
+    {
+      kind: "file_inventory_changed", severity: "info",
+      summary: "File inventory changed: 1 added, 1 removed.",
+      detail: { added: ["package/dist/www-authenticate.js"], removed: ["package/dist/legacy.js"] }
+    },
+    {
+      kind: "file_content_changed", severity: "info",
+      summary: "3 files changed contents without changing the inventory.",
+      detail: { count: 3, paths: ["package/README.md", "package/dist/index.js", "package/package.json"], truncated: false }
+    }
+  ])) {
+    assert.match(body, /www-authenticate\.js/, "the added file is named");
+    assert.match(body, /legacy\.js/, "the removed file is named");
+    assert.match(body, /package\/dist\/index\.js/, "an edited file is named");
+    assert.doesNotMatch(body, /and \d+ more/, "nothing was omitted, so nothing claims to be");
+  }
+});
+
+test("a capped list says how many it is not showing", async () => {
+  const paths = Array.from({ length: 40 }, (_, index) => `package/src/file-${index}.js`);
+  for (const body of await bodies([{
+    kind: "file_content_changed", severity: "info",
+    summary: "40 files changed contents without changing the inventory.",
+    // What the analyzer names is already capped; `count` is the truth about how
+    // many there were, and the notice must not imply the named ten are all of them.
+    detail: { count: 40, paths: paths.slice(0, 10), truncated: true }
+  }])) {
+    assert.match(body, /file-0\.js/);
+    assert.match(body, /file-9\.js/);
+    assert.doesNotMatch(body, /file-10\.js/, "the display limit holds");
+    assert.match(body, /and 30 more/, "the reader is told the list is partial");
+  }
+});
+
+test("a change whose summary already names its items does not repeat them", async () => {
+  for (const body of await bodies([{
+    kind: "tool_schema_changed", severity: "high",
+    summary: "Tool read_file accepts new input fields: encoding, follow_symlinks.",
+    detail: { tool: "read_file", addedProperties: ["encoding", "follow_symlinks"] }
+  }])) {
+    assert.equal((body.match(/follow_symlinks/g) ?? []).length, 1, "named once, in the summary");
+  }
+});
+
+test("a notice stored before details were carried still renders", async () => {
+  // Every notice already in the database has changes with no `detail` at all.
+  for (const body of await bodies([
+    { kind: "artifact_changed", severity: "review", summary: "Artifact digest changed: aaaa… → bbbb…." }
+  ])) {
+    assert.match(body, /Artifact digest changed/);
+    assert.doesNotMatch(body, /undefined/);
+  }
+});
+
 test("a provider rejection is recorded as failed, with the provider's reason", async () => {
   const restore = stubFetch(() => new Response(JSON.stringify({ message: "domain is not verified" }), { status: 403 }));
   const outcome = await deliverNotice(configuredEnv(), TARGET, notice("review", CHANGES), VERSIONS);

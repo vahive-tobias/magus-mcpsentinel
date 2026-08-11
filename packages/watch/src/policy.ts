@@ -97,7 +97,8 @@ export function createChangeNotice(baselineReport: SentinelReport, candidateRepo
   const changes: WatchChange[] = diff.changes.map((change) => ({
     kind: change.kind,
     severity: severityFor(change),
-    summary: change.summary
+    summary: change.summary,
+    ...(change.detail ? { detail: change.detail } : {})
   }));
 
   const summary = changes.length === 0

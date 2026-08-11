@@ -1,4 +1,5 @@
 import type { ChangeKind } from "mcp-sentinel/diff";
+import type { JsonObject } from "mcp-sentinel/report-contract";
 
 /**
  * Watch-specific types.
@@ -18,6 +19,14 @@ export interface WatchChange {
   kind: ChangeKind;
   severity: Severity;
   summary: string;
+  /**
+   * The analyzer's machine-readable specifics, carried through unchanged.
+   *
+   * The summary states a count; this holds the names behind it. Dropping it here
+   * is what left a notice saying "1 added, 0 removed" while the change it came
+   * from knew the file was `dist/www-authenticate.js`.
+   */
+  detail?: JsonObject;
 }
 
 export interface ChangeNotice {

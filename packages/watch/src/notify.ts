@@ -83,6 +83,55 @@ function subjectLine(packageName: string, version: string, severity: string, cou
   return `[Sentinel] ${lead}: ${packageName}@${version} (${count} change${count === 1 ? "" : "s"})`;
 }
 
+/**
+ * How many named items a single change may show before the rest are counted.
+ *
+ * The analyzer already caps the paths it names for an edited-file change; an
+ * inventory change is uncapped, because a report keeps its evidence in full. This
+ * is the display limit, and display is Watch's problem, not the analyzer's.
+ */
+const NAMED_ITEM_LIMIT = 10;
+
+interface NamedItem {
+  /** `+` added, `-` removed, blank otherwise — the ordinary diff reading. */
+  marker: string;
+  value: string;
+}
+
+/**
+ * The concrete items behind a change's summary.
+ *
+ * A summary states a count: "1 added, 0 removed", "3 files changed contents". The
+ * names are what let someone go and look, and a tool whose whole claim is
+ * transparency should not make them ask for them.
+ *
+ * Any string array in the detail qualifies, so a change kind added later needs no
+ * work here. Items the summary already names are skipped rather than repeated —
+ * that is what keeps a widened tool schema, whose summary lists its new fields,
+ * from printing them twice.
+ */
+function namedItems(change: WatchChange): { items: NamedItem[]; omitted: number } {
+  const detail = change.detail ?? {};
+  const items: NamedItem[] = [];
+  let total = 0;
+
+  for (const [key, value] of Object.entries(detail)) {
+    if (!Array.isArray(value)) continue;
+    const marker = key === "added" ? "+" : key === "removed" ? "-" : "";
+    for (const entry of value) {
+      if (typeof entry !== "string" || change.summary.includes(entry)) continue;
+      total += 1;
+      if (items.length < NAMED_ITEM_LIMIT) items.push({ marker, value: entry });
+    }
+  }
+
+  // `count` is how many there really were; `paths` is what the analyzer chose to
+  // name. Reporting the difference stops a capped list from reading as the whole.
+  const declared = typeof detail.count === "number" ? detail.count : 0;
+  const omitted = Math.max(total - items.length, declared - total);
+  return { items, omitted };
+}
+
 const SEVERITY_NOTE: Record<string, string> = {
   high: "The capability this server declares has grown, or code now runs that did not run before.",
   review: "Something you approved has changed. Worth reading before you upgrade.",
@@ -105,6 +154,9 @@ function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
   for (const change of changes) {
     lines.push(`  [${change.severity}] ${change.kind}`);
     lines.push(`      ${change.summary}`);
+    const { items, omitted } = namedItems(change);
+    for (const item of items) lines.push(`        ${item.marker ? `${item.marker} ` : ""}${item.value}`);
+    if (omitted > 0) lines.push(`        … and ${omitted} more`);
   }
   lines.push(
     "",
@@ -133,12 +185,20 @@ function escapeHtml(value: string): string {
 const SEVERITY_COLOUR: Record<string, string> = { high: "#b42318", review: "#b54708", info: "#475467" };
 
 function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, changes: WatchChange[], versions: { baseline: string; candidate: string }): string {
-  const rows = changes.map((change) => `
+  const rows = changes.map((change) => {
+    const { items, omitted } = namedItems(change);
+    const named = items.length === 0 && omitted === 0 ? "" : `
+        <ul style="margin:6px 0 0;padding:0 0 0 16px;list-style:none;font-family:ui-monospace,monospace;font-size:12px;color:#475467">
+          ${items.map((item) => `<li style="margin:2px 0">${escapeHtml(item.marker ? `${item.marker} ${item.value}` : item.value)}</li>`).join("")}
+          ${omitted > 0 ? `<li style="margin:2px 0;color:#98a2b3">… and ${omitted} more</li>` : ""}
+        </ul>`;
+    return `
     <tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;color:${SEVERITY_COLOUR[change.severity] ?? "#475467"};font-weight:600">${escapeHtml(change.severity)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;font-family:ui-monospace,monospace;font-size:13px">${escapeHtml(change.kind)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0">${escapeHtml(change.summary)}</td>
-    </tr>`).join("");
+      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;color:${SEVERITY_COLOUR[change.severity] ?? "#475467"};font-weight:600;vertical-align:top">${escapeHtml(change.severity)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0;white-space:nowrap;font-family:ui-monospace,monospace;font-size:13px;vertical-align:top">${escapeHtml(change.kind)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eaecf0">${escapeHtml(change.summary)}${named}</td>
+    </tr>`;
+  }).join("");
 
   return `<!doctype html>
 <html><body style="margin:0;padding:24px;background:#f9fafb;font-family:ui-sans-serif,system-ui,sans-serif;color:#101828">
