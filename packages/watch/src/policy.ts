@@ -43,7 +43,10 @@ const COVERAGE_LOSS_SEVERITY: Record<string, Severity> = {
   list_tools_entry_name_not_static: "high",
   typescript_source_not_parsed: "review",
   no_recognized_registration_pattern: "review",
-  tools_inferred_from_definitions_only: "review"
+  tools_inferred_from_definitions_only: "review",
+  // A task registration in a receiver shape this extractor does not walk. The
+  // package declared it perfectly ordinarily; the limit is ours.
+  task_registration_shape_not_recognized: "review"
 };
 
 export const CLASSIFIED_COVERAGE_LOSS_REASONS = Object.keys(COVERAGE_LOSS_SEVERITY);

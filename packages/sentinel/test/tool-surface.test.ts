@@ -203,6 +203,72 @@ test("recovers tool definitions that no call site registers", () => {
 });
 
 /**
+ * Task registration, taken from `@mapbox/mcp-server` in the pinned corpus.
+ *
+ * A task is still an advertised tool, so it earns `registration` provenance
+ * rather than a category of its own. How it behaves once invoked is not a
+ * discovery question, and inventing a subtype before a diff or policy
+ * distinction needs one would be inventing vocabulary.
+ */
+test("recognizes a task registration on the SDK's experimental path", () => {
+  const surface = surfaceOf({
+    "package/dist/optimization.js": [
+      "export function registerOptimizationV2Task(server, httpRequest) {",
+      "  server.experimental.tasks.registerToolTask('optimization_v2_tool', {",
+      "    title: 'Optimization Tool V2 (Beta)',",
+      "    description: 'Solves vehicle routing problems.',",
+      "    inputSchema: { type: 'object', properties: { coordinates: {} } }",
+      "  });",
+      "}"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["optimization_v2_tool"]);
+  assert.equal(surface.tools[0]?.discovery, "registration");
+  assert.deepEqual(surface.tools[0]?.input_schema_properties, ["coordinates"]);
+  assert.ok(surface.tools[0]?.description_sha256, "the description reaches the model and is recorded");
+  assert.equal(surface.complete, true, "a resolved registration leaves nothing withheld");
+});
+
+test("a computed task name is a gap, not a guess", () => {
+  const surface = surfaceOf({
+    "package/dist/tasks.js": [
+      "for (const def of TASK_DEFS) {",
+      "  server.experimental.tasks.registerToolTask(def.name, def.config);",
+      "}"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools, []);
+  assert.ok(surface.incompleteness.includes("registration_name_not_static"));
+});
+
+/**
+ * The receiver path is matched exactly, not by method name.
+ *
+ * A bare `registerToolTask` on any object is a suffix match, and accepting one
+ * would let an unrelated library API into the inventory. What is *not* checked
+ * is whether the receiver is genuinely an SDK server: that needs import lineage,
+ * which bundling erases, so gating on it would refuse the one real artifact this
+ * recognises. `obj.experimental.tasks.registerToolTask(...)` on an unrelated
+ * object is therefore accepted — a known precision debt for the lineage work.
+ */
+test("a task registration off the supported path is recorded, not accepted", () => {
+  const surface = surfaceOf({
+    "package/dist/other.js": [
+      "const tasks = queue.tasks;",
+      "tasks.registerToolTask('not_a_tool', { description: 'Unrelated queue API.' });"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools, [], "a suffix match is not a registration");
+  assert.ok(
+    surface.incompleteness.includes("task_registration_shape_not_recognized"),
+    "an unwalked shape must not leave the surface looking complete"
+  );
+});
+
+/**
  * Shapes taken from pinned corpus artifacts, not invented.
  *
  * `@transcend-io/mcp-server-docs` keys its schema `zodSchema` and carries no

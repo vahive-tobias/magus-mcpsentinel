@@ -24,6 +24,20 @@ const DECLARATION = /\.d\.[cm]?ts$/i;
 /** Registration helpers exposed by the MCP TypeScript SDK's high-level server. */
 const REGISTRATION_METHODS = new Set(["tool", "registerTool"]);
 
+/** Registrations whose second argument is a config object rather than a variadic tail. */
+const CONFIG_STYLE_REGISTRATIONS = new Set(["registerTool", "registerToolTask"]);
+
+/**
+ * The receiver path a task registration must sit on.
+ *
+ * Matched as an exact shape — `<receiver>.experimental.tasks.registerToolTask` —
+ * rather than by method name alone. A bare `registerToolTask` on any object
+ * would be a suffix match, and this extractor's precision comes from refusing
+ * those: a tool that does not exist becomes a phantom removal on the next
+ * release.
+ */
+const TASK_REGISTRATION_PATH = ["tasks", "experimental"];
+
 /**
  * Schema keys distinctive enough that a static `name` beside one is evidence.
  *
@@ -246,6 +260,19 @@ function collectFromProgram(
       collectRegistrationCall(method, node, args, context, tools, incompleteness, agentText);
       return;
     }
+    if (method === "registerToolTask") {
+      // A task is still an advertised tool, so it earns the same `registration`
+      // provenance. How it behaves when invoked is not a discovery question.
+      if (!onTaskRegistrationPath(callee) || args.length < 2) {
+        // Seen but not in the shape this understands. Saying so is what keeps a
+        // surface that is missing a task from being reported as complete.
+        incompleteness.add("task_registration_shape_not_recognized");
+        return;
+      }
+      sites += 1;
+      collectRegistrationCall(method, node, args, context, tools, incompleteness, agentText);
+      return;
+    }
     if (method === "setRequestHandler" && mentionsListTools(args[0])) {
       sites += 1;
       collectListToolsHandler(args[1], context, moduleConstants, tools, incompleteness, agentText);
@@ -297,6 +324,23 @@ function collectToolDefinitions(program: AstNode, context: FileContext, definiti
   });
 }
 
+/**
+ * True for `<anything>.experimental.tasks.registerToolTask`.
+ *
+ * The receiver itself is not checked. Establishing that it is an SDK server
+ * needs import lineage, which bundling erases — gating on it now would refuse
+ * the one real artifact this recognises. The cost is a known precision debt: an
+ * unrelated object with that exact three-segment path would be accepted.
+ */
+function onTaskRegistrationPath(callee: AstNode): boolean {
+  let node = callee.object as AstNode | undefined;
+  for (const segment of TASK_REGISTRATION_PATH) {
+    if (!node || node.type !== "MemberExpression" || memberName(node) !== segment) return false;
+    node = node.object as AstNode | undefined;
+  }
+  return node !== undefined;
+}
+
 function firstProperty(object: AstNode, keys: string[]): AstNode | undefined {
   for (const key of keys) {
     const value = propertyValue(object, key);
@@ -325,7 +369,7 @@ function collectRegistrationCall(
   }
 
   const range: [number, number] = [call.start, call.end];
-  if (method === "registerTool") {
+  if (CONFIG_STYLE_REGISTRATIONS.has(method)) {
     const config = args[1];
     if (config?.type === "ObjectExpression") {
       const description = propertyValue(config, "description");
