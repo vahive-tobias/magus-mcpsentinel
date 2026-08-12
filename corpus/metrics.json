@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T07:28:45.016Z",
+  "generated_at": "2026-08-12T07:42:56.756Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
@@ -17,7 +17,7 @@
   "statically_complete_extractions": 12,
   "statically_complete_rate": 0.24,
   "eligible": {
-    "basis": "role === \"server\" in corpus/roles.json",
+    "basis": "classified-server subset: role === \"server\" in corpus/roles.json",
     "packages": 41,
     "excluded": [
       {

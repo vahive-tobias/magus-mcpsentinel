@@ -47,8 +47,7 @@ about its own analysis, not external evidence that the package has no further
 tools. A server that builds its tool list at runtime can be statically complete
 and still expose tools no report will ever mention.
 
-Both are reported twice: over the whole corpus, and over the packages that expose
-a tool surface at all. `@crewhaus/mcp-host` is an MCP **client** — its own
+Both are reported twice: over the whole corpus, and over the classified-server subset. `@crewhaus/mcp-host` is an MCP **client** — its own
 description says so — and it has no tools to find, so counting it as a miss
 understates the extractor while counting it as a hit would overstate it. The
 classification and its evidence live in `roles.json`, because an exclusion
@@ -86,10 +85,18 @@ artifact.
 
 ## What this corpus is not
 
-It is not a representative sample of the MCP ecosystem. These thirteen packages
-are the ones Hosted Watch monitors, selected for release cadence so that a
-monitoring trial would actually produce notices. They over-represent actively
-released packages and say nothing about the long tail.
+It is not a representative sample of the MCP ecosystem. Thirteen packages are the
+ones Hosted Watch monitors, selected for release cadence so that a monitoring
+trial would produce notices. The other thirty-seven were sampled deliberately
+across suspected axes — v2 SDK against v1, bundled against unbundled, small
+against large — which is stratification, not representativeness. Nothing here
+supports a claim about the ecosystem as a whole.
+
+It is also not an adversarial corpus. Packages published as deliberately
+malicious test fixtures measure rule behaviour, not static recovery, and mixing
+them into this denominator would make the coverage figure answer neither
+question. They belong in a separately labelled adversarial regression set — with
+the same no-execution rule and the same refusal to redistribute a tarball.
 
 It also does not reproduce the earlier n=25 corpus behind the published 32%
 figure. That list was never checked in and cannot be reconstructed, so the two

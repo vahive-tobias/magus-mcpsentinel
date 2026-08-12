@@ -237,7 +237,7 @@ async function main() {
       const recoveredServers = servers.filter((row) => row.inventory_recovered).length;
       const completeServers = servers.filter((row) => row.statically_complete).length;
       return {
-        basis: 'role === "server" in corpus/roles.json',
+        basis: 'classified-server subset: role === "server" in corpus/roles.json',
         packages: servers.length,
         excluded: results.filter((row) => row.role !== 'server').map((row) => ({ package: row.package, role: row.role })),
         inventories_recovered: recoveredServers,
@@ -261,7 +261,7 @@ async function main() {
 
   const eligible = metrics.eligible;
   console.log(`\nwhole corpus: ${recovered}/${results.length} recovered (${(metrics.recovery_rate * 100).toFixed(1)}%) · ${complete}/${results.length} statically complete`);
-  console.log(`servers only:  ${eligible.inventories_recovered}/${eligible.packages} recovered (${(eligible.recovery_rate * 100).toFixed(1)}%) · ${eligible.statically_complete_extractions}/${eligible.packages} statically complete`);
+  console.log(`classified servers:  ${eligible.inventories_recovered}/${eligible.packages} recovered (${(eligible.recovery_rate * 100).toFixed(1)}%) · ${eligible.statically_complete_extractions}/${eligible.packages} statically complete`);
   if (eligible.excluded.length > 0) {
     console.log(`excluded: ${eligible.excluded.map((item) => `${item.package} (${item.role})`).join(', ')}`);
   }
