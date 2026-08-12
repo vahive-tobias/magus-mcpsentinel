@@ -27,6 +27,10 @@ import { promisify } from 'node:util';
 // reads the right observation today and would silently read the wrong one the
 // day an observation is named with an overlapping word.
 import { OBSERVATION_IDS } from 'mcp-sentinel/report-contract';
+// Path-shape exclusion is an approximation, not proof that a file is irrelevant
+// at runtime. Recording what it skipped keeps that inspectable in the corpus
+// before any of it reaches the report contract.
+import { isOutsideToolSurface } from 'mcp-sentinel/analyze';
 
 const run = promisify(execFile);
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -136,6 +140,15 @@ function measure(spec, report) {
     statically_complete: inventory?.data?.complete === true,
     incompleteness: inventory?.data?.incompleteness ?? [],
     scanned_files: (inventory?.data?.scanned_files ?? []).length,
+    // What the tool-surface scan skipped on path shape alone. The file inventory
+    // still records every one of these; only their claim on the tool surface was
+    // dropped.
+    excluded_from_tool_surface: (() => {
+      const paths = (files?.data?.entries ?? [])
+        .map((entry) => entry?.path)
+        .filter((path) => typeof path === 'string' && isOutsideToolSurface(path));
+      return { count: paths.length, sample: paths.slice(0, 8) };
+    })(),
     sdk_evidence: {
       // `coverage: "declared"` in the report's own vocabulary: what package.json
       // says, not what the code was found to do.

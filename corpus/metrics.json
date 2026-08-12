@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-12T07:42:56.756Z",
+  "generated_at": "2026-08-12T08:01:07.229Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+      "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
     },
     "protocol_profile": "mcp-2026-07-28"
   },
@@ -12,10 +12,10 @@
   "analyzed": 50,
   "failed": [],
   "artifact_drift": [],
-  "inventories_recovered": 38,
-  "recovery_rate": 0.76,
-  "statically_complete_extractions": 12,
-  "statically_complete_rate": 0.24,
+  "inventories_recovered": 37,
+  "recovery_rate": 0.74,
+  "statically_complete_extractions": 13,
+  "statically_complete_rate": 0.26,
   "eligible": {
     "basis": "classified-server subset: role === \"server\" in corpus/roles.json",
     "packages": 41,
@@ -57,20 +57,20 @@
         "role": "unknown"
       }
     ],
-    "inventories_recovered": 33,
-    "recovery_rate": 0.8049,
-    "statically_complete_extractions": 11,
-    "statically_complete_rate": 0.2683
+    "inventories_recovered": 32,
+    "recovery_rate": 0.7805,
+    "statically_complete_extractions": 12,
+    "statically_complete_rate": 0.2927
   },
-  "tools_recovered_total": 1698,
+  "tools_recovered_total": 1677,
   "incompleteness_reasons": {
     "registration_name_not_static": 17,
     "tools_inferred_from_definitions_only": 16,
     "no_recognized_registration_pattern": 10,
-    "typescript_source_not_parsed": 10,
-    "list_tools_array_not_static": 7,
+    "typescript_source_not_parsed": 7,
+    "list_tools_array_not_static": 6,
     "list_tools_entry_not_static": 2,
-    "source_file_exceeded_parse_size_limit": 2,
+    "source_file_exceeded_parse_size_limit": 1,
     "list_tools_handler_not_static": 1
   },
   "sdk_declared_count": 44,
@@ -171,6 +171,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -184,7 +188,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -224,6 +228,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 96,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -237,7 +245,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -276,6 +284,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -289,7 +301,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -314,6 +326,10 @@
         "list_tools_array_not_static"
       ],
       "scanned_files": 102,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -339,7 +355,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -352,23 +368,33 @@
       "spec": "@blocklet/mcp@1.10.2",
       "entries": 553,
       "regular_file_bytes": 6429216,
-      "tools_total": 4,
+      "tools_total": 1,
       "tools_by_discovery": {
-        "registration": 4,
+        "registration": 1,
         "definition": 0
       },
       "tool_names": [
-        "greet",
-        "multi-greet",
-        "protected-tool",
-        "start-notification-stream"
+        "protected-tool"
       ],
       "inventory_recovered": true,
       "statically_complete": false,
       "incompleteness": [
         "list_tools_array_not_static"
       ],
-      "scanned_files": 137,
+      "scanned_files": 112,
+      "excluded_from_tool_surface": {
+        "count": 100,
+        "sample": [
+          "package/dist/cjs/examples/client/multipleClientsParallel.d.ts",
+          "package/dist/cjs/examples/client/multipleClientsParallel.d.ts.map",
+          "package/dist/cjs/examples/client/multipleClientsParallel.js",
+          "package/dist/cjs/examples/client/multipleClientsParallel.js.map",
+          "package/dist/cjs/examples/client/parallelToolCallsClient.d.ts",
+          "package/dist/cjs/examples/client/parallelToolCallsClient.d.ts.map",
+          "package/dist/cjs/examples/client/parallelToolCallsClient.js",
+          "package/dist/cjs/examples/client/parallelToolCallsClient.js.map"
+        ]
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -377,7 +403,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -402,6 +428,10 @@
         "list_tools_array_not_static"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -415,7 +445,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -455,6 +485,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 90,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -468,7 +502,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -493,6 +527,19 @@
         "no_recognized_registration_pattern"
       ],
       "scanned_files": 153,
+      "excluded_from_tool_surface": {
+        "count": 22,
+        "sample": [
+          "package/fixtures/example-greeting.json",
+          "package/fixtures/example-multi-turn.json",
+          "package/fixtures/example-tool-call.json",
+          "package/fixtures/examples/a2a/a2a-config.json",
+          "package/fixtures/examples/adk/gemini-agent.json",
+          "package/fixtures/examples/agui/agui-text-response.json",
+          "package/fixtures/examples/chaos/chaos-config.json",
+          "package/fixtures/examples/crewai/multi-agent-crew.json"
+        ]
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -501,7 +548,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -526,6 +573,10 @@
         "no_recognized_registration_pattern"
       ],
       "scanned_files": 6,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -539,7 +590,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -707,6 +758,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 125,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -720,7 +775,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -744,13 +799,22 @@
         "upload_file"
       ],
       "inventory_recovered": true,
-      "statically_complete": false,
-      "incompleteness": [
-        "list_tools_array_not_static",
-        "source_file_exceeded_parse_size_limit",
-        "typescript_source_not_parsed"
-      ],
-      "scanned_files": 2238,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 2,
+      "excluded_from_tool_surface": {
+        "count": 5448,
+        "sample": [
+          "package/dist/node_modules/.package-lock.json",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/aws_crc32.d.ts",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/aws_crc32.js",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/aws_crc32.js.map",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/index.d.ts",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/index.js",
+          "package/dist/node_modules/@aws-crypto/crc32/build/main/index.js.map",
+          "package/dist/node_modules/@aws-crypto/crc32/build/module/aws_crc32.d.ts"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -764,7 +828,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -789,6 +853,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -802,7 +870,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -833,6 +901,10 @@
         "typescript_source_not_parsed"
       ],
       "scanned_files": 1277,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -846,7 +918,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -900,7 +972,20 @@
         "no_recognized_registration_pattern",
         "tools_inferred_from_definitions_only"
       ],
-      "scanned_files": 2256,
+      "scanned_files": 34,
+      "excluded_from_tool_surface": {
+        "count": 2680,
+        "sample": [
+          "package/node_modules/@babel/code-frame/lib/index.js",
+          "package/node_modules/@babel/code-frame/lib/index.js.map",
+          "package/node_modules/@babel/code-frame/LICENSE",
+          "package/node_modules/@babel/code-frame/package.json",
+          "package/node_modules/@babel/code-frame/README.md",
+          "package/node_modules/@babel/helper-validator-identifier/lib/identifier.js",
+          "package/node_modules/@babel/helper-validator-identifier/lib/identifier.js.map",
+          "package/node_modules/@babel/helper-validator-identifier/lib/index.js"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -914,7 +999,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -941,6 +1026,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 306,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -958,7 +1047,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -983,6 +1072,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 95,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -996,7 +1089,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1034,6 +1127,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 5,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1047,7 +1144,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1060,38 +1157,32 @@
       "spec": "@nocobase/plugin-mcp-server@2.1.39",
       "entries": 3854,
       "regular_file_bytes": 15335612,
-      "tools_total": 18,
+      "tools_total": 0,
       "tools_by_discovery": {
-        "registration": 18,
+        "registration": 0,
         "definition": 0
       },
-      "tool_names": [
-        "collect-user-info",
-        "collect-user-info-task",
-        "confirm_delete",
-        "count",
-        "create_event",
-        "delay",
-        "get_weather",
-        "greet",
-        "list-files",
-        "long-task",
-        "multi-greet",
-        "payment-confirm",
-        "register_user",
-        "start-notification-stream",
-        "summarize",
-        "third-party-auth",
-        "update_shipping_address",
-        "write_haiku"
-      ],
-      "inventory_recovered": true,
+      "tool_names": [],
+      "inventory_recovered": false,
       "statically_complete": false,
       "incompleteness": [
         "list_tools_array_not_static",
         "typescript_source_not_parsed"
       ],
-      "scanned_files": 1254,
+      "scanned_files": 11,
+      "excluded_from_tool_surface": {
+        "count": 3824,
+        "sample": [
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/bundle.d.ts",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/bundle.js",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/dereference.d.ts",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/dereference.js",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/index.d.ts",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/index.js",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/normalize-args.d.ts",
+          "package/dist/node_modules/@apidevtools/json-schema-ref-parser/dist/lib/normalize-args.js"
+        ]
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -1100,7 +1191,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1126,6 +1217,19 @@
         "typescript_source_not_parsed"
       ],
       "scanned_files": 2,
+      "excluded_from_tool_surface": {
+        "count": 14,
+        "sample": [
+          "package/scripts/server-options.test.ts",
+          "package/src/openapi-mcp-server/client/__tests__/http-client-upload.test.ts",
+          "package/src/openapi-mcp-server/client/__tests__/http-client.headers.test.ts",
+          "package/src/openapi-mcp-server/client/__tests__/http-client.integration.test.ts",
+          "package/src/openapi-mcp-server/client/__tests__/http-client.test.ts",
+          "package/src/openapi-mcp-server/client/__tests__/test-server.ts",
+          "package/src/openapi-mcp-server/mcp/__tests__/proxy.test.ts",
+          "package/src/openapi-mcp-server/mcp/__tests__/token.test.ts"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1139,7 +1243,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1164,6 +1268,10 @@
         "no_recognized_registration_pattern"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -1172,7 +1280,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1565,7 +1673,20 @@
         "tools_inferred_from_definitions_only",
         "typescript_source_not_parsed"
       ],
-      "scanned_files": 54,
+      "scanned_files": 19,
+      "excluded_from_tool_surface": {
+        "count": 140,
+        "sample": [
+          "package/dist/__tests__/acf-site-id-routing.test.d.ts",
+          "package/dist/__tests__/acf-site-id-routing.test.d.ts.map",
+          "package/dist/__tests__/acf-site-id-routing.test.js",
+          "package/dist/__tests__/acf-site-id-routing.test.js.map",
+          "package/dist/__tests__/acf-tool-routing.test.d.ts",
+          "package/dist/__tests__/acf-tool-routing.test.d.ts.map",
+          "package/dist/__tests__/acf-tool-routing.test.js",
+          "package/dist/__tests__/acf-tool-routing.test.js.map"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1583,7 +1704,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1608,6 +1729,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 17,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1621,7 +1746,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1833,10 +1958,22 @@
       "statically_complete": false,
       "incompleteness": [
         "list_tools_array_not_static",
-        "tools_inferred_from_definitions_only",
-        "typescript_source_not_parsed"
+        "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 117,
+      "excluded_from_tool_surface": {
+        "count": 12,
+        "sample": [
+          "package/skills/building-gtm-tables/references/common-blueprints.fixtures.ts",
+          "package/skills/create-campaign-brief/references/examples/briefs/clover.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/galley.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/gelee.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/hey-digital.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/persona.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/revvix.md",
+          "package/skills/create-campaign-brief/references/examples/briefs/sellable-dev.md"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1850,7 +1987,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1923,6 +2060,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 68,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1936,7 +2077,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1969,6 +2110,19 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 4,
+      "excluded_from_tool_surface": {
+        "count": 22,
+        "sample": [
+          "package/dist/data/types/@remote-ui/async-subscription/2.1.18/build/ts/tests/create.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/async-subscription/2.1.18/build/ts/tests/stateful.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/core/2.2.7/build/ts/tests/receiver.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/core/2.2.7/build/ts/tests/root.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/react/5.0.8/build/ts/tests/e2e.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/rpc/1.4.7/build/ts/tests/endpoint.test.d.ts.gz",
+          "package/dist/data/types/@remote-ui/rpc/1.4.7/build/ts/tests/utilities.d.ts.gz",
+          "package/dist/data/types/@remote-ui/rpc/1.4.7/src/tests/utilities.ts.gz"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -1982,7 +2136,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2039,6 +2193,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 94,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2052,7 +2210,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2076,7 +2234,20 @@
       "incompleteness": [
         "registration_name_not_static"
       ],
-      "scanned_files": 247,
+      "scanned_files": 239,
+      "excluded_from_tool_surface": {
+        "count": 8,
+        "sample": [
+          "package/dist/reflect/tool/tests/create-segment.js",
+          "package/dist/reflect/tool/tests/create-test.js",
+          "package/dist/reflect/tool/tests/definition.js",
+          "package/dist/reflect/tool/tests/get-test-detail.js",
+          "package/dist/reflect/tool/tests/get-test-status.js",
+          "package/dist/reflect/tool/tests/list-segments.js",
+          "package/dist/reflect/tool/tests/list-tests.js",
+          "package/dist/reflect/tool/tests/run-test.js"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2090,7 +2261,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2157,6 +2328,19 @@
         "typescript_source_not_parsed"
       ],
       "scanned_files": 69,
+      "excluded_from_tool_surface": {
+        "count": 17,
+        "sample": [
+          "package/src/config.test.ts",
+          "package/src/domains/apply.integration.test.ts",
+          "package/src/domains/channels/channels.integration.test.ts",
+          "package/src/domains/conversation/conversation.integration.test.ts",
+          "package/src/domains/deletes.integration.test.ts",
+          "package/src/domains/executions.integration.test.ts",
+          "package/src/domains/reads.integration.test.ts",
+          "package/src/domains/records/records.integration.test.ts"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2170,7 +2354,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2232,6 +2416,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2245,7 +2433,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2332,6 +2520,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2345,7 +2537,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2374,6 +2566,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 3,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2387,7 +2583,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2419,6 +2615,10 @@
         "typescript_source_not_parsed"
       ],
       "scanned_files": 1376,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2432,7 +2632,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2481,6 +2681,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2494,7 +2698,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2520,6 +2724,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 9,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2537,7 +2745,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2563,7 +2771,20 @@
         "registration_name_not_static",
         "typescript_source_not_parsed"
       ],
-      "scanned_files": 130,
+      "scanned_files": 123,
+      "excluded_from_tool_surface": {
+        "count": 12,
+        "sample": [
+          "package/cli-template/examples/mcp-apps-canonical/README.md",
+          "package/cli-template/examples/mcp-apps-canonical/server.ts",
+          "package/cli-template/examples/mcp-apps-canonical/widget/index.html",
+          "package/src/tests/jest-simple-reporter.js",
+          "package/src/tests/mcp/sse/mcp-sse-client-handling.md",
+          "package/src/tests/mcp/sse/test-sse-npm-package.js",
+          "package/src/tests/mcp/test-cases.js",
+          "package/src/tests/mcp/test-http-modern.js"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2589,7 +2810,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2728,6 +2949,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 182,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2745,7 +2970,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2799,6 +3024,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 2,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -2807,7 +3036,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2895,7 +3124,17 @@
       "incompleteness": [
         "tools_inferred_from_definitions_only"
       ],
-      "scanned_files": 96,
+      "scanned_files": 94,
+      "excluded_from_tool_surface": {
+        "count": 5,
+        "sample": [
+          "package/runtime/solution-plays/29-mcp-gateway/examples/azure-track.yml",
+          "package/runtime/solution-plays/29-mcp-gateway/examples/github-track.yml",
+          "package/runtime/solution-plays/29-mcp-gateway/examples/playwright-track.yml",
+          "package/runtime/solution-plays/runtime/test/evaluation.test.mjs",
+          "package/runtime/solution-plays/runtime/test/runtime.test.mjs"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -2909,7 +3148,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3041,6 +3280,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3054,7 +3297,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3081,6 +3324,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3094,7 +3341,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3132,6 +3379,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3145,7 +3396,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3181,6 +3432,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3202,7 +3457,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3233,6 +3488,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 27,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3246,7 +3505,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3271,6 +3530,10 @@
         "no_recognized_registration_pattern"
       ],
       "scanned_files": 154,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3288,7 +3551,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3376,6 +3639,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 179,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3389,7 +3656,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3462,10 +3729,15 @@
       "statically_complete": false,
       "incompleteness": [
         "registration_name_not_static",
-        "tools_inferred_from_definitions_only",
-        "typescript_source_not_parsed"
+        "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 191,
+      "excluded_from_tool_surface": {
+        "count": 1,
+        "sample": [
+          "package/dist/plugin/skills/harvest/references/harvest-scan.test.ts"
+        ]
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3487,7 +3759,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3541,6 +3813,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 193,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3554,7 +3830,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3651,6 +3927,10 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 778,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": null,
         "declared_present": false
@@ -3659,7 +3939,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3688,6 +3968,10 @@
       "statically_complete": true,
       "incompleteness": [],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3701,7 +3985,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3729,6 +4013,10 @@
         "registration_name_not_static"
       ],
       "scanned_files": 1,
+      "excluded_from_tool_surface": {
+        "count": 0,
+        "sample": []
+      },
       "sdk_evidence": {
         "declared": [
           {
@@ -3742,7 +4030,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+          "build_sha256": "f760cec1a583438b906b1c442e8a535496ad0f49b7aca2a6719304a7c90f1190"
         },
         "protocol_profile": "mcp-2026-07-28"
       },

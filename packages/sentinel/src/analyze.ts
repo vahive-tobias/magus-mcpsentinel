@@ -16,6 +16,10 @@ import type { SentinelReport } from "./report-contract.js";
  */
 
 export { ArchiveTooLargeError } from "./archive.js";
+// Exported so a consumer can list what the tool-surface scan skipped without
+// re-deriving the rule. Path-shape exclusion is an approximation rather than
+// proof of runtime irrelevance, and it should stay inspectable.
+export { isOutsideToolSurface } from "./tool-surface.js";
 export { ReportValidationError } from "./schema.js";
 export type { NpmPackageRequest } from "./npm-registry.js";
 

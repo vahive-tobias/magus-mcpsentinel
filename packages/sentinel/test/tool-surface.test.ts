@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readNpmArchiveBytes } from "../src/archive.js";
-import { extractToolSurface } from "../src/tool-surface.js";
+import { extractToolSurface, isOutsideToolSurface } from "../src/tool-surface.js";
 import { createNpmTarball } from "./archive-fixture.js";
 
 function surfaceOf(files: Record<string, string>) {
@@ -200,6 +200,88 @@ test("recovers tool definitions that no call site registers", () => {
   // Presence of a definition is not proof of registration.
   assert.equal(surface.complete, false);
   assert.ok(surface.incompleteness.includes("tools_inferred_from_definitions_only"));
+});
+
+/**
+ * Path-shape exclusion, measured before it was built.
+ *
+ * Nine of forty-one classified servers in the pinned corpus carried an
+ * incompleteness reason earned by vendored source or a fixture. The exact paths
+ * below are taken from those artifacts.
+ */
+test("vendored and fixture files do not make the surface incomplete", () => {
+  const surface = surfaceOf({
+    "package/dist/index.js": "server.tool('read_file', 'Read a file', { path: 'string' }, h);",
+    "package/dist/node_modules/@aws-crypto/crc32/src/index.ts": "export const x: number = 1;",
+    "package/src/references/common-blueprints.fixtures.ts": "export const y: string = 'z';",
+    "package/test/server.test.js": "server.tool('from_a_test', 'd', {}, h);"
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["read_file"]);
+  assert.equal(surface.complete, true, "vendored code cannot cost a package its removal authority");
+  assert.deepEqual(surface.incompleteness, []);
+});
+
+test("an excluded file contributes no detached candidates", () => {
+  const surface = surfaceOf({
+    "package/dist/index.js": "server.tool('real_tool', 'The actual surface', { a: 'string' }, h);",
+    "package/examples/demo.js":
+      "const demo = [{ name: 'example_tool', description: 'From a sample', inputSchema: { type: 'object' } }];",
+    "package/src/tools.fixtures.js":
+      "export const F = [{ name: 'fixture_tool', description: 'd', inputSchema: {} }];"
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["real_tool"]);
+});
+
+/**
+ * The failure mode of the approach this replaced.
+ *
+ * An entrypoint closure could lose a package's entire surface — a 3.9 MB bin
+ * over the parse limit, or a plugin whose own `main` never reaches its tools. A
+ * path rule cannot, because nothing outside the listed shapes is excluded. This
+ * pins that: ordinary source in unusual places is still read.
+ */
+test("nothing outside the listed shapes is excluded", () => {
+  const surface = surfaceOf({
+    "package/lib/deep/nested/unusual/place.js": "server.tool('still_found', 'd', { a: 'string' }, h);",
+    "package/skills/audit/tool.js": "server.tool('skills_are_not_excluded', 'd', { a: 'string' }, h);",
+    "package/templates/starter.js": "server.tool('templates_are_not_excluded', 'd', { a: 'string' }, h);"
+  });
+
+  assert.deepEqual(
+    surface.tools.map((tool) => tool.name).sort(),
+    ["skills_are_not_excluded", "still_found", "templates_are_not_excluded"],
+    "skills and templates are too overloaded to exclude on the name alone"
+  );
+  assert.equal(surface.complete, true);
+});
+
+test("the exclusion predicate is exactly the measured shapes", () => {
+  for (const path of [
+    "package/dist/node_modules/@aws-crypto/crc32/src/index.ts",
+    "package/examples/demo.js",
+    "package/fixtures/data.js",
+    "package/test/a.js",
+    "package/tests/b.js",
+    "package/__tests__/c.js",
+    "package/src/server.test.js",
+    "package/src/server.spec.ts",
+    "package/src/blueprints.fixture.ts",
+    "package/src/blueprints.fixtures.ts"
+  ]) {
+    assert.equal(isOutsideToolSurface(path), true, `${path} should be outside the tool surface`);
+  }
+
+  for (const path of [
+    "package/dist/index.js",
+    "package/skills/audit/telemetry.ts",
+    "package/cli-template/server.js",
+    "package/src/latest.js",
+    "package/src/contest.js"
+  ]) {
+    assert.equal(isOutsideToolSurface(path), false, `${path} must still be read`);
+  }
 });
 
 /**

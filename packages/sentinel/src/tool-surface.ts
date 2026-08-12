@@ -21,6 +21,43 @@ const PARSEABLE = /\.(?:m?js|cjs)$/i;
 const TYPESCRIPT_SOURCE = /\.tsx?$/i;
 const DECLARATION = /\.d\.[cm]?ts$/i;
 
+/**
+ * Paths whose shape says they are not the package's own tool surface.
+ *
+ * Measured, not guessed. Across a 50-package corpus, nine of forty-one
+ * classified servers carried an incompleteness reason earned by a file like
+ * `dist/node_modules/@aws-crypto/crc32/src/index.ts` or
+ * `references/common-blueprints.fixtures.ts` — and `complete: false` is what
+ * makes a consumer withhold removal conclusions. The same files were also in the
+ * detached-definition candidate pool, so an example's tool-shaped object could
+ * enter the inventory.
+ *
+ * This is an approximation and is deliberately narrow. It replaced an entrypoint
+ * reachability closure that the same corpus disproved: a 3.9 MB bin over the
+ * parse limit, or a plugin package whose surface its own `main` never reaches,
+ * both lost their entire surface to it. A path rule cannot do that, because
+ * nothing outside these shapes is ever excluded.
+ *
+ * `skills` and `templates` are deliberately absent. Both names are overloaded
+ * enough that a package may legitimately ship production code under them, and
+ * widening on a name rather than on evidence is how this becomes the bug it
+ * replaced.
+ *
+ * Scope: tool-surface parsing and definition discovery only. The file inventory
+ * and the static API indicators still read the whole artifact — Sentinel does not
+ * stop observing that these files exist, it stops letting them speak for the
+ * tool surface.
+ */
+const EXCLUDED_PATH_COMPONENTS = new Set(["node_modules", "examples", "fixtures", "test", "tests", "__tests__"]);
+const EXCLUDED_FILENAME_MARKERS = [".test.", ".spec.", ".fixture.", ".fixtures."];
+
+export function isOutsideToolSurface(artifactPath: string): boolean {
+  const segments = artifactPath.split("/");
+  const basename = segments[segments.length - 1] ?? "";
+  if (segments.some((segment) => EXCLUDED_PATH_COMPONENTS.has(segment))) return true;
+  return EXCLUDED_FILENAME_MARKERS.some((marker) => basename.includes(marker));
+}
+
 /** Registration helpers exposed by the MCP TypeScript SDK's high-level server. */
 const REGISTRATION_METHODS = new Set(["tool", "registerTool"]);
 
@@ -148,6 +185,9 @@ export function extractToolSurface(entries: TarEntry[]): ToolSurface {
     .sort((left, right) => left.path.localeCompare(right.path));
 
   for (const entry of files) {
+    // Vendored code, a fixture or an example cannot cost this package its
+    // authority to report a removal, and cannot contribute a candidate tool.
+    if (isOutsideToolSurface(entry.path)) continue;
     if (TYPESCRIPT_SOURCE.test(entry.path) && !DECLARATION.test(entry.path)) {
       // acorn cannot parse TypeScript syntax. Record the gap rather than
       // implying the shipped .ts sources contained no registrations.
