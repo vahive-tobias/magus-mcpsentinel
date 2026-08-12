@@ -133,6 +133,12 @@ function measure(spec, report) {
     tools_total: tools.length,
     tools_by_discovery: byDiscovery,
     tool_names: tools.map((tool) => tool.name).sort(),
+    // Where each recovered name came from. Without this a candidate that
+    // disappears between runs cannot be shown to have come only from an excluded
+    // path, and "the tools that vanished were false positives" stays an assertion.
+    tool_sources: Object.fromEntries(
+      tools.map((tool) => [tool.name, tool.artifact_path]).sort((a, b) => a[0].localeCompare(b[0]))
+    ),
     inventory_recovered: tools.length > 0,
     // `complete` is Sentinel's own condition for permitting a removal
     // conclusion — extraction hit nothing it could not resolve. It is not

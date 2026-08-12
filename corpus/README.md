@@ -53,6 +53,24 @@ understates the extractor while counting it as a hit would overstate it. The
 classification and its evidence live in `roles.json`, because an exclusion
 applied in prose is one nobody can check and one that quietly stops being applied.
 
+## Two scopes, and they are not the same
+
+The corpus made a distinction real that had been implicit:
+
+- **Artifact inventory** — every file shipped in the tarball. Recorded in full,
+  always. The file inventory and the static API indicators read all of it.
+- **Candidate tool-source scope** — the files eligible to declare *this
+  package's* tool surface. Narrower, and narrower on an approximation.
+
+They diverge more than expected. One package ships 5,448 files under
+`dist/node_modules`, another 2,680 under `node_modules`; 14 of 50 vendor
+something. Reading all of it for tool declarations produced 21 tools that were
+not the packages' own — 18 of them the MCP SDK's bundled example servers,
+recovered as if `@nocobase/plugin-mcp-server` had registered them.
+
+Sentinel does not stop observing that those files exist. It stops letting them
+speak for the tool surface, and says so when an entrypoint loads one anyway.
+
 ## What is deliberately not measured
 
 **Precision.** Zero observed false positives comes from spot-checking recovered

@@ -58,6 +58,93 @@ export function isOutsideToolSurface(artifactPath: string): boolean {
   return EXCLUDED_FILENAME_MARKERS.some((marker) => basename.includes(marker));
 }
 
+/** Entrypoints declared by the manifest, resolved to artifact paths. */
+function declaredEntrypoints(entries: TarEntry[]): string[] {
+  const manifest = entries.find((entry) => /^[^/]+\/package\.json$/.test(entry.path));
+  const raw = manifest?.contents?.toString("utf8");
+  if (!manifest || !raw) return [];
+
+  let parsed: Record<string, unknown>;
+  try { parsed = JSON.parse(raw) as Record<string, unknown>; } catch { return []; }
+
+  const declared: string[] = [];
+  const collect = (value: unknown, depth = 0): void => {
+    if (typeof value === "string") { declared.push(value); return; }
+    if (depth > 6 || !value || typeof value !== "object") return;
+    for (const nested of Object.values(value as Record<string, unknown>)) collect(nested, depth + 1);
+  };
+  collect(parsed.main); collect(parsed.module); collect(parsed.bin); collect(parsed.exports);
+
+  const prefix = manifest.path.slice(0, manifest.path.lastIndexOf("/"));
+  const known = new Set(entries.map((entry) => entry.path));
+  const resolved: string[] = [];
+  for (const target of declared) {
+    const base = `${prefix}/${target.replace(/^\.\//, "")}`.replace(/\/+/g, "/");
+    for (const suffix of ["", ".js", ".mjs", ".cjs", "/index.js", "/index.mjs", "/index.cjs"]) {
+      if (known.has(`${base}${suffix}`)) { resolved.push(`${base}${suffix}`); break; }
+    }
+  }
+  return resolved;
+}
+
+/** Every literal module specifier in a source, relative or bare. */
+const LITERAL_SPECIFIER = /(?:\bfrom\s*|\brequire\s*\(\s*|\bimport\s*\(\s*)["']([^"'\n]+)["']/g;
+
+function normalizePath(path: string): string {
+  const parts: string[] = [];
+  for (const segment of path.split("/")) {
+    if (segment === "" || segment === ".") continue;
+    if (segment === "..") parts.pop();
+    else parts.push(segment);
+  }
+  return parts.join("/");
+}
+
+/**
+ * Does entrypoint code load something path shape excluded?
+ *
+ * Path shape is an approximation, not proof a file is irrelevant at runtime.
+ * Excluding `node_modules` wholesale could produce the same false completeness in
+ * reverse — a vendored dependency that is loaded and registers tools would be
+ * dropped in silence.
+ *
+ * So the roots' own literal edges are checked, deliberately shallow: one level,
+ * no closure, none of the entrypoint-graph machinery the corpus already
+ * disproved. A bare specifier matters as much as a relative one, because a
+ * bundler that emits `dist/node_modules/xml2js` loads it with
+ * `require("xml2js")` — the dangerous case, and invisible to a relative check.
+ *
+ * The file stays out of parsing: reading vendored SDK examples is what produced
+ * twenty-one false tools. What changes is the claim. The surface is reported
+ * incomplete rather than complete-minus-what-we-chose-not-to-read.
+ */
+function entrypointsReachExcludedPaths(entries: TarEntry[]): boolean {
+  const roots = declaredEntrypoints(entries);
+  if (roots.length === 0) return false;
+
+  const excluded = entries.filter((entry) => entry.type === "file" && isOutsideToolSurface(entry.path));
+  if (excluded.length === 0) return false;
+  const byPath = new Map(entries.map((entry) => [entry.path, entry]));
+
+  for (const root of roots) {
+    const source = byPath.get(root)?.contents?.toString("utf8");
+    if (!source) continue;
+    const base = root.slice(0, root.lastIndexOf("/"));
+    LITERAL_SPECIFIER.lastIndex = 0;
+    for (const match of source.matchAll(LITERAL_SPECIFIER)) {
+      const specifier = match[1]!;
+      if (specifier.startsWith(".")) {
+        const target = normalizePath(`${base}/${specifier}`);
+        if (excluded.some((entry) => entry.path === target || entry.path.startsWith(`${target}/`))) return true;
+        continue;
+      }
+      const scoped = specifier.split("/").slice(0, specifier.startsWith("@") ? 2 : 1).join("/");
+      if (excluded.some((entry) => entry.path.includes(`/node_modules/${scoped}/`))) return true;
+    }
+  }
+  return false;
+}
+
 /** Registration helpers exposed by the MCP TypeScript SDK's high-level server. */
 const REGISTRATION_METHODS = new Set(["tool", "registerTool"]);
 
@@ -178,6 +265,7 @@ export function extractToolSurface(entries: TarEntry[]): ToolSurface {
   const agentText: AgentTextSpan[] = [];
   const definitions = new Map<string, BuiltTool>();
   let registrationSites = 0;
+  let excludedAny = false;
 
   const files = entries
     .filter((entry) => entry.type === "file" && entry.contents !== undefined)
@@ -187,7 +275,10 @@ export function extractToolSurface(entries: TarEntry[]): ToolSurface {
   for (const entry of files) {
     // Vendored code, a fixture or an example cannot cost this package its
     // authority to report a removal, and cannot contribute a candidate tool.
-    if (isOutsideToolSurface(entry.path)) continue;
+    if (isOutsideToolSurface(entry.path)) {
+      excludedAny = true;
+      continue;
+    }
     if (TYPESCRIPT_SOURCE.test(entry.path) && !DECLARATION.test(entry.path)) {
       // acorn cannot parse TypeScript syntax. Record the gap rather than
       // implying the shipped .ts sources contained no registrations.
@@ -237,6 +328,13 @@ export function extractToolSurface(entries: TarEntry[]): ToolSurface {
   // that suddenly grew its entire surface.
   if (registrationSites === 0) {
     incompleteness.add("no_recognized_registration_pattern");
+  }
+
+  // Path shape decided these files do not speak for the surface. If entrypoint
+  // code loads one anyway, that decision is an assumption rather than a fact, and
+  // the surface is unknown rather than complete.
+  if (excludedAny && entrypointsReachExcludedPaths(entries)) {
+    incompleteness.add("entrypoint_loads_excluded_path");
   }
 
   return {

@@ -46,7 +46,10 @@ const COVERAGE_LOSS_SEVERITY: Record<string, Severity> = {
   tools_inferred_from_definitions_only: "review",
   // A task registration in a receiver shape this extractor does not walk. The
   // package declared it perfectly ordinarily; the limit is ours.
-  task_registration_shape_not_recognized: "review"
+  task_registration_shape_not_recognized: "review",
+  // Entrypoint code loads a file that path shape excluded from the tool-surface
+  // scan. The exclusion is our approximation, so the uncertainty is ours.
+  entrypoint_loads_excluded_path: "review"
 };
 
 export const CLASSIFIED_COVERAGE_LOSS_REASONS = Object.keys(COVERAGE_LOSS_SEVERITY);

@@ -257,6 +257,58 @@ test("nothing outside the listed shapes is excluded", () => {
   assert.equal(surface.complete, true);
 });
 
+/** A fixture whose manifest declares entrypoints, so root edges can be checked. */
+function surfaceWithManifest(manifest: Record<string, unknown>, files: Record<string, string>) {
+  const withManifest = {
+    "package/package.json": JSON.stringify({ name: "fixture", version: "1.0.0", ...manifest }),
+    ...files
+  };
+  return extractToolSurface(readNpmArchiveBytes(createNpmTarball(withManifest)).entries);
+}
+
+/**
+ * The reverse false-completeness this approximation could otherwise cause.
+ *
+ * A path is not proof that code is irrelevant at runtime. A vendored dependency
+ * can be loaded and can register tools, so if entrypoint code reaches something
+ * path shape excluded, the surface is unknown rather than complete. The file
+ * stays out of parsing — reading vendored SDK examples produced twenty-one false
+ * tools — but the claim of completeness is withdrawn.
+ */
+test("an entrypoint loading vendored code keeps the surface incomplete", () => {
+  const surface = surfaceWithManifest({ main: "dist/index.js" }, {
+    // The measured shape: a bundler emits deps beside the entry and loads them
+    // by bare specifier, which a relative-path check would never see.
+    "package/dist/index.js": "const xml = require('xml2js');\nserver.tool('read', 'd', { a: 'string' }, h);",
+    "package/dist/node_modules/xml2js/lib/xml2js.js": "module.exports = {};"
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["read"]);
+  assert.equal(surface.complete, false, "an excluded file the entry loads is an assumption, not a fact");
+  assert.ok(surface.incompleteness.includes("entrypoint_loads_excluded_path"));
+});
+
+test("vendored code the entrypoint never loads does not withdraw completeness", () => {
+  const surface = surfaceWithManifest({ main: "dist/index.js" }, {
+    "package/dist/index.js": "server.tool('read', 'd', { a: 'string' }, h);",
+    "package/dist/node_modules/@aws-crypto/crc32/src/index.ts": "export const x: number = 1;"
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["read"]);
+  assert.equal(surface.complete, true);
+  assert.deepEqual(surface.incompleteness, []);
+});
+
+test("a relative import into an excluded path also withdraws completeness", () => {
+  const surface = surfaceWithManifest({ main: "dist/index.js" }, {
+    "package/dist/index.js": "import { extra } from './examples/shared.js';\nserver.tool('read', 'd', { a: 'string' }, h);",
+    "package/dist/examples/shared.js": "export const extra = 1;"
+  });
+
+  assert.equal(surface.complete, false);
+  assert.ok(surface.incompleteness.includes("entrypoint_loads_excluded_path"));
+});
+
 test("the exclusion predicate is exactly the measured shapes", () => {
   for (const path of [
     "package/dist/node_modules/@aws-crypto/crc32/src/index.ts",
