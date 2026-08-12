@@ -390,10 +390,16 @@ async function decideNotice(request: Request, repository: WatchRepository, notic
  * The analyzer runs here, in this isolate. It reads the published artifact and
  * never executes it, exactly as it does from the command line.
  *
- * A target whose analysis does not complete keeps its existing watermark, so the
- * next run retries it. That is deliberate: advancing the watermark on a failure
- * would turn "we could not look" into "nothing changed", which is the one thing a
- * change monitor must never report.
+ * A target whose analysis does not complete keeps its existing watermark, because
+ * advancing it on a failure would turn "we could not look" into "nothing
+ * changed", which is the one thing a change monitor must never report.
+ *
+ * What happens next depends on how it failed, and the two are not the same. An
+ * error the analyzer raises is recorded as `failed`, and the next run retries it.
+ * A run killed mid-analysis leaves its check at `queued`, which `hasOpenCheck`
+ * below then skips on every later run — deliberately, since an unbounded retry of
+ * something that will never fit is the runaway-write pattern. That check is the
+ * handoff to `/api/pending`, not work this loop will pick up again.
  */
 export async function checkForNewReleases(env: Env): Promise<void> {
   const repository = new WatchRepository(env.DB);

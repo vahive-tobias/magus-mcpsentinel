@@ -155,8 +155,16 @@ packages sampled, 3 exceed that.
 The run is cut short mid-analysis. Watch writes its check row *before* analysis
 starts precisely so this stays visible: the check is left at `queued` saying the
 run did not finish, and **the version watermark does not advance**, so the release
-is retried rather than counted as unchanged. Verified on a real free-tier
-deployment, not just in tests.
+is never counted as unchanged. Verified on a real free-tier deployment, not just
+in tests.
+
+It is not retried in the Worker, and that is the part worth knowing. A check left
+at `queued` is exactly what puts that release on `/api/pending` for an analyzer
+that is not CPU-limited to pick up — retrying it here instead would mean
+re-downloading something that will never fit, on every run, forever. **So if
+nothing polls `/api/pending`, the release stays outstanding indefinitely and
+nothing announces it.** Check `/api/pending` after adding a package large enough
+to be at risk; a release sitting there is the signal.
 
 To cover those packages without paying, set `ANALYZE_IN_WORKER = "false"` and let
 something else do the analysis — either the free
