@@ -202,6 +202,98 @@ test("recovers tool definitions that no call site registers", () => {
   assert.ok(surface.incompleteness.includes("tools_inferred_from_definitions_only"));
 });
 
+/**
+ * Shapes taken from pinned corpus artifacts, not invented.
+ *
+ * `@transcend-io/mcp-server-docs` keys its schema `zodSchema` and carries no
+ * `inputSchema` anywhere; `firecrawl-mcp` keys its schemas `parameters`. Both
+ * were invisible while `inputSchema` was mandatory, and between them they are
+ * sixteen or more tools in a thirteen-package corpus.
+ */
+test("recovers a Standard Schema definition keyed zodSchema", () => {
+  const surface = surfaceOf({
+    "package/dist/tools.mjs": [
+      "function createDocsListTool(clients) {",
+      "  return defineTool({",
+      "    name: 'docs_list',",
+      "    description: 'List Transcend documentation articles.',",
+      "    annotations: { readOnlyHint: true },",
+      "    zodSchema: DocsListSchema,",
+      "    handler: async ({ section }) => ({})",
+      "  });",
+      "}"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["docs_list"]);
+  assert.equal(surface.tools[0]?.discovery, "definition");
+  assert.equal(surface.complete, false, "a definition is not proof of registration");
+});
+
+test("recovers a definition keyed parameters when the object corroborates it", () => {
+  const surface = surfaceOf({
+    "package/dist/index.js": [
+      "const TOOLS = [{",
+      "  name: 'firecrawl_monitor_create',",
+      "  description: 'Create a monitor.',",
+      "  annotations: { readOnlyHint: false },",
+      "  parameters: { type: 'object', properties: { url: {} } }",
+      "}];"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools.map((tool) => tool.name), ["firecrawl_monitor_create"]);
+  assert.equal(surface.tools[0]?.discovery, "definition");
+});
+
+/**
+ * `parameters` is how every OpenAI-style function descriptor is keyed, and how
+ * plenty of route tables and CLI definitions are keyed too. Widening to it
+ * without corroboration is how the inventory acquires a tool that does not
+ * exist, which becomes a phantom removal on the next release.
+ */
+test("a name beside bare parameters is not a tool", () => {
+  const surface = surfaceOf({
+    "package/routes.js": [
+      "export const ROUTES = [",
+      "  { name: 'users', parameters: { id: 'string' } },",
+      "  { name: 'orders', parameters: { id: 'string' } }",
+      "];"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools, [], "a route table is not a tool surface");
+});
+
+test("keys deliberately left out stay out", () => {
+  // `schema` and `arguments` collide far more widely than `parameters` and are
+  // measured on their own, not folded into this change.
+  const surface = surfaceOf({
+    "package/config.js": [
+      "export const ENTRIES = [",
+      "  { name: 'db_entry', description: 'A database entry', schema: { type: 'object' } },",
+      "  { name: 'cli_flag', description: 'A CLI flag', arguments: { verbose: true } }",
+      "];"
+    ].join("\n")
+  });
+
+  assert.deepEqual(surface.tools, []);
+});
+
+test("a definition-only inventory is never statically complete", () => {
+  // The whole point of the tier: more recall, and not one inch of extra
+  // authority. Neither corpus package may claim a complete surface from this.
+  for (const source of [
+    "const T = [{ name: 'a', description: 'd', zodSchema: S, handler: h }];",
+    "const T = [{ name: 'b', description: 'd', annotations: {}, parameters: {} }];"
+  ]) {
+    const surface = surfaceOf({ "package/tools.js": source });
+    assert.equal(surface.tools.length, 1);
+    assert.equal(surface.complete, false);
+    assert.ok(surface.incompleteness.includes("tools_inferred_from_definitions_only"));
+  }
+});
+
 test("a directly registered tool keeps registration provenance over a definition", () => {
   const surface = surfaceOf({
     "package/a-defs.js": "export const T = [{ name: 'shared', description: 'From data', inputSchema: { type: 'object' } }];",

@@ -24,6 +24,33 @@ const DECLARATION = /\.d\.[cm]?ts$/i;
 /** Registration helpers exposed by the MCP TypeScript SDK's high-level server. */
 const REGISTRATION_METHODS = new Set(["tool", "registerTool"]);
 
+/**
+ * Schema keys distinctive enough that a static `name` beside one is evidence.
+ *
+ * `inputSchema` is the MCP tool-definition field. `zodSchema` is what a Standard
+ * Schema implementation looks like once built — measured in
+ * `@transcend-io/mcp-server-docs`, whose tools carry no `inputSchema` at all.
+ * Neither key appears on ordinary configuration objects.
+ */
+const DISTINCTIVE_SCHEMA_KEYS = ["inputSchema", "input_schema", "zodSchema"];
+
+/**
+ * Schema keys that are common outside MCP and cannot stand alone.
+ *
+ * `parameters` is how `firecrawl-mcp` keys its schemas, and also how every
+ * OpenAI-style function descriptor does. `{ name, parameters }` is not evidence
+ * of a tool by itself, so it counts only beside a field that a route table, a
+ * config entry or a CLI flag definition would not carry.
+ *
+ * `schema` and `arguments` are deliberately absent. They collide far more
+ * widely, and each is worth measuring on its own rather than inside a change
+ * whose precision would then be unattributable.
+ */
+const CORROBORATED_SCHEMA_KEYS = ["parameters"];
+
+/** What must appear beside an ambiguous schema key for the object to qualify. */
+const TOOL_CORROBORATION = ["description", "annotations", "handler"];
+
 export type ValueRepresentation = "json_literal" | "string_literal" | "source_text";
 
 export interface ExtractedTool {
@@ -235,28 +262,47 @@ function collectFromProgram(
  * registered elsewhere by a loop or by a shared base package. No call site names
  * those tools, so the registration scan cannot see them.
  *
- * The match is deliberately narrow: a static string `name` plus an `inputSchema`
- * property. `inputSchema` is the MCP tool-definition field and is rare elsewhere,
- * which keeps ordinary configuration objects out of the inventory. Guessing wider
- * would invent tools that do not exist, and an invented tool becomes a phantom
+ * The match stays narrow, in two tiers. A static string `name` beside a
+ * distinctive schema key qualifies on its own. A name beside a schema key that
+ * is common outside MCP qualifies only with corroboration, because guessing
+ * wider invents tools that do not exist and an invented tool becomes a phantom
  * removal in the next release.
+ *
+ * The tiers are measured rather than assumed: both keys below the distinctive
+ * line are present in pinned corpus artifacts, and `parameters` is the one that
+ * an OpenAI-style function descriptor shares.
  */
 function collectToolDefinitions(program: AstNode, context: FileContext, definitions: Map<string, BuiltTool>): void {
   walk(program, (node) => {
     if (node.type !== "ObjectExpression") return;
     const name = stringLiteralValue(propertyValue(node, "name"));
     if (name === undefined || definitions.has(name)) return;
-    const inputSchema = propertyValue(node, "inputSchema") ?? propertyValue(node, "input_schema");
-    if (!inputSchema) return;
+
+    let schema = firstProperty(node, DISTINCTIVE_SCHEMA_KEYS);
+    if (!schema) {
+      const ambiguous = firstProperty(node, CORROBORATED_SCHEMA_KEYS);
+      if (!ambiguous) return;
+      if (!TOOL_CORROBORATION.some((key) => propertyValue(node, key))) return;
+      schema = ambiguous;
+    }
+
     definitions.set(name, buildTool(
       name,
       propertyValue(node, "description"),
-      inputSchema,
+      schema,
       context,
       [node.start, node.end],
       "definition"
     ));
   });
+}
+
+function firstProperty(object: AstNode, keys: string[]): AstNode | undefined {
+  for (const key of keys) {
+    const value = propertyValue(object, key);
+    if (value) return value;
+  }
+  return undefined;
 }
 
 /** `server.tool("name", ...)` and `server.registerTool("name", { ... }, handler)`. */

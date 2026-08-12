@@ -41,8 +41,13 @@ mcp-searxng@1.15.0
 #   @transcend-io/mcp-server-base
 #   hostinger-api-mcp
 #
-# Wanted specifically, and not yet represented: a package built on the v2 SDK
-# (`@modelcontextprotocol/server`), and one registering a task via
-# `registerToolTask`. Both shapes are unrecognised today, and an adapter written
-# against documentation rather than a real artifact is the failure this corpus
-# exists to prevent.
+# A task registration IS already represented, contrary to an earlier note here:
+# `@mapbox/mcp-server` calls
+# `server.experimental.tasks.registerToolTask('optimization_v2_tool', {...})`
+# with a static string name. It is unrecognised only because the method is not
+# in the allowlist and the matcher does not walk a nested receiver — not because
+# the shape is missing from the corpus.
+#
+# Still wanted: a package built directly on the v2 server package
+# (`@modelcontextprotocol/server`). An adapter written against documentation
+# rather than a real artifact is the failure this corpus exists to prevent.

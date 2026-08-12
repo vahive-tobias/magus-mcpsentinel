@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-12T06:26:04.839Z",
+  "generated_at": "2026-08-12T06:38:37.615Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+      "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
     },
     "protocol_profile": "mcp-2026-07-28"
   },
@@ -12,15 +12,15 @@
   "analyzed": 13,
   "failed": [],
   "artifact_drift": [],
-  "inventories_recovered": 6,
-  "recovery_rate": 0.4615,
+  "inventories_recovered": 8,
+  "recovery_rate": 0.6154,
   "statically_complete_extractions": 3,
   "statically_complete_rate": 0.2308,
-  "tools_recovered_total": 194,
+  "tools_recovered_total": 223,
   "incompleteness_reasons": {
     "registration_name_not_static": 5,
+    "tools_inferred_from_definitions_only": 5,
     "no_recognized_registration_pattern": 4,
-    "tools_inferred_from_definitions_only": 3,
     "typescript_source_not_parsed": 1,
     "list_tools_entry_not_static": 1
   },
@@ -77,7 +77,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -114,7 +114,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -155,7 +155,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -205,7 +205,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -243,7 +243,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -280,7 +280,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -365,7 +365,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -402,7 +402,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -414,16 +414,20 @@
       "spec": "@transcend-io/mcp-server-docs@0.3.13",
       "entries": 11,
       "regular_file_bytes": 27710,
-      "tools_total": 0,
+      "tools_total": 2,
       "tools_by_discovery": {
         "registration": 0,
-        "definition": 0
+        "definition": 2
       },
-      "tool_names": [],
-      "inventory_recovered": false,
+      "tool_names": [
+        "docs_fetch",
+        "docs_list"
+      ],
+      "inventory_recovered": true,
       "statically_complete": false,
       "incompleteness": [
-        "no_recognized_registration_pattern"
+        "no_recognized_registration_pattern",
+        "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 3,
       "sdk_evidence": {
@@ -439,7 +443,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -481,7 +485,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -636,7 +640,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -648,16 +652,45 @@
       "spec": "firecrawl-mcp@3.23.9",
       "entries": 5,
       "regular_file_bytes": 164673,
-      "tools_total": 0,
+      "tools_total": 27,
       "tools_by_discovery": {
         "registration": 0,
-        "definition": 0
+        "definition": 27
       },
-      "tool_names": [],
-      "inventory_recovered": false,
+      "tool_names": [
+        "firecrawl_agent",
+        "firecrawl_agent_status",
+        "firecrawl_check_crawl_status",
+        "firecrawl_crawl",
+        "firecrawl_developer_search",
+        "firecrawl_extract",
+        "firecrawl_feedback",
+        "firecrawl_interact",
+        "firecrawl_interact_stop",
+        "firecrawl_map",
+        "firecrawl_monitor_check",
+        "firecrawl_monitor_checks",
+        "firecrawl_monitor_create",
+        "firecrawl_monitor_delete",
+        "firecrawl_monitor_get",
+        "firecrawl_monitor_list",
+        "firecrawl_monitor_run",
+        "firecrawl_monitor_update",
+        "firecrawl_parse",
+        "firecrawl_research_inspect_paper",
+        "firecrawl_research_read_paper",
+        "firecrawl_research_related_papers",
+        "firecrawl_research_search_github",
+        "firecrawl_research_search_papers",
+        "firecrawl_scrape",
+        "firecrawl_search",
+        "firecrawl_search_feedback"
+      ],
+      "inventory_recovered": true,
       "statically_complete": false,
       "incompleteness": [
-        "no_recognized_registration_pattern"
+        "no_recognized_registration_pattern",
+        "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 2,
       "sdk_evidence": {
@@ -668,7 +701,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
@@ -711,7 +744,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+          "build_sha256": "d33d2de3da687fb9510aab315bdee8ffec2d8db3c3f9f50886d402824ce2f3ba"
         },
         "protocol_profile": "mcp-2026-07-28"
       }
