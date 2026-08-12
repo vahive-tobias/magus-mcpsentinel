@@ -147,8 +147,10 @@ Re-analyzing the same artifact produces byte-identical observations.
 
 Sentinel never executes package code, never accepts credentials, never opens an MCP
 protocol session, and never assigns a safety verdict. The tool inventory is
-recovered by parsing source, so it is **inference and it is incomplete** — a usable
-inventory was recovered for 32% of a 25-package real-world corpus.
+recovered by parsing source, so it is **inference and it is incomplete** — across a
+pinned 50-package corpus, 37 yielded a usable inventory and 12 yielded one the
+extractor could resolve completely. The corpus is checked in with exact versions
+and digests, so you can re-run the number instead of believing it.
 
 **[docs/LIMITATIONS.md](docs/LIMITATIONS.md) states the boundaries in full. Read it
 before relying on a report.**

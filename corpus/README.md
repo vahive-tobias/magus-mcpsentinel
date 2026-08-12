@@ -71,6 +71,13 @@ recovered as if `@nocobase/plugin-mcp-server` had registered them.
 Sentinel does not stop observing that those files exist. It stops letting them
 speak for the tool surface, and says so when an entrypoint loads one anyway.
 
+**Say what this is precisely.** Candidate-source exclusion is a conservative
+provenance filter: it decides which files may support a claim about *this
+package's* declared surface. It is not a claim that the excluded code cannot run,
+cannot be loaded, or cannot expose tools — vendored code frequently does all
+three. When entrypoint code reaches excluded content, Sentinel withholds
+completeness; it never certifies the content irrelevant.
+
 ## What is deliberately not measured
 
 **Precision.** Zero observed false positives comes from spot-checking recovered

@@ -88,10 +88,11 @@ Never executes package code, never accepts credentials, never opens an MCP proto
 session, never assigns a safety verdict.
 
 The tool inventory is recovered by parsing source, so it is **inference and it is
-incomplete** — a usable inventory was recovered for **32% of a 25-package
-real-world corpus**. Everything else in a report — artifact digest, file inventory,
-dependencies, scripts, entrypoints — is recorded completely, on every package,
-every time.
+incomplete** — across a pinned 50-package corpus, **37 yielded a usable inventory
+and 12 yielded one the extractor could resolve completely**. Both numbers are in
+`corpus/metrics.json` and can be re-run. Everything else in a report — artifact
+digest, file inventory, dependencies, scripts, entrypoints — is recorded
+completely, on every package, every time.
 
 `diff` reports *what* changed and assigns no severity, because ranking a change is
 policy and belongs to whoever has to act on it.

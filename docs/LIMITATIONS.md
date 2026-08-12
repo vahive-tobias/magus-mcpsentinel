@@ -20,9 +20,23 @@ Tool surfaces are recovered by parsing shipped JavaScript. This is inference fro
 source, not an observation of a running server, which is why the inventory carries
 `coverage: "inferred"` and `discovery_status` stays `not_run`.
 
-Measured against a corpus of 25 real published MCP servers, **a usable tool
-inventory was recovered for 8 of them (32%)**. The rest register tools in shapes
-the parser does not recognize.
+Measured against a pinned corpus of 50 real published MCP servers, **37 yielded a
+usable tool inventory and 12 yielded one the extractor could resolve completely**.
+Over the 41 classified as servers rather than clients or libraries, that is 32 and
+11. The corpus is checked in with exact versions and artifact digests, so the
+figure can be re-run rather than taken on trust: see `corpus/`.
+
+Those are two different claims and only the second licenses a conclusion that a
+tool was *removed*. A package can yield forty-six recovered tools while the
+extractor still could not resolve everything it looked at.
+
+The corpus is stratified — across SDK versions, bundled and unbundled artifacts,
+and size — which is not the same as representative. It supports no claim about the
+MCP ecosystem as a whole.
+
+An earlier version of this file reported 32% against a 25-package corpus. That
+corpus was never checked in and cannot be reproduced, so the figure has been
+retired rather than carried forward or compared against.
 
 When any part of the surface cannot be resolved, the report says so:
 
