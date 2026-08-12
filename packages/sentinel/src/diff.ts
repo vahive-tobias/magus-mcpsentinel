@@ -159,7 +159,7 @@ export function diffReports(baselineReport: SentinelReport, candidateReport: Sen
   }
   changes.push(...compareDependencies(baseline.dependencies, candidate.dependencies));
   changes.push(...compareIndicators(baseline.indicators, candidate.indicators));
-  changes.push(...compareTools(baseline.inventory, candidate.inventory));
+  changes.push(...compareTools(baseline.inventory, candidate.inventory, sameAnalyzer(baselineReport, candidateReport)));
   changes.push(...compareMetadata(baseline.metadata, candidate.metadata));
   changes.push(...compareFiles(baseline.files, candidate.files));
   changes.push(...compareFindings(baseline.findings, candidate.findings));
@@ -209,12 +209,62 @@ function compareIndicators(baseline: Set<string>, candidate: Set<string>): Repor
  * was incomplete, a missing tool is inconclusive rather than removed, because the
  * extractor cannot distinguish a deleted tool from one it failed to parse.
  */
-function compareTools(baseline: ToolInventory | undefined, candidate: ToolInventory | undefined): ReportChange[] {
+/**
+ * Were both reports produced by the same analyzer build?
+ *
+ * A diff across two builds is not a diff of the package. When extraction
+ * improves, tools appear in the candidate that the baseline never recovered, and
+ * every one of them reads as `tool_added` at high severity — a package that
+ * changed nothing generating a storm of false alarms. Measured, not theorised:
+ * upgrading the extractor turned firecrawl-mcp's 0 recovered tools into 27, and
+ * the diff reported 27 additions.
+ */
+function analyzerBuild(report: SentinelReport): string | undefined {
+  // `analysis` is not in the report contract's typed surface, and a 0.1.0 report
+  // has none at all, so it is read rather than assumed.
+  const analysis = report.analysis;
+  if (!isRecord(analysis)) return undefined;
+  const engine = analysis.engine;
+  if (!isRecord(engine)) return undefined;
+  return isString(engine.build_sha256) ? engine.build_sha256 : undefined;
+}
+
+function sameAnalyzer(baseline: SentinelReport, candidate: SentinelReport): boolean {
+  const left = analyzerBuild(baseline);
+  // An absent build identity cannot be shown to match, so it counts as a
+  // difference. Reports predating the field are exactly the ones most likely to
+  // have come from a different extractor.
+  return left !== undefined && left === analyzerBuild(candidate);
+}
+
+function compareTools(
+  baseline: ToolInventory | undefined,
+  candidate: ToolInventory | undefined,
+  sameBuild: boolean
+): ReportChange[] {
   if (!baseline || !candidate) {
     return [{
       kind: "comparison_limited",
       summary: "Tool surface was not compared: one of the two reports carries no tool inventory.",
       detail: { reason: "missing_inventory" }
+    }];
+  }
+
+  /**
+   * Different builds, and at least one inventory is a lower bound.
+   *
+   * Completeness already gates removals, because an extractor that missed a tool
+   * would report it as deleted. The same reasoning covers additions the moment
+   * the two reports came from different extractors: a name present in one and
+   * absent from the other may be a recovery difference rather than a package
+   * change, and nothing here can tell them apart. Two complete inventories are
+   * both authoritative, so a difference between them is real and still reported.
+   */
+  if (!sameBuild && (!baseline.complete || !candidate.complete)) {
+    return [{
+      kind: "comparison_limited",
+      summary: "Tool surface was not compared: the two reports came from different analyzer builds and at least one inventory is a lower bound.",
+      detail: { reason: "analyzer_build_differs" }
     }];
   }
 

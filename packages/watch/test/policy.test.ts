@@ -65,6 +65,9 @@ function report(options: Options): SentinelReport {
     format_version: FORMAT_VERSION,
     report_id: "11111111-1111-4111-8111-111111111111",
     generated_at: "2026-08-05T00:00:00.000Z",
+    // One analyzer build on both sides. A cross-build comparison withholds tool
+    // conclusions entirely, which is a diff concern with its own coverage there.
+    analysis: { engine: { name: "sentinel", version: "0.2.0", build_sha256: "a".repeat(64) } },
     subject: {
       server_name: "example-mcp",
       artifact: {

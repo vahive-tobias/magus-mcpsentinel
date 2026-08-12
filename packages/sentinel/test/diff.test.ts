@@ -21,6 +21,7 @@ interface Options {
   tools?: ToolFixture[];
   toolsComplete?: boolean;
   toolsIncompleteness?: string[];
+  analyzerBuild?: string;
   metadata?: Record<string, unknown>;
   files?: string[];
 }
@@ -70,6 +71,10 @@ function report(options: Options): SentinelReport {
     format_version: FORMAT_VERSION,
     report_id: "11111111-1111-4111-8111-111111111111",
     generated_at: "2026-08-04T00:00:00.000Z",
+    // Both sides come from one analyzer build unless a test says otherwise. A
+    // cross-build comparison cannot separate a package change from a change in
+    // what the extractor recovers, and is covered by its own test.
+    analysis: { engine: { name: "sentinel", version: "0.2.0", build_sha256: options.analyzerBuild ?? "a".repeat(64) } },
     subject: {
       server_name: "example-mcp",
       artifact: {
@@ -158,6 +163,53 @@ test("treats a missing tool as inconclusive when extraction was incomplete", () 
   const result = diffReports(baseline, candidate);
   assert.equal(result.changes.some((change) => change.kind === "tool_removed"), false);
   assert.equal(result.limited, true);
+});
+
+/**
+ * An analyzer upgrade is not a package change.
+ *
+ * Measured, not imagined. Widening the definition detector took firecrawl-mcp
+ * from 0 recovered tools to 27 without the package altering a single tool, and
+ * diffing the stored baseline against a fresh report produced 27 `tool_added`
+ * changes — every one `high` severity through the notice policy. Completeness
+ * already gates removals for the same reason; this extends it to additions the
+ * moment the two reports come from different extractors.
+ */
+test("a tool inventory is not compared across analyzer builds", () => {
+  const baseline = report({
+    version: "1.0.0", sha256: HASH_A, tools: [],
+    toolsComplete: false, analyzerBuild: "a".repeat(64)
+  });
+  const candidate = report({
+    version: "1.1.0", sha256: HASH_B,
+    tools: [{ name: "recovered_by_the_new_extractor" }, { name: "and_another" }],
+    toolsComplete: false, analyzerBuild: "b".repeat(64)
+  });
+
+  const result = diffReports(baseline, candidate);
+  assert.equal(result.changes.some((c) => c.kind === "tool_added"), false,
+    "a name the old extractor could not see is not a tool the package added");
+  assert.equal(result.limited, true);
+  assert.equal(
+    result.changes.find((c) => c.kind === "comparison_limited")?.detail?.reason,
+    "analyzer_build_differs"
+  );
+});
+
+test("two complete inventories are still compared across builds", () => {
+  // Both sides resolved everything they looked at, so each is authoritative and
+  // a difference between them is a real change rather than a recovery artefact.
+  const baseline = report({
+    version: "1.0.0", sha256: HASH_A, tools: [{ name: "alpha" }],
+    toolsComplete: true, analyzerBuild: "a".repeat(64)
+  });
+  const candidate = report({
+    version: "1.1.0", sha256: HASH_B, tools: [{ name: "alpha" }, { name: "beta" }],
+    toolsComplete: true, analyzerBuild: "b".repeat(64)
+  });
+
+  const result = diffReports(baseline, candidate);
+  assert.deepEqual(result.changes.filter((c) => c.kind === "tool_added").map((c) => c.detail?.tool), ["beta"]);
 });
 
 test("a surface that could be read and now cannot is reported, with the reason", () => {
