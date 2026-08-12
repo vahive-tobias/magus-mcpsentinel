@@ -1,6 +1,5 @@
 {
   "//": "What each pinned package actually is. Recovery is only meaningful over packages that expose a tool surface at all, and applying that exclusion in prose rather than in data is how a headline number drifts from what it measures. `role` is one of server, client, unknown. Evidence is what the artifact itself shows, not what the name suggests.",
-
   "@circleci/mcp-server-circleci@0.20.0": {
     "role": "server",
     "evidence": "Declares @modelcontextprotocol/sdk; 13 tools recovered."
@@ -52,5 +51,153 @@
   "mcp-searxng@1.15.0": {
     "role": "server",
     "evidence": "Declares the SDK; 4 tools recovered via a tools/list handler."
+  },
+  "@0xmonaco/mcp-server@1.0.34": {
+    "role": "server",
+    "evidence": "MCP server for the Monaco SDK | declares: sdk | bin: true"
+  },
+  "@alexar76/argus3@0.3.0": {
+    "role": "unknown",
+    "evidence": "ARGUS-3 — WARDEN MCP firewall blocks poisoned servers before any tool runs. Frugal personal AI agent; wallet a | declares: sdk | bin: true"
+  },
+  "@amap/amap-maps-mcp-server@0.0.8": {
+    "role": "server",
+    "evidence": "MCP server for using the AMap Maps API | declares: sdk | bin: true"
+  },
+  "@apify/actors-mcp-server@0.14.2": {
+    "role": "server",
+    "evidence": "Apify MCP Server | declares: sdk+node+server+ext-apps | bin: true"
+  },
+  "@blocklet/mcp@1.10.2": {
+    "role": "unknown",
+    "evidence": "Model Context Protocol implementation for TypeScript | declares: none | bin: false"
+  },
+  "@browsermcp/mcp@0.1.3": {
+    "role": "server",
+    "evidence": "MCP server for browser automation using Browser MCP | declares: sdk | bin: true"
+  },
+  "@copilotkit/aimock@1.38.0": {
+    "role": "unknown",
+    "evidence": "Mock infrastructure for AI application testing — LLM APIs, image generation, image editing, text-to-speech, tr | declares: none | bin: true"
+  },
+  "@enfyra/mcp-server@0.2.21": {
+    "role": "server",
+    "evidence": "MCP server for Enfyra - manage Enfyra instances from MCP-compatible coding tools | declares: sdk | bin: true"
+  },
+  "@geunoh/s3-mcp-server@1.3.1": {
+    "role": "server",
+    "evidence": "MCP Server for accessing S3 bucket | declares: sdk | bin: true"
+  },
+  "@hydrochlorix/googledrive-mcp-server@2.4.0": {
+    "role": "server",
+    "evidence": "Model Context Protocol (MCP) server for Google Drive API | declares: server | bin: true"
+  },
+  "@inkeep/agents-mcp@0.80.6": {
+    "role": "server",
+    "evidence": "Model Context Protocol (MCP) Server for the *@inkeep/agents-mcp* API. | declares: sdk | bin: true"
+  },
+  "@jupiterone/jupiterone-mcp@2.0.1": {
+    "role": "server",
+    "evidence": "Model Context Protocol server for JupiterOne account rules and rule details | declares: server | bin: true"
+  },
+  "@mikerob/lodgify-mcp@0.1.25": {
+    "role": "server",
+    "evidence": "Model Context Protocol server for Lodgify Public API - Expose Lodgify endpoints as MCP tools for AI assistants | declares: sdk | bin: true"
+  },
+  "@nocobase/plugin-mcp-server@2.1.39": {
+    "role": "server",
+    "evidence": "An MCP server for building NocoBase systems and supporting business workflows. | declares: sdk | bin: false"
+  },
+  "@primereact/mcp@11.1.0": {
+    "role": "server",
+    "evidence": "Model Context Protocol (MCP) server for PrimeReact component library | declares: none | bin: true"
+  },
+  "@respira/wordpress-mcp-server@8.2.9": {
+    "role": "server",
+    "evidence": "WordPress MCP server with MCP 2026-07-28 and legacy-client support. 198 tools, 303 with WooCommerce, across 17 | declares: client+server | bin: true"
+  },
+  "@sellable/mcp@0.1.865": {
+    "role": "server",
+    "evidence": "Sellable MCP server for Claude Code, Codex, and Hermes campaign workflows | declares: sdk | bin: true"
+  },
+  "@shopify/dev-mcp@1.14.4": {
+    "role": "server",
+    "evidence": "A command line tool for setting up Shopify Dev MCP server | declares: sdk | bin: true"
+  },
+  "@skillbase/spm@0.9.7": {
+    "role": "unknown",
+    "evidence": "AI skills manager — install, publish, and deploy reusable prompts, personas, and MCP tools across 15 AI client | declares: sdk | bin: true"
+  },
+  "@stigmer/mcp-server@3.11.0": {
+    "role": "server",
+    "evidence": "Model Context Protocol server for the Stigmer platform — exposes Stigmer agents, skills, MCP servers, and work | declares: sdk | bin: true"
+  },
+  "@tokst/mcp-server@0.5.7": {
+    "role": "server",
+    "evidence": "TokST MCP Server — Expose TokST memory as MCP tools for any agent. | declares: sdk | bin: true"
+  },
+  "@trainheroic-unofficial/core@3.0.1": {
+    "role": "unknown",
+    "evidence": "Shared MCP tool layer for TrainHeroic, used by the local and Cloudflare servers. | declares: server | bin: false"
+  },
+  "@trycompai/mcp-server@0.3.0": {
+    "role": "server",
+    "evidence": "Model Context Protocol (MCP) Server for the *@trycompai/mcp-server* API. | declares: sdk | bin: true"
+  },
+  "@uno-online/mcp@0.14.0": {
+    "role": "server",
+    "evidence": "MCP Server for UNO Online — let AI clients play UNO via MCP tools | declares: sdk | bin: true"
+  },
+  "fa-mcp-sdk@0.12.96": {
+    "role": "unknown",
+    "evidence": "Core infrastructure and templates for building Model Context Protocol (MCP) servers with TypeScript | declares: sdk+node+client+server | bin: true"
+  },
+  "frootai-mcp@6.1.1": {
+    "role": "server",
+    "evidence": "FrootAI™ MCP Server — The open glue for the GenAI ecosystem. 62 MCP tools, 101 solution plays, 863+ primitives | declares: sdk | bin: true"
+  },
+  "github-mcp-server-js@0.1.7": {
+    "role": "server",
+    "evidence": "A GitHub MCP server built on octokit.js and the MCP TypeScript SDK v2 — 100+ tools across 16 toolsets, package | declares: server | bin: true"
+  },
+  "hourei-mcp-server@1.0.6": {
+    "role": "server",
+    "evidence": "MCP server for Japanese law information using e-Gov API | declares: sdk | bin: true"
+  },
+  "ios-simulator-mcp@2.0.0": {
+    "role": "server",
+    "evidence": "MCP server for interacting with the iOS simulator | declares: server | bin: true"
+  },
+  "mcp-mongo-server@3.0.1": {
+    "role": "server",
+    "evidence": "A Model Context Protocol server for MongoDB connections | declares: node+server+express | bin: true"
+  },
+  "mcporter@0.13.4": {
+    "role": "client",
+    "evidence": "TypeScript runtime and CLI for connecting to configured Model Context Protocol servers. | declares: client+server | bin: true"
+  },
+  "memgrep@1.6.7": {
+    "role": "server",
+    "evidence": "Local agent memory, coding loop, Cursor from Telegram, scheduled playbooks, and MCP tools. | declares: sdk | bin: true"
+  },
+  "paput-mcp@4.2.55": {
+    "role": "server",
+    "evidence": "PaPut MCP Server | declares: node+client+server | bin: true"
+  },
+  "ragcode-context-engine@0.1.20": {
+    "role": "server",
+    "evidence": "Local code intelligence foundation: structural code graph, LanceDB semantic layer, retrieval, context packing, | declares: sdk | bin: true"
+  },
+  "recker@1.0.103": {
+    "role": "unknown",
+    "evidence": "Multi-Protocol SDK for the AI Era - HTTP, WebSocket, DNS, FTP, SFTP, Telnet, HLS unified with AI providers and | declares: none | bin: true"
+  },
+  "tdesign-mcp-server@0.2.4": {
+    "role": "server",
+    "evidence": "MCP server for TDesign, providing component knowledge across multiple frameworks. | declares: sdk | bin: true"
+  },
+  "yuandian-mcp-server@0.2.0": {
+    "role": "server",
+    "evidence": "MCP server for YuanDian open platform APIs | declares: server | bin: true"
   }
 }

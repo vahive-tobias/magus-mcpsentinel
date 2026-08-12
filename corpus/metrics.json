@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T06:54:16.726Z",
+  "generated_at": "2026-08-12T07:28:45.016Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
@@ -8,42 +8,419 @@
     },
     "protocol_profile": "mcp-2026-07-28"
   },
-  "corpus_size": 13,
-  "analyzed": 13,
+  "corpus_size": 50,
+  "analyzed": 50,
   "failed": [],
   "artifact_drift": [],
-  "inventories_recovered": 9,
-  "recovery_rate": 0.6923,
-  "statically_complete_extractions": 3,
-  "statically_complete_rate": 0.2308,
+  "inventories_recovered": 38,
+  "recovery_rate": 0.76,
+  "statically_complete_extractions": 12,
+  "statically_complete_rate": 0.24,
   "eligible": {
     "basis": "role === \"server\" in corpus/roles.json",
-    "packages": 12,
+    "packages": 41,
     "excluded": [
       {
         "package": "@crewhaus/mcp-host",
         "role": "client"
+      },
+      {
+        "package": "@alexar76/argus3",
+        "role": "unknown"
+      },
+      {
+        "package": "@blocklet/mcp",
+        "role": "unknown"
+      },
+      {
+        "package": "@copilotkit/aimock",
+        "role": "unknown"
+      },
+      {
+        "package": "@skillbase/spm",
+        "role": "unknown"
+      },
+      {
+        "package": "@trainheroic-unofficial/core",
+        "role": "unknown"
+      },
+      {
+        "package": "fa-mcp-sdk",
+        "role": "unknown"
+      },
+      {
+        "package": "mcporter",
+        "role": "client"
+      },
+      {
+        "package": "recker",
+        "role": "unknown"
       }
     ],
-    "inventories_recovered": 9,
-    "recovery_rate": 0.75,
-    "statically_complete_extractions": 3,
-    "statically_complete_rate": 0.25
+    "inventories_recovered": 33,
+    "recovery_rate": 0.8049,
+    "statically_complete_extractions": 11,
+    "statically_complete_rate": 0.2683
   },
-  "tools_recovered_total": 224,
+  "tools_recovered_total": 1698,
   "incompleteness_reasons": {
-    "registration_name_not_static": 5,
-    "tools_inferred_from_definitions_only": 5,
-    "no_recognized_registration_pattern": 4,
-    "typescript_source_not_parsed": 1,
-    "list_tools_entry_not_static": 1
+    "registration_name_not_static": 17,
+    "tools_inferred_from_definitions_only": 16,
+    "no_recognized_registration_pattern": 10,
+    "typescript_source_not_parsed": 10,
+    "list_tools_array_not_static": 7,
+    "list_tools_entry_not_static": 2,
+    "source_file_exceeded_parse_size_limit": 2,
+    "list_tools_handler_not_static": 1
   },
-  "sdk_declared_count": 12,
+  "sdk_declared_count": 44,
   "precision": {
     "measured": false,
     "blocked_on": "ground-truth corpus (PLAN_COVERAGE Phase 2)"
   },
   "packages": [
+    {
+      "package": "@0xmonaco/mcp-server",
+      "version": "1.0.34",
+      "artifact_sha256": "c04f5cf9c8ea271a21723241764029f3d5291185997702104a717736a8d8f660",
+      "spec": "@0xmonaco/mcp-server@1.0.34",
+      "entries": 3,
+      "regular_file_bytes": 1333314,
+      "tools_total": 72,
+      "tools_by_discovery": {
+        "registration": 72,
+        "definition": 0
+      },
+      "tool_names": [
+        "add_position_margin",
+        "batch_cancel_all_orders",
+        "batch_cancel_orders",
+        "batch_close_all_positions",
+        "cancel_order",
+        "check_trader_code_availability",
+        "clear_trader_code",
+        "close_position",
+        "get_all_funding_history",
+        "get_available_collateral",
+        "get_balance_by_asset",
+        "get_balances",
+        "get_candlesticks",
+        "get_faucet_info",
+        "get_funding_history",
+        "get_funding_payments",
+        "get_funding_state",
+        "get_index_price",
+        "get_margin_accounts",
+        "get_mark_price",
+        "get_market_metadata",
+        "get_market_stats",
+        "get_movements",
+        "get_my_fee_tier",
+        "get_my_trader_code",
+        "get_open_interest",
+        "get_order",
+        "get_orderbook",
+        "get_orders",
+        "get_parent_margin_account_movements",
+        "get_parent_margin_account_summary",
+        "get_pending_withdrawals",
+        "get_perp_market_config",
+        "get_perp_market_summary",
+        "get_portfolio_assets",
+        "get_portfolio_margin",
+        "get_portfolio_performance",
+        "get_portfolio_realized_pnl",
+        "get_portfolio_summary",
+        "get_position",
+        "get_position_history",
+        "get_position_pnl_history",
+        "get_position_risk",
+        "get_positions",
+        "get_profile",
+        "get_pulse",
+        "get_rewards_balance",
+        "get_screener",
+        "get_trader_code_info",
+        "get_trades",
+        "get_trading_pair_by_symbol",
+        "get_trading_pairs",
+        "get_user_trades",
+        "place_limit_order",
+        "place_market_order",
+        "reduce_position_margin",
+        "replace_order",
+        "request_faucet",
+        "search_docs",
+        "set_trader_code",
+        "simulate_fees",
+        "simulate_parent_margin_order_risk",
+        "simulate_risk_bucket_order_risk",
+        "transfer_collateral_from_parent_margin_account",
+        "transfer_collateral_to_parent_margin_account",
+        "transfer_collateral_to_risk_bucket",
+        "transfer_rewards",
+        "vault_approve",
+        "vault_deposit",
+        "vault_get_allowance",
+        "vault_needs_approval",
+        "vault_withdraw"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@alexar76/argus3",
+      "version": "0.3.0",
+      "artifact_sha256": "f971b67ffc07c8ea4072cc75857bddf092af6a8b3f2b525f19f57c210ea3a13e",
+      "spec": "@alexar76/argus3@0.3.0",
+      "entries": 389,
+      "regular_file_bytes": 1127135,
+      "tools_total": 14,
+      "tools_by_discovery": {
+        "registration": 3,
+        "definition": 11
+      },
+      "tool_names": [
+        "acex_status",
+        "acex_trade",
+        "argus_ask",
+        "argus_capabilities",
+        "argus_status",
+        "hub_discover",
+        "hub_invoke",
+        "lottery_buy",
+        "lottery_status",
+        "oracle_call",
+        "oracle_random",
+        "recall_memory",
+        "subcontract_invoke",
+        "web_fetch"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 96,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.12.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
+      "package": "@amap/amap-maps-mcp-server",
+      "version": "0.0.8",
+      "artifact_sha256": "a9a639dbd60978f4a81f6830860522faa29306b56e06947a2013ba93586ed0e2",
+      "spec": "@amap/amap-maps-mcp-server@0.0.8",
+      "entries": 3,
+      "regular_file_bytes": 32732,
+      "tools_total": 12,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 12
+      },
+      "tool_names": [
+        "maps_around_search",
+        "maps_bicycling",
+        "maps_direction_driving",
+        "maps_direction_transit_integrated",
+        "maps_direction_walking",
+        "maps_distance",
+        "maps_geo",
+        "maps_ip_location",
+        "maps_regeocode",
+        "maps_search_detail",
+        "maps_text_search",
+        "maps_weather"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_entry_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "1.0.1"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@apify/actors-mcp-server",
+      "version": "0.14.2",
+      "artifact_sha256": "2d7c761fac28a12a5ce85fd8c970021ca4b1bf6fef696bb8b4e767b2339f9f45",
+      "spec": "@apify/actors-mcp-server@0.14.2",
+      "entries": 408,
+      "regular_file_bytes": 4893961,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static"
+      ],
+      "scanned_files": 102,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/ext-apps",
+            "range": "^1.1.2"
+          },
+          {
+            "name": "@modelcontextprotocol/node",
+            "range": "2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "1.29.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@blocklet/mcp",
+      "version": "1.10.2",
+      "artifact_sha256": "54777c088eab48e45ccbd6fe691214933302782254f2c4c9172bf9e031647f52",
+      "spec": "@blocklet/mcp@1.10.2",
+      "entries": 553,
+      "regular_file_bytes": 6429216,
+      "tools_total": 4,
+      "tools_by_discovery": {
+        "registration": 4,
+        "definition": 0
+      },
+      "tool_names": [
+        "greet",
+        "multi-greet",
+        "protected-tool",
+        "start-notification-stream"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static"
+      ],
+      "scanned_files": 137,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
+      "package": "@browsermcp/mcp",
+      "version": "0.1.3",
+      "artifact_sha256": "2ad34c29145ca80c5f2e7d8ec90e0589697b19338b2b45a83c918d4907a4cf96",
+      "spec": "@browsermcp/mcp@0.1.3",
+      "entries": 3,
+      "regular_file_bytes": 22674,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.8.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
     {
       "package": "@circleci/mcp-server-circleci",
       "version": "0.20.0",
@@ -98,6 +475,39 @@
       "role": "server"
     },
     {
+      "package": "@copilotkit/aimock",
+      "version": "1.38.0",
+      "artifact_sha256": "25c029e0d210439567775ffe1c08183117515ab8147f0fd01d08e9d317985aec",
+      "spec": "@copilotkit/aimock@1.38.0",
+      "entries": 584,
+      "regular_file_bytes": 7171685,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 153,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
       "package": "@crewhaus/mcp-host",
       "version": "0.5.2",
       "artifact_sha256": "64137f4e7f58778ccb6dc65aa88322193215f7d7628c1c9a2846a575091b8b9a",
@@ -136,6 +546,381 @@
       "role": "client"
     },
     {
+      "package": "@enfyra/mcp-server",
+      "version": "0.2.21",
+      "artifact_sha256": "040201a61dfd20658fc5fcaf4acc644938ca84f6f1767aa96e140e36d3478f16",
+      "spec": "@enfyra/mcp-server@0.2.21",
+      "entries": 378,
+      "regular_file_bytes": 2340377,
+      "tools_total": 144,
+      "tools_by_discovery": {
+        "registration": 144,
+        "definition": 0
+      },
+      "tool_names": [
+        "add_route_methods",
+        "api_endpoint_workflow",
+        "assess_permission_exposure",
+        "audit_route_access",
+        "build_dynamic_repository_usage",
+        "build_extension_account_panel_item",
+        "build_extension_api_usage",
+        "build_extension_drawer",
+        "build_extension_empty_state",
+        "build_extension_form_editor",
+        "build_extension_menu_notification",
+        "build_extension_modal",
+        "build_extension_page_shell",
+        "build_extension_permission_gate",
+        "build_extension_resource_grid",
+        "build_extension_resource_list",
+        "build_extension_tabs",
+        "build_extension_ui",
+        "build_extension_upload_modal",
+        "build_extension_widget",
+        "choose_flow_step_tool",
+        "confirm_schema_mutation",
+        "count_records",
+        "create_api_endpoint",
+        "create_columns",
+        "create_handler",
+        "create_method",
+        "create_post_hook",
+        "create_pre_hook",
+        "create_records",
+        "create_relations",
+        "create_route",
+        "create_tables",
+        "debug_field_exposure",
+        "delete_columns",
+        "delete_flow",
+        "delete_flow_step",
+        "delete_method",
+        "delete_records",
+        "delete_relations",
+        "delete_route",
+        "delete_tables",
+        "disable_route",
+        "discover_enfyra_system",
+        "discover_enfyra_workflows",
+        "discover_query_capabilities",
+        "discover_runtime_context",
+        "discover_script_contexts",
+        "enable_route",
+        "ensure_auth_header",
+        "ensure_column_rule",
+        "ensure_condition_flow_step",
+        "ensure_create_flow_step",
+        "ensure_delete_flow_step",
+        "ensure_field_permission",
+        "ensure_flow",
+        "ensure_flow_trigger",
+        "ensure_global_extension",
+        "ensure_guard",
+        "ensure_http_flow_step",
+        "ensure_log_flow_step",
+        "ensure_menu",
+        "ensure_menu_access",
+        "ensure_page_extension",
+        "ensure_query_flow_step",
+        "ensure_route_access",
+        "ensure_route_rate_limit",
+        "ensure_script_flow_step",
+        "ensure_sleep_flow_step",
+        "ensure_trigger_flow_step",
+        "ensure_update_flow_step",
+        "ensure_user_role",
+        "ensure_websocket_event",
+        "ensure_websocket_gateway",
+        "ensure_widget_extension",
+        "execute_enfyra_tool",
+        "extension_workflow",
+        "find_one_record",
+        "flow_workflow",
+        "get_all_metadata",
+        "get_all_roles",
+        "get_all_routes",
+        "get_all_tables",
+        "get_current_user",
+        "get_enfyra_api_context",
+        "get_enfyra_examples",
+        "get_enfyra_required_knowledge",
+        "get_extension_theme_contract",
+        "get_log_content",
+        "get_log_files",
+        "get_permission_profile",
+        "get_schema_design_context",
+        "get_script_source",
+        "get_table_metadata",
+        "get_theme_class_reference",
+        "inspect_feature",
+        "inspect_rest_projection",
+        "inspect_route",
+        "inspect_table",
+        "install_package",
+        "list_methods",
+        "login",
+        "patch_extension_code",
+        "patch_script_source",
+        "plan_flow_steps",
+        "private_route_methods",
+        "public_route_methods",
+        "query_table",
+        "reload_all",
+        "reload_graphql",
+        "reload_metadata",
+        "reload_routes",
+        "remove_field_permission",
+        "remove_flow_trigger",
+        "remove_route_methods",
+        "reorder_auth_headers",
+        "reorder_menus",
+        "replace_route_methods",
+        "review_extension_ui_contract",
+        "run_admin_test",
+        "search_admin_extensions",
+        "search_enfyra_tools",
+        "search_logs",
+        "search_npm",
+        "search_runtime_zone",
+        "select_enfyra_workflow",
+        "set_table_graphql",
+        "setup_oauth_provider",
+        "tail_log",
+        "test_flow_step",
+        "test_graphql",
+        "test_rest_endpoint",
+        "trace_metadata_usage",
+        "trigger_flow",
+        "update_columns",
+        "update_extension_code",
+        "update_method",
+        "update_records",
+        "update_relation_constraints",
+        "update_script_source",
+        "update_tables",
+        "validate_dynamic_script",
+        "validate_extension_code",
+        "verify_extension_runtime"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 125,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@geunoh/s3-mcp-server",
+      "version": "1.3.1",
+      "artifact_sha256": "eeed10e9119b46ba389fd11ab935206faacaaaf9ac8b950317095c36fbaf09e7",
+      "spec": "@geunoh/s3-mcp-server@1.3.1",
+      "entries": 5457,
+      "regular_file_bytes": 34165540,
+      "tools_total": 3,
+      "tools_by_discovery": {
+        "registration": 3,
+        "definition": 0
+      },
+      "tool_names": [
+        "get_object",
+        "list_buckets",
+        "upload_file"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static",
+        "source_file_exceeded_parse_size_limit",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 2238,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.7.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@hydrochlorix/googledrive-mcp-server",
+      "version": "2.4.0",
+      "artifact_sha256": "4740b364db4c5404f54b9515f69be12595916b4e88354a9475f7c5869d47d433",
+      "spec": "@hydrochlorix/googledrive-mcp-server@2.4.0",
+      "entries": 4,
+      "regular_file_bytes": 83725,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@inkeep/agents-mcp",
+      "version": "0.80.6",
+      "artifact_sha256": "2a612fbb7a8fdec8d05d95eb9566c69a10491c5b8b1238dff95bbcd0537b1391",
+      "spec": "@inkeep/agents-mcp@0.80.6",
+      "entries": 6388,
+      "regular_file_bytes": 10542890,
+      "tools_total": 4,
+      "tools_by_discovery": {
+        "registration": 4,
+        "definition": 0
+      },
+      "tool_names": [
+        "describe_tool_input",
+        "execute_tool",
+        "list_scopes",
+        "list_tools"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 1277,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.26.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@jupiterone/jupiterone-mcp",
+      "version": "2.0.1",
+      "artifact_sha256": "50b9064c2abfc2e00a897a164a2b68c7e1123d3fd2e3e757ddca14ffa484ce2e",
+      "spec": "@jupiterone/jupiterone-mcp@2.0.1",
+      "entries": 2819,
+      "regular_file_bytes": 11605087,
+      "tools_total": 28,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 28
+      },
+      "tool_names": [
+        "create-dashboard",
+        "create-dashboard-widget",
+        "create-inline-question-rule",
+        "delete-dashboard",
+        "delete-dashboard-widget",
+        "evaluate-rule",
+        "execute-j1ql-query",
+        "get-active-alerts",
+        "get-dashboard-details",
+        "get-dashboards",
+        "get-integration-definitions",
+        "get-integration-events",
+        "get-integration-instances",
+        "get-integration-job",
+        "get-integration-jobs",
+        "get-query-results",
+        "get-raw-data-download-url",
+        "get-rule-details",
+        "get-rule-evaluation-details",
+        "get-rule-evaluation-query-results",
+        "list-accounts",
+        "list-entity-types",
+        "list-rule-evaluations",
+        "list-rules",
+        "test-connection",
+        "update-dashboard",
+        "update-dashboard-widget",
+        "update-inline-question-rule"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 2256,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
       "package": "@mapbox/mcp-server",
       "version": "0.14.0",
       "artifact_sha256": "090a728b790971804ee097f69ffaf577a384f0c068df49e5779a88e7a3809431",
@@ -165,6 +950,44 @@
           {
             "name": "@modelcontextprotocol/sdk",
             "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@mikerob/lodgify-mcp",
+      "version": "0.1.25",
+      "artifact_sha256": "32824b22294b9b1798e9ff94f81279f2c407b3a03ea938a40ef0ea5a8d882a06",
+      "spec": "@mikerob/lodgify-mcp@0.1.25",
+      "entries": 384,
+      "regular_file_bytes": 1112997,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 95,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.26.0"
           }
         ],
         "declared_present": true
@@ -231,6 +1054,59 @@
       "role": "server"
     },
     {
+      "package": "@nocobase/plugin-mcp-server",
+      "version": "2.1.39",
+      "artifact_sha256": "4f4d8d216096f26ed10e8f1b667b28537d4b9fae7cffefc1655c802c70b03a2e",
+      "spec": "@nocobase/plugin-mcp-server@2.1.39",
+      "entries": 3854,
+      "regular_file_bytes": 15335612,
+      "tools_total": 18,
+      "tools_by_discovery": {
+        "registration": 18,
+        "definition": 0
+      },
+      "tool_names": [
+        "collect-user-info",
+        "collect-user-info-task",
+        "confirm_delete",
+        "count",
+        "create_event",
+        "delay",
+        "get_weather",
+        "greet",
+        "list-files",
+        "long-task",
+        "multi-greet",
+        "payment-confirm",
+        "register_user",
+        "start-notification-stream",
+        "summarize",
+        "third-party-auth",
+        "update_shipping_address",
+        "write_haiku"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 1254,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
       "package": "@notionhq/notion-mcp-server",
       "version": "2.5.1",
       "artifact_sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
@@ -270,6 +1146,450 @@
       "role": "server"
     },
     {
+      "package": "@primereact/mcp",
+      "version": "11.1.0",
+      "artifact_sha256": "0b8f74255c3b363ad2effd542124c70acd2b5f5874dd8871e765af06bd191d46",
+      "spec": "@primereact/mcp@11.1.0",
+      "entries": 572,
+      "regular_file_bytes": 18180381,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@respira/wordpress-mcp-server",
+      "version": "8.2.9",
+      "artifact_sha256": "7e96e1fa6fbd04f17d68819af0d7384b1f3b44dbd138d76dfa4dc097c6833463",
+      "spec": "@respira/wordpress-mcp-server@8.2.9",
+      "entries": 298,
+      "regular_file_bytes": 3239660,
+      "tools_total": 366,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 366
+      },
+      "tool_names": [
+        "respira_acf_add_flexible_layout",
+        "respira_acf_add_repeater_row",
+        "respira_acf_add_to_gallery",
+        "respira_acf_bulk_get_fields",
+        "respira_acf_bulk_update_fields",
+        "respira_acf_clone_field_group",
+        "respira_acf_clone_fields",
+        "respira_acf_compare_fields",
+        "respira_acf_count_repeater_rows",
+        "respira_acf_create_field_group",
+        "respira_acf_create_options_page",
+        "respira_acf_delete_field",
+        "respira_acf_delete_field_group",
+        "respira_acf_delete_flexible_layout",
+        "respira_acf_delete_option",
+        "respira_acf_delete_repeater_row",
+        "respira_acf_export_field_group",
+        "respira_acf_export_options",
+        "respira_acf_get_field",
+        "respira_acf_get_field_group",
+        "respira_acf_get_field_object",
+        "respira_acf_get_fields",
+        "respira_acf_get_flexible_content",
+        "respira_acf_get_flexible_layout",
+        "respira_acf_get_gallery",
+        "respira_acf_get_option",
+        "respira_acf_get_options",
+        "respira_acf_get_post_object",
+        "respira_acf_get_relationship",
+        "respira_acf_get_repeater",
+        "respira_acf_get_repeater_row",
+        "respira_acf_get_reverse_relationships",
+        "respira_acf_get_term_field",
+        "respira_acf_get_user_field",
+        "respira_acf_import_field_group",
+        "respira_acf_list_field_groups",
+        "respira_acf_list_options_pages",
+        "respira_acf_remove_from_gallery",
+        "respira_acf_reorder_flexible_layouts",
+        "respira_acf_reorder_gallery",
+        "respira_acf_reorder_repeater",
+        "respira_acf_search_fields",
+        "respira_acf_update_field",
+        "respira_acf_update_field_group",
+        "respira_acf_update_fields",
+        "respira_acf_update_flexible_layout",
+        "respira_acf_update_gallery",
+        "respira_acf_update_option",
+        "respira_acf_update_options",
+        "respira_acf_update_relationship",
+        "respira_acf_update_repeater_row",
+        "respira_acf_update_term_field",
+        "respira_acf_update_user_field",
+        "respira_acf_validate_field",
+        "respira_duplicate_with_translations",
+        "woocommerce_add_low_stock_badge",
+        "woocommerce_add_order_note",
+        "woocommerce_add_sale_badge",
+        "woocommerce_add_subscription_note",
+        "woocommerce_agent_orders_report",
+        "woocommerce_analyze_product_page",
+        "woocommerce_analyze_shop_page",
+        "woocommerce_analyze_storefront_card",
+        "woocommerce_bulk_update_prices",
+        "woocommerce_bulk_update_products",
+        "woocommerce_bulk_update_stock",
+        "woocommerce_catalog_ai_readiness",
+        "woocommerce_catalog_health",
+        "woocommerce_configurator_status",
+        "woocommerce_configure_feed",
+        "woocommerce_create_brand",
+        "woocommerce_create_cart_link",
+        "woocommerce_create_category",
+        "woocommerce_create_coupon",
+        "woocommerce_create_customer",
+        "woocommerce_create_global_attribute",
+        "woocommerce_create_order_refund",
+        "woocommerce_create_product",
+        "woocommerce_create_tag",
+        "woocommerce_create_variation",
+        "woocommerce_create_webhook",
+        "woocommerce_customers_summary",
+        "woocommerce_delete_brand",
+        "woocommerce_delete_category",
+        "woocommerce_delete_tag",
+        "woocommerce_delete_webhook",
+        "woocommerce_duplicate_product",
+        "woocommerce_find_low_stock",
+        "woocommerce_find_product",
+        "woocommerce_generate_feed",
+        "woocommerce_generate_variations",
+        "woocommerce_get_booking",
+        "woocommerce_get_brand",
+        "woocommerce_get_category",
+        "woocommerce_get_configurator_attribute_items",
+        "woocommerce_get_feed_status",
+        "woocommerce_get_membership",
+        "woocommerce_get_order",
+        "woocommerce_get_order_refunds",
+        "woocommerce_get_plugin_state",
+        "woocommerce_get_product",
+        "woocommerce_get_product_configurator",
+        "woocommerce_get_stock_status",
+        "woocommerce_get_store_configuration",
+        "woocommerce_get_subscription",
+        "woocommerce_get_tag",
+        "woocommerce_get_webhook",
+        "woocommerce_list_bookings",
+        "woocommerce_list_brands",
+        "woocommerce_list_categories",
+        "woocommerce_list_configurator_attributes",
+        "woocommerce_list_coupons",
+        "woocommerce_list_membership_plans",
+        "woocommerce_list_memberships",
+        "woocommerce_list_orders",
+        "woocommerce_list_payment_gateways",
+        "woocommerce_list_products",
+        "woocommerce_list_products_advanced",
+        "woocommerce_list_shipping_zones",
+        "woocommerce_list_subscriptions",
+        "woocommerce_list_tags",
+        "woocommerce_list_tax_rates",
+        "woocommerce_list_webhooks",
+        "woocommerce_orders_summary",
+        "woocommerce_product_ai_readiness",
+        "woocommerce_readiness_fixlist",
+        "woocommerce_repair_feed_scheduler",
+        "woocommerce_reschedule_booking",
+        "woocommerce_revenue_summary",
+        "woocommerce_revert_pricing",
+        "woocommerce_sales_report",
+        "woocommerce_sales_timeseries",
+        "woocommerce_schedule_sale",
+        "woocommerce_set_configurator_attribute_items",
+        "woocommerce_set_feed_category_mapping",
+        "woocommerce_set_image_alt",
+        "woocommerce_set_membership_end_date",
+        "woocommerce_set_plugin_state",
+        "woocommerce_set_product_attributes",
+        "woocommerce_set_product_configurator",
+        "woocommerce_set_variation_gallery",
+        "woocommerce_test_webhook",
+        "woocommerce_top_products",
+        "woocommerce_update_booking_status",
+        "woocommerce_update_brand",
+        "woocommerce_update_category",
+        "woocommerce_update_checkout_layout",
+        "woocommerce_update_coupon",
+        "woocommerce_update_customer",
+        "woocommerce_update_membership_status",
+        "woocommerce_update_order_status",
+        "woocommerce_update_product",
+        "woocommerce_update_product_card_layout",
+        "woocommerce_update_stock",
+        "woocommerce_update_storefront_card_field",
+        "woocommerce_update_subscription_dates",
+        "woocommerce_update_subscription_status",
+        "woocommerce_update_tag",
+        "woocommerce_update_webhook",
+        "woocommerce_validate_feed",
+        "wordpress_abilities_gap_report",
+        "wordpress_activate_plugin",
+        "wordpress_add_stock_image",
+        "wordpress_analyze_aeo",
+        "wordpress_analyze_images",
+        "wordpress_analyze_pagespeed",
+        "wordpress_analyze_performance",
+        "wordpress_analyze_rankmath",
+        "wordpress_analyze_readability",
+        "wordpress_analyze_seo",
+        "wordpress_append_theme_file",
+        "wordpress_apply_accessibility_fixes",
+        "wordpress_apply_bricks_component",
+        "wordpress_apply_builder_patch",
+        "wordpress_assign_menu_location",
+        "wordpress_batch_update",
+        "wordpress_begin_session",
+        "wordpress_bricks_design_system",
+        "wordpress_bricks_detect_acss",
+        "wordpress_bricks_health_check",
+        "wordpress_bricks_import_acss",
+        "wordpress_bricks_import_design_tokens",
+        "wordpress_bricks_insert_section_preset",
+        "wordpress_bricks_lint_bem",
+        "wordpress_bricks_list_section_presets",
+        "wordpress_bricks_query_loops",
+        "wordpress_bricks_scaffold_bem",
+        "wordpress_bricks_style_profile",
+        "wordpress_build_mega_menu",
+        "wordpress_build_page",
+        "wordpress_bulk_pages_operation",
+        "wordpress_check_seo_issues",
+        "wordpress_check_structured_data",
+        "wordpress_convert_html_to_builder",
+        "wordpress_create_acf_field_group",
+        "wordpress_create_bricks_global_class",
+        "wordpress_create_comment",
+        "wordpress_create_custom_post",
+        "wordpress_create_design_token",
+        "wordpress_create_menu",
+        "wordpress_create_menu_item",
+        "wordpress_create_page_duplicate",
+        "wordpress_create_playbook",
+        "wordpress_create_post_duplicate",
+        "wordpress_create_post_type",
+        "wordpress_create_site_navigation",
+        "wordpress_create_site_pattern",
+        "wordpress_create_site_template",
+        "wordpress_create_taxonomy",
+        "wordpress_create_term",
+        "wordpress_create_theme_builder_template",
+        "wordpress_create_translation",
+        "wordpress_create_user",
+        "wordpress_deactivate_plugin",
+        "wordpress_delete_acf_field_group",
+        "wordpress_delete_bricks_global_class",
+        "wordpress_delete_comment",
+        "wordpress_delete_custom_post",
+        "wordpress_delete_design_token",
+        "wordpress_delete_media",
+        "wordpress_delete_menu",
+        "wordpress_delete_menu_item",
+        "wordpress_delete_option",
+        "wordpress_delete_page",
+        "wordpress_delete_playbook",
+        "wordpress_delete_plugin",
+        "wordpress_delete_post",
+        "wordpress_delete_post_type",
+        "wordpress_delete_site_navigation",
+        "wordpress_delete_site_pattern",
+        "wordpress_delete_taxonomy",
+        "wordpress_delete_term",
+        "wordpress_delete_user",
+        "wordpress_diagnose_connection",
+        "wordpress_diff_snapshots",
+        "wordpress_duplicate_element",
+        "wordpress_elementor_add_custom_js",
+        "wordpress_elementor_design_system",
+        "wordpress_end_session",
+        "wordpress_extract_builder_content",
+        "wordpress_find_builder_targets",
+        "wordpress_find_element",
+        "wordpress_forget",
+        "wordpress_get_accessibility_scan",
+        "wordpress_get_active_site",
+        "wordpress_get_activity",
+        "wordpress_get_bricks_color_palette",
+        "wordpress_get_bricks_component",
+        "wordpress_get_bricks_theme_styles",
+        "wordpress_get_bricks_typography",
+        "wordpress_get_builder_info",
+        "wordpress_get_builder_inline_schemas",
+        "wordpress_get_comment",
+        "wordpress_get_core_web_vitals",
+        "wordpress_get_custom_post",
+        "wordpress_get_divi_migration_readiness",
+        "wordpress_get_elementor_widget_schema",
+        "wordpress_get_media",
+        "wordpress_get_menu",
+        "wordpress_get_menu_item",
+        "wordpress_get_option",
+        "wordpress_get_page_outline",
+        "wordpress_get_playbook",
+        "wordpress_get_post_type",
+        "wordpress_get_server_compatibility",
+        "wordpress_get_site_context",
+        "wordpress_get_site_navigation",
+        "wordpress_get_site_pattern",
+        "wordpress_get_site_template",
+        "wordpress_get_snapshot",
+        "wordpress_get_taxonomy",
+        "wordpress_get_term",
+        "wordpress_get_theme_docs",
+        "wordpress_get_translations",
+        "wordpress_get_user",
+        "wordpress_inject_builder_content",
+        "wordpress_install_plugin",
+        "wordpress_invoke_ability",
+        "wordpress_list_accessibility_scans",
+        "wordpress_list_acf_field_groups",
+        "wordpress_list_activity",
+        "wordpress_list_bricks_components",
+        "wordpress_list_bricks_global_classes",
+        "wordpress_list_comments",
+        "wordpress_list_custom_post_types",
+        "wordpress_list_custom_posts",
+        "wordpress_list_custom_taxonomies",
+        "wordpress_list_design_tokens",
+        "wordpress_list_elementor_widgets",
+        "wordpress_list_media",
+        "wordpress_list_memory",
+        "wordpress_list_menu_items",
+        "wordpress_list_menu_locations",
+        "wordpress_list_menus",
+        "wordpress_list_options",
+        "wordpress_list_pages",
+        "wordpress_list_playbooks",
+        "wordpress_list_plugins",
+        "wordpress_list_post_types",
+        "wordpress_list_posts",
+        "wordpress_list_site_navigations",
+        "wordpress_list_site_patterns",
+        "wordpress_list_site_templates",
+        "wordpress_list_sites",
+        "wordpress_list_snapshots",
+        "wordpress_list_taxonomies",
+        "wordpress_list_terms",
+        "wordpress_list_theme_builder_templates",
+        "wordpress_list_users",
+        "wordpress_make_responsive",
+        "wordpress_move_element",
+        "wordpress_read_page",
+        "wordpress_read_post",
+        "wordpress_read_theme_file",
+        "wordpress_redeem_token",
+        "wordpress_remember",
+        "wordpress_remove_element",
+        "wordpress_reorder_elements",
+        "wordpress_report_issue",
+        "wordpress_reset_site_template",
+        "wordpress_restore_session",
+        "wordpress_restore_snapshot",
+        "wordpress_run_pagespeed_audit",
+        "wordpress_run_security_audit",
+        "wordpress_scan_page_accessibility",
+        "wordpress_search_abilities",
+        "wordpress_search_bricks_elements",
+        "wordpress_search_docs",
+        "wordpress_search_stock_images",
+        "wordpress_sideload_image",
+        "wordpress_switch_site",
+        "wordpress_update_acf_field_group",
+        "wordpress_update_bricks_color_palette",
+        "wordpress_update_bricks_global_class",
+        "wordpress_update_bricks_theme_styles",
+        "wordpress_update_bricks_typography",
+        "wordpress_update_comment",
+        "wordpress_update_core_security",
+        "wordpress_update_custom_post",
+        "wordpress_update_design_token",
+        "wordpress_update_element",
+        "wordpress_update_elementor_global_colors",
+        "wordpress_update_elementor_global_typography",
+        "wordpress_update_media",
+        "wordpress_update_media_batch",
+        "wordpress_update_menu",
+        "wordpress_update_menu_item",
+        "wordpress_update_module",
+        "wordpress_update_option",
+        "wordpress_update_page",
+        "wordpress_update_playbook",
+        "wordpress_update_plugin",
+        "wordpress_update_post",
+        "wordpress_update_post_type",
+        "wordpress_update_site_navigation",
+        "wordpress_update_site_pattern",
+        "wordpress_update_site_template",
+        "wordpress_update_taxonomy",
+        "wordpress_update_term",
+        "wordpress_update_theme_builder_template",
+        "wordpress_update_translation",
+        "wordpress_update_user",
+        "wordpress_upload_media",
+        "wordpress_validate_elementor_json",
+        "wordpress_validate_security",
+        "wordpress_write_theme_file"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern",
+        "tools_inferred_from_definitions_only",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 54,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/client",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
       "package": "@salesforce/mcp",
       "version": "0.30.15",
       "artifact_sha256": "7cd9f0a3437b5102d01d8d629fd1666487414c1256487fe60245a86b66e831b6",
@@ -293,6 +1613,235 @@
           {
             "name": "@modelcontextprotocol/sdk",
             "range": "^1.18.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@sellable/mcp",
+      "version": "0.1.865",
+      "artifact_sha256": "788c49e06816cda5f504e6af7ecbb8088b8a926a192e9e8890348685735f1055",
+      "spec": "@sellable/mcp@0.1.865",
+      "entries": 389,
+      "regular_file_bytes": 6770207,
+      "tools_total": 188,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 188
+      },
+      "tool_names": [
+        "add_column",
+        "add_on_demand_leads",
+        "add_rubric_item",
+        "add_teammate",
+        "add_to_comment_campaign",
+        "add_to_connection_campaign",
+        "add_to_inmail_campaign",
+        "archive_campaign",
+        "attach_recommended_sequence",
+        "attach_sequence",
+        "bootstrap_create_campaign",
+        "bootstrap_engage",
+        "bootstrap_engage_multi",
+        "bootstrap_find_leads",
+        "bulk_enrich_with_prospeo",
+        "calculate_linkedin_hook_preview",
+        "cancel_campaign_message_preparation",
+        "cancel_find_leads",
+        "cancel_lead_import",
+        "capture_post_idea",
+        "check_inbox_reply_eligibility",
+        "check_rubric",
+        "commit_blueprint",
+        "complete_sender_research",
+        "confirm_harvest_job_companies",
+        "confirm_lead_list",
+        "confirm_prospeo_company_accounts",
+        "copy_sender_config",
+        "create_campaign",
+        "create_on_demand_campaign",
+        "create_on_demand_table",
+        "create_workflow_table",
+        "create_workspace",
+        "decide_agent_endpoint_proposal",
+        "delete_column",
+        "delete_rubric_item",
+        "draft_rubrics",
+        "duplicate_campaign",
+        "enrich_with_prospeo",
+        "export_table_csv",
+        "export_workspace_csv",
+        "fetch_company",
+        "fetch_company_posts",
+        "fetch_linkedin_posts",
+        "fetch_linkedin_profile",
+        "fetch_post_engagers",
+        "fill_campaign_horizon",
+        "get_active_workspace",
+        "get_agent_endpoint_run",
+        "get_agent_soul",
+        "get_auth_status",
+        "get_campaign",
+        "get_campaign_context",
+        "get_campaign_framework",
+        "get_campaign_message_preparation_status",
+        "get_campaign_messages_preview",
+        "get_campaign_navigation_state",
+        "get_campaign_refill_state",
+        "get_campaign_table_schema",
+        "get_campaign_waterfall",
+        "get_campaigns",
+        "get_column_schema",
+        "get_company_info",
+        "get_engage_memory",
+        "get_engage_state",
+        "get_engaged_posts",
+        "get_find_leads_run",
+        "get_inbox_thread",
+        "get_integration_connection_status",
+        "get_linkedin_profile",
+        "get_or_create_direct_campaign_table",
+        "get_post_draft",
+        "get_post_find_leads_scout_registry",
+        "get_post_idea",
+        "get_prospeo_credits",
+        "get_provider_prompt",
+        "get_published_post",
+        "get_refill_target_plan",
+        "get_rows",
+        "get_rows_minimal",
+        "get_runtime_identity",
+        "get_scheduler_fill_capacity",
+        "get_sender",
+        "get_sender_routing",
+        "get_source_scout_registry",
+        "get_subskill_asset",
+        "get_subskill_prompt",
+        "get_table_rows",
+        "get_user_posts",
+        "get_workspace",
+        "import_leads",
+        "init_on_demand_sequence",
+        "integrations_call_tool",
+        "integrations_describe_tool",
+        "integrations_list_tools",
+        "list_agent_endpoint_runs",
+        "list_agent_endpoints",
+        "list_column_types",
+        "list_dnc_entries",
+        "list_post_draft_iterations",
+        "list_post_drafts",
+        "list_post_ideas",
+        "list_published_posts",
+        "list_senders",
+        "list_subskill_prompts",
+        "list_tables",
+        "list_workspaces",
+        "load_csv_dnc_entries",
+        "load_csv_domains",
+        "load_csv_linkedin_leads",
+        "lookup_sales_nav_filter",
+        "mark_post_published",
+        "migrate_flat_configs",
+        "pause_campaign",
+        "pause_direct_campaign",
+        "pause_on_demand_campaign",
+        "preflight_find_leads_provider",
+        "prepare_campaign_ab_test",
+        "publish_agent_endpoint",
+        "queue_campaign_cells",
+        "queue_cells",
+        "record_campaign_review_batch",
+        "record_engage_proven_search",
+        "refill_sends",
+        "refresh_paid_inmail_credits",
+        "refresh_sender_engagement",
+        "reissue_find_leads_watch_link",
+        "render_linkedin_post_preview",
+        "reorder_columns",
+        "resolve_campaign_fill_route",
+        "revise_message_template_and_rerun",
+        "rotate_agent_endpoint_key",
+        "run_scheduler_sweep",
+        "save_domain_filters",
+        "save_hook_research",
+        "save_post_draft",
+        "save_rubrics",
+        "search_apollo",
+        "search_available_integrations",
+        "search_engagement_posts",
+        "search_harvest_jobs",
+        "search_inbox_threads",
+        "search_prospeo",
+        "search_prospeo_companies",
+        "search_sales_nav",
+        "search_signals",
+        "search_subskill_prompts",
+        "select_campaign_cells",
+        "select_necessary_rubrics",
+        "select_promising_posts",
+        "send_inbox_draft",
+        "send_inbox_manual_reply",
+        "set_active_workspace",
+        "set_campaign_waterfall_order",
+        "set_company_info",
+        "set_engage_state",
+        "set_engage_style_guide",
+        "set_headline_icp_criteria",
+        "set_sender_calendar_link",
+        "set_sender_routing",
+        "setup_evergreen_campaigns",
+        "start_campaign",
+        "start_campaign_message_preparation",
+        "start_cli_login",
+        "start_direct_campaign",
+        "start_integration_connection",
+        "start_on_demand_campaign",
+        "stop_agent_endpoint_run",
+        "update_agent_soul",
+        "update_campaign",
+        "update_campaign_brief",
+        "update_cell",
+        "update_column",
+        "update_find_leads_run",
+        "update_inbox_draft",
+        "update_post_draft",
+        "update_published_post_metrics",
+        "update_rubric_item",
+        "upsert_engage_tracked_person",
+        "upsert_rubric",
+        "validate_campaign1_kickoff_handoff",
+        "verify_table_row",
+        "wait_for_campaign_processing",
+        "wait_for_campaign_table_ready",
+        "wait_for_cli_login",
+        "wait_for_find_leads_run",
+        "wait_for_lead_list_ready",
+        "wait_for_rubric_results"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static",
+        "tools_inferred_from_definitions_only",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 117,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.25.2"
           }
         ],
         "declared_present": true
@@ -394,6 +1943,122 @@
       "role": "server"
     },
     {
+      "package": "@shopify/dev-mcp",
+      "version": "1.14.4",
+      "artifact_sha256": "c1222fac2059a8be3410d4b8baaea3ca5dc1aeac21d25f73c72ad58ac5fe8bb6",
+      "spec": "@shopify/dev-mcp@1.14.4",
+      "entries": 4133,
+      "regular_file_bytes": 15616347,
+      "tools_total": 6,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 6
+      },
+      "tool_names": [
+        "learn_shopify_api",
+        "search_docs_chunks",
+        "validate_component_codeblocks",
+        "validate_graphql_codeblocks",
+        "validate_theme",
+        "validate_theme_codeblocks"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 4,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@skillbase/spm",
+      "version": "0.9.7",
+      "artifact_sha256": "6a2a97ab2ee5a5637b58fa0376e0fbe90073074eab1183437d5db23cc2620426",
+      "spec": "@skillbase/spm@0.9.7",
+      "entries": 376,
+      "regular_file_bytes": 931154,
+      "tools_total": 33,
+      "tools_by_discovery": {
+        "registration": 33,
+        "definition": 0
+      },
+      "tool_names": [
+        "persona_install",
+        "persona_list",
+        "persona_load",
+        "skill_context",
+        "skill_exec_bash",
+        "skill_exec_fetch",
+        "skill_exec_read",
+        "skill_exec_write",
+        "skill_feedback",
+        "skill_install",
+        "skill_list",
+        "skill_load",
+        "skill_search",
+        "sync_environment",
+        "sync_feature_comments",
+        "sync_feature_create",
+        "sync_feature_delete",
+        "sync_feature_diff",
+        "sync_feature_edit",
+        "sync_feature_link",
+        "sync_feature_load",
+        "sync_feature_unlink",
+        "sync_feature_update",
+        "sync_install",
+        "sync_knowledge_link",
+        "sync_knowledge_unlink",
+        "sync_project_bind",
+        "sync_project_create",
+        "sync_project_list",
+        "sync_project_prompt",
+        "sync_project_update",
+        "sync_search",
+        "sync_status"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 94,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.27.1"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
       "package": "@smartbear/mcp",
       "version": "0.35.0",
       "artifact_sha256": "e38398f2914f004621eb3e24667e3a351f133a64a65f8f29ef8d87b901be0abe",
@@ -432,6 +2097,261 @@
       "role": "server"
     },
     {
+      "package": "@stigmer/mcp-server",
+      "version": "3.11.0",
+      "artifact_sha256": "7ce738075762a6838fdd9f1599df94d2d1361d1274f26d38c7547578c8733e81",
+      "spec": "@stigmer/mcp-server@3.11.0",
+      "entries": 365,
+      "regular_file_bytes": 2685431,
+      "tools_total": 40,
+      "tools_by_discovery": {
+        "registration": 40,
+        "definition": 0
+      },
+      "tool_names": [
+        "apply_agent",
+        "apply_datastore",
+        "apply_environment",
+        "apply_mcp_server",
+        "apply_workflow",
+        "cancel_execution",
+        "delete_agent",
+        "delete_datastore",
+        "delete_environment",
+        "delete_mcp_server",
+        "delete_record",
+        "delete_skill",
+        "delete_workflow",
+        "describe_datastore",
+        "escalate_to_human",
+        "find_records",
+        "get_agent",
+        "get_agent_execution",
+        "get_datastore",
+        "get_environment",
+        "get_mcp_server",
+        "get_skill",
+        "get_task_kind",
+        "get_task_kind_registry",
+        "get_workflow",
+        "get_workflow_execution",
+        "get_workflow_execution_events",
+        "insert_record",
+        "list_pending_approvals",
+        "list_skill_versions",
+        "list_workflow_versions",
+        "run_agent",
+        "run_workflow",
+        "search",
+        "send_channel_message",
+        "submit_agent_execution_approval",
+        "submit_workflow_task_approval",
+        "tag_workflow_version",
+        "update_record",
+        "validate_workflow_yaml"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_array_not_static",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 69,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.26.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@tokst/mcp-server",
+      "version": "0.5.7",
+      "artifact_sha256": "00425a4698e4c5ea63b1e58e6d775e883885adcd39c366c4fabc571ea8e9f906",
+      "spec": "@tokst/mcp-server@0.5.7",
+      "entries": 2,
+      "regular_file_bytes": 903477,
+      "tools_total": 38,
+      "tools_by_discovery": {
+        "registration": 38,
+        "definition": 0
+      },
+      "tool_names": [
+        "tokst_agent_list",
+        "tokst_atlas_delete",
+        "tokst_atlas_init",
+        "tokst_atlas_list",
+        "tokst_atlas_profile",
+        "tokst_atlas_rename",
+        "tokst_attach_file",
+        "tokst_context",
+        "tokst_download_file",
+        "tokst_memory_append",
+        "tokst_memory_archive",
+        "tokst_memory_delete",
+        "tokst_memory_get",
+        "tokst_memory_list",
+        "tokst_memory_restore",
+        "tokst_memory_supersede",
+        "tokst_memory_update",
+        "tokst_memory_verify",
+        "tokst_message_acknowledge",
+        "tokst_message_close",
+        "tokst_message_inbox",
+        "tokst_message_send",
+        "tokst_remember",
+        "tokst_search",
+        "tokst_status",
+        "tokst_workspace_create",
+        "tokst_workspace_delete",
+        "tokst_workspace_invitation_inbox",
+        "tokst_workspace_invitation_respond",
+        "tokst_workspace_invitation_revoke",
+        "tokst_workspace_invitations",
+        "tokst_workspace_invite",
+        "tokst_workspace_leave",
+        "tokst_workspace_list",
+        "tokst_workspace_member_remove",
+        "tokst_workspace_member_role",
+        "tokst_workspace_members",
+        "tokst_workspace_owner_transfer"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@trainheroic-unofficial/core",
+      "version": "3.0.1",
+      "artifact_sha256": "ebb6aec8f7cc4749d98b788a00f2ffde7384ab3e8b238775c701cb6619504f88",
+      "spec": "@trainheroic-unofficial/core@3.0.1",
+      "entries": 5,
+      "regular_file_bytes": 101535,
+      "tools_total": 61,
+      "tools_by_discovery": {
+        "registration": 61,
+        "definition": 0
+      },
+      "tool_names": [
+        "analytics_query",
+        "athlete_archive",
+        "athlete_exercise_history",
+        "athlete_exercise_stats",
+        "athlete_exercises",
+        "athlete_invite",
+        "athlete_leaderboard",
+        "athlete_lift_history",
+        "athlete_log_session",
+        "athlete_log_set",
+        "athlete_log_targets",
+        "athlete_main_lift_prs",
+        "athlete_personal_records",
+        "athlete_prefs",
+        "athlete_profile",
+        "athlete_restore",
+        "athlete_saved_workouts",
+        "athlete_session_add_exercises",
+        "athlete_session_create",
+        "athlete_session_remove",
+        "athlete_swap_exercise",
+        "athlete_training",
+        "athlete_whoami",
+        "athlete_working_maxes",
+        "athlete_workouts",
+        "coach_log_session",
+        "exercise_create",
+        "exercise_forget",
+        "exercise_get",
+        "exercise_resolve",
+        "exercise_search",
+        "exercise_sync",
+        "get_program",
+        "get_team",
+        "list_athletes",
+        "list_team_codes",
+        "list_teams",
+        "log_athlete_set",
+        "message_delete",
+        "message_draft",
+        "message_send",
+        "messaging_conversations",
+        "messaging_read",
+        "prescribe_athlete_set",
+        "roster_activity",
+        "roster_main_lift_prs",
+        "session_copy",
+        "session_remove",
+        "session_save_as_template",
+        "session_unpublish",
+        "store_stats",
+        "swap_athlete_exercise",
+        "team_code_create",
+        "team_code_delete",
+        "team_create",
+        "team_delete",
+        "team_update",
+        "team_volume",
+        "workout_build",
+        "workout_publish",
+        "workout_read"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
       "package": "@transcend-io/mcp-server-docs",
       "version": "0.3.13",
       "artifact_sha256": "11a4a22aeca712fb7286aaf199b1b062665160aeb2d2c757af0ea7c84e3bb44c",
@@ -454,6 +2374,113 @@
         "tools_inferred_from_definitions_only"
       ],
       "scanned_files": 3,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@trycompai/mcp-server",
+      "version": "0.3.0",
+      "artifact_sha256": "cf21871de4642306c208e6c215a6dc8e5e96afecbfc0126f49f3b1f8ac770a09",
+      "spec": "@trycompai/mcp-server@0.3.0",
+      "entries": 6884,
+      "regular_file_bytes": 22035403,
+      "tools_total": 4,
+      "tools_by_discovery": {
+        "registration": 4,
+        "definition": 0
+      },
+      "tool_names": [
+        "describe_tool_input",
+        "execute_tool",
+        "list_scopes",
+        "list_tools"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "source_file_exceeded_parse_size_limit",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 1376,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "1.26.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "@uno-online/mcp",
+      "version": "0.14.0",
+      "artifact_sha256": "b0cdc853a522c4b5a6855ac468864e4a0e14297b8f4a3b73fec9ab4cdd3ddea7",
+      "spec": "@uno-online/mcp@0.14.0",
+      "entries": 2,
+      "regular_file_bytes": 52189,
+      "tools_total": 25,
+      "tools_by_discovery": {
+        "registration": 25,
+        "definition": 0
+      },
+      "tool_names": [
+        "accept",
+        "call_uno",
+        "catch_uno",
+        "challenge",
+        "choose_color",
+        "choose_swap_target",
+        "create_room",
+        "dissolve_room",
+        "draw_card",
+        "get_game_state",
+        "get_hand",
+        "get_room_info",
+        "get_rules",
+        "join_room",
+        "kick_player",
+        "leave_room",
+        "leave_seat",
+        "pass",
+        "play_card",
+        "ready",
+        "rematch",
+        "start_game",
+        "take_seat",
+        "update_room_settings",
+        "vote_next_round"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
       "sdk_evidence": {
         "declared": [
           {
@@ -515,6 +2542,58 @@
         "protocol_profile": "mcp-2026-07-28"
       },
       "role": "server"
+    },
+    {
+      "package": "fa-mcp-sdk",
+      "version": "0.12.96",
+      "artifact_sha256": "20b52e320f2f8a7f5de7bdde9f04801edd02f32236356547d5631e67b97b4fc7",
+      "spec": "fa-mcp-sdk@0.12.96",
+      "entries": 542,
+      "regular_file_bytes": 2725759,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_handler_not_static",
+        "registration_name_not_static",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 130,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/client",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/node",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
     },
     {
       "package": "figma-console-mcp",
@@ -735,6 +2814,401 @@
       "role": "server"
     },
     {
+      "package": "frootai-mcp",
+      "version": "6.1.1",
+      "artifact_sha256": "fcb5b40ffc1fd4faf1a7c3d72e7406e40186a0cddbc8b0bd93eb4e4806753309",
+      "spec": "frootai-mcp@6.1.1",
+      "entries": 6521,
+      "regular_file_bytes": 31365035,
+      "tools_total": 63,
+      "tools_by_discovery": {
+        "registration": 62,
+        "definition": 1
+      },
+      "tool_names": [
+        "agent_build",
+        "agent_review",
+        "agent_tune",
+        "analyze_workspace",
+        "check_compatibility",
+        "check_plugin_updates",
+        "compare_models",
+        "compare_plays",
+        "compose_plugins",
+        "create_primitive",
+        "embedding_playground",
+        "estimate_cost",
+        "evaluate_quality",
+        "fai_attach_mcp",
+        "fai_detach_mcp",
+        "fai_discover_mcp",
+        "fai_full",
+        "fai_invoke_via",
+        "fai_lean",
+        "fai_list_attached",
+        "fai_trust_query",
+        "fetch_azure_docs",
+        "fetch_external_mcp",
+        "generate_architecture_diagram",
+        "generate_bicep",
+        "get_architecture_pattern",
+        "get_azure_pricing",
+        "get_dependencies",
+        "get_froot_overview",
+        "get_github_agentic_os",
+        "get_model_catalog",
+        "get_module",
+        "get_play_config",
+        "get_play_detail",
+        "inspect_wiring",
+        "install_plugin",
+        "list_community_plays",
+        "list_external_plugins",
+        "list_installed",
+        "list_modules",
+        "list_primitives",
+        "lookup_term",
+        "marketplace_browse",
+        "marketplace_search",
+        "marketplace_spec",
+        "marketplace_stats",
+        "prompt_dry_run",
+        "publish_plugin",
+        "resolve_dependencies",
+        "run_eval_live",
+        "run_evaluation",
+        "run_play",
+        "scaffold_component",
+        "scaffold_play",
+        "search_knowledge",
+        "semantic_search_plays",
+        "smart_scaffold",
+        "trust_evidence",
+        "uninstall_plugin",
+        "validate_config",
+        "validate_manifest",
+        "validate_plugin",
+        "wire_play"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 96,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.30.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "github-mcp-server-js",
+      "version": "0.1.7",
+      "artifact_sha256": "2ff00ae59b593c88bb54d165841e5d844a53e19c04841d9b495cd6f1797dad09",
+      "spec": "github-mcp-server-js@0.1.7",
+      "entries": 4,
+      "regular_file_bytes": 1983326,
+      "tools_total": 108,
+      "tools_by_discovery": {
+        "registration": 108,
+        "definition": 0
+      },
+      "tool_names": [
+        "add_comment",
+        "add_labels",
+        "add_or_update_team_membership",
+        "approve_workflow_run",
+        "cancel_workflow_run",
+        "check_repo_starred",
+        "create_branch",
+        "create_codespace_in_repo",
+        "create_gist",
+        "create_issue",
+        "create_or_update_file",
+        "create_pull_request",
+        "create_pull_request_review",
+        "create_tree",
+        "delete_branch",
+        "delete_gist",
+        "get_app",
+        "get_authenticated_user",
+        "get_branch",
+        "get_code_scanning_alert",
+        "get_codespace",
+        "get_commit",
+        "get_copilot_organization_details",
+        "get_copilot_seat_details_for_user",
+        "get_dependabot_alert",
+        "get_file_contents",
+        "get_gist",
+        "get_global_advisory",
+        "get_issue",
+        "get_meta",
+        "get_org",
+        "get_org_project",
+        "get_org_project_item",
+        "get_package_for_authenticated_user",
+        "get_package_version_for_authenticated_user",
+        "get_pull_request",
+        "get_rate_limit",
+        "get_repository",
+        "get_repository_advisory",
+        "get_secret_scanning_alert",
+        "get_team_by_name",
+        "get_tree",
+        "get_user_by_username",
+        "get_user_hovercard",
+        "get_workflow",
+        "get_workflow_run",
+        "list_branches",
+        "list_check_runs_for_ref",
+        "list_code_scanning_alerts",
+        "list_codespaces",
+        "list_comments",
+        "list_commits",
+        "list_copilot_seats",
+        "list_dependabot_alerts",
+        "list_emojis",
+        "list_gists",
+        "list_global_advisories",
+        "list_installation_repos_for_authenticated_user",
+        "list_installations_for_authenticated_user",
+        "list_issues",
+        "list_labels",
+        "list_labels_on_issue",
+        "list_notifications",
+        "list_org_members",
+        "list_org_project_fields",
+        "list_org_project_items",
+        "list_org_projects",
+        "list_org_repos",
+        "list_package_versions_for_authenticated_user",
+        "list_packages_for_authenticated_user",
+        "list_pull_request_commits",
+        "list_pull_request_files",
+        "list_pull_request_reviews",
+        "list_pull_requests",
+        "list_repository_advisories",
+        "list_secret_scanning_alerts",
+        "list_starred_repos",
+        "list_tags",
+        "list_team_members",
+        "list_teams",
+        "list_user_followers",
+        "list_user_following",
+        "list_workflow_run_artifacts",
+        "list_workflow_run_jobs",
+        "list_workflow_runs",
+        "list_workflows",
+        "lock_issue",
+        "merge_pull_request",
+        "remove_label",
+        "remove_team_membership",
+        "render_markdown",
+        "request_reviewers",
+        "rerun_workflow_run",
+        "rerun_workflow_run_failed_jobs",
+        "run_workflow",
+        "search_code",
+        "search_commits",
+        "search_issues",
+        "search_repos",
+        "search_users",
+        "star_repo",
+        "start_codespace",
+        "stop_codespace",
+        "unlock_issue",
+        "unstar_repo",
+        "update_gist",
+        "update_issue",
+        "update_pull_request"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "hourei-mcp-server",
+      "version": "1.0.6",
+      "artifact_sha256": "48a84b9d59bf86a75d33372a5d26f5fc45b60d4fa6fed643123889f11876a559",
+      "spec": "hourei-mcp-server@1.0.6",
+      "entries": 3,
+      "regular_file_bytes": 13751,
+      "tools_total": 3,
+      "tools_by_discovery": {
+        "registration": 3,
+        "definition": 0
+      },
+      "tool_names": [
+        "get_law_data",
+        "get_law_revision",
+        "search_law"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^0.5.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "ios-simulator-mcp",
+      "version": "2.0.0",
+      "artifact_sha256": "f5b4a554c2802f2f4d906e48920174dcfa9a3e88bf2fc125bbf27052836fcde6",
+      "spec": "ios-simulator-mcp@2.0.0",
+      "entries": 4,
+      "regular_file_bytes": 59499,
+      "tools_total": 14,
+      "tools_by_discovery": {
+        "registration": 14,
+        "definition": 0
+      },
+      "tool_names": [
+        "get_booted_sim_id",
+        "install_app",
+        "launch_app",
+        "open_simulator",
+        "record_video",
+        "screenshot",
+        "stop_recording",
+        "ui_describe_all",
+        "ui_describe_point",
+        "ui_find_element",
+        "ui_swipe",
+        "ui_tap",
+        "ui_type",
+        "ui_view"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "mcp-mongo-server",
+      "version": "3.0.1",
+      "artifact_sha256": "6a4aec34c8121a58f0c59b2dec65fdd869abb01c5774faf39286ce0583e474fa",
+      "spec": "mcp-mongo-server@3.0.1",
+      "entries": 4,
+      "regular_file_bytes": 70400,
+      "tools_total": 9,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 9
+      },
+      "tool_names": [
+        "aggregate",
+        "convertTime",
+        "count",
+        "createIndex",
+        "insert",
+        "listCollections",
+        "query",
+        "serverInfo",
+        "update"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/express",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/node",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
       "package": "mcp-searxng",
       "version": "1.15.0",
       "artifact_sha256": "9dfd4f25f0d0c7035b3b6e7526036f736d161283360936c666a60e0710a6b918",
@@ -764,6 +3238,502 @@
           {
             "name": "@modelcontextprotocol/sdk",
             "range": "1.30.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "mcporter",
+      "version": "0.13.4",
+      "artifact_sha256": "b71feb5696b946cedc6ae2f67e73390613cf77b401f172f99c4c90ffbbb71bda",
+      "spec": "mcporter@0.13.4",
+      "entries": 619,
+      "regular_file_bytes": 1945262,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 154,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/client",
+            "range": "^2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "client"
+    },
+    {
+      "package": "memgrep",
+      "version": "1.6.7",
+      "artifact_sha256": "ade9baee5d39e433e40f9175b479ba06e242d533bd714200e682a4f3e3e3e8c1",
+      "spec": "memgrep@1.6.7",
+      "entries": 361,
+      "regular_file_bytes": 1028424,
+      "tools_total": 64,
+      "tools_by_discovery": {
+        "registration": 64,
+        "definition": 0
+      },
+      "tool_names": [
+        "cursor_run",
+        "cursor_status",
+        "cursor_workspaces",
+        "docs_extract",
+        "docs_fill",
+        "docs_list",
+        "docs_list_templates",
+        "docs_serve",
+        "docs_setup",
+        "edge_cursor_run",
+        "edge_loop_run",
+        "edge_ping",
+        "edge_run",
+        "edge_status",
+        "gcloud_get_instance",
+        "gcloud_list_instances",
+        "gcloud_list_projects",
+        "gcloud_logs_query",
+        "get_chat",
+        "jira_add_comment",
+        "jira_create_issue",
+        "jira_get_issue",
+        "jira_list_projects",
+        "jira_search",
+        "jira_transition",
+        "jobs_add",
+        "jobs_list",
+        "jobs_logs",
+        "jobs_remove",
+        "jobs_run",
+        "jobs_update",
+        "list_chats",
+        "loop_remove_action",
+        "loop_remove_exit",
+        "loop_remove_input",
+        "loop_run",
+        "loop_run_status",
+        "loop_status",
+        "loop_upsert_action",
+        "loop_upsert_exit",
+        "loop_upsert_input",
+        "neon_connection_uri",
+        "neon_get_project",
+        "neon_list_branches",
+        "neon_list_projects",
+        "ph_comments",
+        "ph_get_post",
+        "ph_search",
+        "ph_today",
+        "posthog_feature_flags",
+        "posthog_get_flag",
+        "posthog_query",
+        "posthog_top_events",
+        "recall",
+        "remember",
+        "resolve_open",
+        "upstash_dbsize",
+        "upstash_del",
+        "upstash_get",
+        "upstash_ping",
+        "upstash_scan",
+        "upstash_set",
+        "upstash_ttl",
+        "upstash_type"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 179,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "paput-mcp",
+      "version": "4.2.55",
+      "artifact_sha256": "fce657116317b693464442ca10448cfb1ecbf392240bebacc964351eca142596",
+      "spec": "paput-mcp@4.2.55",
+      "entries": 429,
+      "regular_file_bytes": 858609,
+      "tools_total": 49,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 49
+      },
+      "tool_names": [
+        "paput_add_knowledge_candidates",
+        "paput_add_project_document",
+        "paput_create_goal",
+        "paput_create_memos",
+        "paput_create_note",
+        "paput_delete_goal",
+        "paput_delete_skill_sheet_project",
+        "paput_discard_pending_candidate",
+        "paput_discard_pending_candidates",
+        "paput_discard_project_proposal",
+        "paput_get_capture_policy",
+        "paput_get_categories",
+        "paput_get_dashboard_analysis",
+        "paput_get_dashboard_analysis_context",
+        "paput_get_discard_policy_context",
+        "paput_get_memo",
+        "paput_get_note",
+        "paput_get_project_context",
+        "paput_get_project_document",
+        "paput_get_skill_sheet",
+        "paput_get_skill_sheet_project_episodes_context",
+        "paput_list_goals",
+        "paput_list_pending_candidates",
+        "paput_list_processed_sessions",
+        "paput_mark_processed_session",
+        "paput_mark_processed_sessions",
+        "paput_promote_project_documents",
+        "paput_save_pending_candidate",
+        "paput_save_pending_candidates",
+        "paput_search_memo",
+        "paput_search_notes",
+        "paput_search_project_documents",
+        "paput_set_goals",
+        "paput_set_skill_sheet_skills",
+        "paput_update_capture_policy",
+        "paput_update_dashboard_analysis",
+        "paput_update_goal",
+        "paput_update_memo",
+        "paput_update_note",
+        "paput_update_pending_candidate",
+        "paput_update_pending_candidates",
+        "paput_update_project_document",
+        "paput_update_project_instructions",
+        "paput_update_skill_sheet_basic_info",
+        "paput_update_skill_sheet_faq",
+        "paput_update_skill_sheet_project_episodes",
+        "paput_update_skill_sheet_self_pr",
+        "paput_upsert_skill_sheet_project",
+        "paput_upsert_skill_sheet_projects"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 191,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/client",
+            "range": "2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/node",
+            "range": "2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "ragcode-context-engine",
+      "version": "0.1.20",
+      "artifact_sha256": "f3ac7516903b79e03032453f15d765278f2eb3bc6486e00e226eb6991b23ac76",
+      "spec": "ragcode-context-engine@0.1.20",
+      "entries": 379,
+      "regular_file_bytes": 3692418,
+      "tools_total": 27,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 27
+      },
+      "tool_names": [
+        "agent_workflow_report",
+        "agent_workflow_status",
+        "agent_workflow_validate",
+        "expand_node",
+        "explain_file",
+        "explain_impact",
+        "find_owner",
+        "find_reuse_candidates",
+        "find_symbol",
+        "get_context",
+        "get_project_brief",
+        "impact_analysis",
+        "index_repo",
+        "index_status",
+        "memory_delete",
+        "memory_list",
+        "memory_query",
+        "memory_write",
+        "record_file_events",
+        "refresh_index",
+        "related_tests",
+        "review_diff",
+        "search_code",
+        "topology_map",
+        "trace_flow",
+        "trace_request_flow",
+        "watch_status"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 193,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "recker",
+      "version": "1.0.103",
+      "artifact_sha256": "f0e7f6cfa995a469c9c84233fe1b78bc4de56ad7b240cf5fa1f8ef433ef3f181",
+      "spec": "recker@1.0.103",
+      "entries": 1550,
+      "regular_file_bytes": 15092438,
+      "tools_total": 70,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 70
+      },
+      "tool_names": [
+        "rek_ai_chat",
+        "rek_ai_compare",
+        "rek_ai_providers",
+        "rek_ai_tokens",
+        "rek_api_compare",
+        "rek_api_schema",
+        "rek_code_examples",
+        "rek_csv_parse",
+        "rek_csv_serialize",
+        "rek_curl_convert",
+        "rek_dns",
+        "rek_dns_dig",
+        "rek_dns_dkim",
+        "rek_dns_dmarc",
+        "rek_dns_health",
+        "rek_dns_propagate",
+        "rek_dns_spf",
+        "rek_dns_system",
+        "rek_dns_toolkit",
+        "rek_domain_audit",
+        "rek_ftp_connect",
+        "rek_ftp_download",
+        "rek_geoip_lookup",
+        "rek_get_doc",
+        "rek_graphql_introspect",
+        "rek_graphql_query",
+        "rek_hls_download",
+        "rek_hls_info",
+        "rek_hls_variants",
+        "rek_http_request",
+        "rek_ip_lookup",
+        "rek_jsonrpc_batch",
+        "rek_jsonrpc_call",
+        "rek_load_test",
+        "rek_ping",
+        "rek_rdap",
+        "rek_rdap_lookup",
+        "rek_scrape",
+        "rek_search_docs",
+        "rek_security_headers",
+        "rek_seo_analyze",
+        "rek_seo_quick_wins",
+        "rek_seo_schema",
+        "rek_seo_sitemap",
+        "rek_seo_spider",
+        "rek_sftp_connect",
+        "rek_sftp_download",
+        "rek_site_audit",
+        "rek_suggest",
+        "rek_telnet_connect",
+        "rek_template_check",
+        "rek_template_helpers",
+        "rek_template_parse",
+        "rek_template_render",
+        "rek_template_validate",
+        "rek_template_variables",
+        "rek_tls",
+        "rek_tls_inspect",
+        "rek_video_check",
+        "rek_video_extractors",
+        "rek_video_formats",
+        "rek_video_info",
+        "rek_video_url",
+        "rek_websocket_connect",
+        "rek_websocket_ping",
+        "rek_whois",
+        "rek_xml_parse",
+        "rek_xml_serialize",
+        "rek_yaml_parse",
+        "rek_yaml_serialize"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 778,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "unknown"
+    },
+    {
+      "package": "tdesign-mcp-server",
+      "version": "0.2.4",
+      "artifact_sha256": "5c76bfbd6e8feb72580f637329564b9e7ea6670a15967ae6ac658d2bef29eec7",
+      "spec": "tdesign-mcp-server@0.2.4",
+      "entries": 3,
+      "regular_file_bytes": 342584,
+      "tools_total": 5,
+      "tools_by_discovery": {
+        "registration": 5,
+        "definition": 0
+      },
+      "tool_names": [
+        "get-component-changelog",
+        "get-component-docs",
+        "get-component-dom",
+        "get-component-list",
+        "search-icon"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.23.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      },
+      "role": "server"
+    },
+    {
+      "package": "yuandian-mcp-server",
+      "version": "0.2.0",
+      "artifact_sha256": "21fda35d4f9867f8780259a85d96031669e7af1633b4972bb0eb974efc1296da",
+      "spec": "yuandian-mcp-server@0.2.0",
+      "entries": 4,
+      "regular_file_bytes": 25254,
+      "tools_total": 2,
+      "tools_by_discovery": {
+        "registration": 2,
+        "definition": 0
+      },
+      "tool_names": [
+        "yuandian_get_api_document",
+        "yuandian_list_apis"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 1,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "^2.0.0-alpha.2"
           }
         ],
         "declared_present": true
