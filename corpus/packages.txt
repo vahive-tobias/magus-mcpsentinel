@@ -1,0 +1,48 @@
+# Sentinel coverage corpus — pinned package list
+#
+# One `name@version` per line. Versions are exact and never floating: a corpus
+# that resolves `latest` measures a different population every run, and the
+# coverage figure stops being comparable to the one before it.
+#
+# The artifact digest for each line is recorded in `artifacts.lock.json` on the
+# first run and verified on every run after. npm can republish a version under
+# the same number; if that happens the run fails rather than quietly measuring a
+# different artifact.
+#
+# These thirteen are the packages Hosted Watch actually monitors, pinned at the
+# versions it had recorded on 2026-08-12. They were chosen for release cadence
+# rather than as a representative sample of the ecosystem — see corpus/README.md.
+#
+# The original n=25 corpus behind the published 32% figure was never checked in
+# and cannot be reconstructed. This list does not reproduce it and should not be
+# compared against it.
+
+@circleci/mcp-server-circleci@0.20.0
+@crewhaus/mcp-host@0.5.2
+@mapbox/mcp-server@0.14.0
+@modelcontextprotocol/server-filesystem@2026.7.10
+@notionhq/notion-mcp-server@2.5.1
+@salesforce/mcp@0.30.15
+@sentry/mcp-server@0.37.0
+@smartbear/mcp@0.35.0
+@transcend-io/mcp-server-docs@0.3.13
+@upstash/context7-mcp@4.0.2
+figma-console-mcp@1.39.1
+firecrawl-mcp@3.23.9
+mcp-searxng@1.15.0
+
+# Candidates for widening the corpus toward the 50–100 the plan calls for. Each
+# needs an exact version before it goes in — resolve one, then move the line up.
+#
+#   @cloudflare/mcp-server-cloudflare
+#   @hubspot/mcp-server
+#   @modelcontextprotocol/inspector
+#   @pandacss/mcp
+#   @transcend-io/mcp-server-base
+#   hostinger-api-mcp
+#
+# Wanted specifically, and not yet represented: a package built on the v2 SDK
+# (`@modelcontextprotocol/server`), and one registering a task via
+# `registerToolTask`. Both shapes are unrecognised today, and an adapter written
+# against documentation rather than a real artifact is the failure this corpus
+# exists to prevent.

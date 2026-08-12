@@ -58,6 +58,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # docs/ is internal by default and published by exception. The exceptions
+      # are listed here as well as in .gitignore, so relaxing the ignore rule is
+      # not enough on its own to publish a working document by accident.
+      - name: Only the intended documents are published
+        run: |
+          expected="docs/LIMITATIONS.md
+          docs/PROTOCOL_PROFILE_2026-07-28.md
+          docs/SPEC_PROVENANCE.md
+          docs/SPEC_PROVENANCE.sha256"
+          actual=$(git ls-files 'docs/*' | grep -v '^docs/change-reports/' || true)
+          if [ "$(echo "$expected" | sed 's/^ *//' | sort)" != "$(echo "$actual" | sort)" ]; then
+            echo "::error::The set of published documents changed. Internal working notes must stay unpublished."
+            diff <(echo "$expected" | sed 's/^ *//' | sort) <(echo "$actual" | sort) || true
+            exit 1
+          fi
+          echo "OK: only the intended documents are tracked."
+
       # The analyzer must never depend on a consumer of its reports. Dependencies
       # run one way: the monitor imports the analyzer, never the reverse.
       # Matched narrowly and deliberately. A bare "watch" would fire on ordinary

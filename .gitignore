@@ -9,19 +9,15 @@ node_modules/
 .wrangler/
 
 # ---- Internal working documents ----
-# Kept locally so we can track our own work; not part of the published repo.
-# This repository distributes a tool. It is not a record of how it was built.
-docs/ENGINEERING_LOG.md
-docs/ENGINEERING_LOG_WATCH.md
-docs/ROADMAP.md
-docs/PRODUCT_AND_TECHNICAL_PLAN.md
-docs/FIXTURE_PLAN.md
-docs/Project Sentinel.md
-docs/SECURITY_WATCH_NOTES.md
-docs/PLAN_*.md
-docs/HANDOVER.md
-
-# Published deliberately, despite living under docs/.
+# Fail closed: everything under docs/ is internal unless listed below. The rule
+# used to name each internal file, which left a NEW design document public by
+# default — TOOL_IDENTIFICATION_PROPOSAL.md was one `git add -A` from shipping
+# that way. Publishing a document is now a deliberate act of adding a line here.
+docs/**
+!docs/LIMITATIONS.md
+!docs/PROTOCOL_PROFILE_2026-07-28.md
+!docs/SPEC_PROVENANCE.md
+!docs/SPEC_PROVENANCE.sha256
 !docs/change-reports/
 !docs/change-reports/**
 
@@ -51,6 +47,12 @@ CLAUDE.md
 # stale copy disagree with the code it claims to describe.
 packages/sentinel/src/build-info.ts
 packages/sentinel/src/generated/
+
+# ---- Coverage corpus artifact cache ----
+# Downloaded third-party tarballs and their reports. The pinned list and the
+# digest lock are committed; the artifacts themselves are not, because a public
+# repository is the wrong place to redistribute other people's packages.
+corpus/.cache/
 
 # ---- Analyzer output ----
 # Reports and preserved acquisition evidence are generated artifacts. They can

@@ -1,0 +1,720 @@
+{
+  "generated_at": "2026-08-12T06:26:04.839Z",
+  "analyzer": {
+    "engine": {
+      "name": "sentinel",
+      "version": "0.2.0",
+      "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+    },
+    "protocol_profile": "mcp-2026-07-28"
+  },
+  "corpus_size": 13,
+  "analyzed": 13,
+  "failed": [],
+  "artifact_drift": [],
+  "inventories_recovered": 6,
+  "recovery_rate": 0.4615,
+  "statically_complete_extractions": 3,
+  "statically_complete_rate": 0.2308,
+  "tools_recovered_total": 194,
+  "incompleteness_reasons": {
+    "registration_name_not_static": 5,
+    "no_recognized_registration_pattern": 4,
+    "tools_inferred_from_definitions_only": 3,
+    "typescript_source_not_parsed": 1,
+    "list_tools_entry_not_static": 1
+  },
+  "sdk_declared_count": 12,
+  "precision": {
+    "measured": false,
+    "blocked_on": "ground-truth corpus (PLAN_COVERAGE Phase 2)"
+  },
+  "packages": [
+    {
+      "package": "@circleci/mcp-server-circleci",
+      "version": "0.20.0",
+      "artifact_sha256": "eff9c9fc1ae82b2fe92245744caf2ec9c616b6a606e756edf10fc57c7e957190",
+      "spec": "@circleci/mcp-server-circleci@0.20.0",
+      "entries": 94,
+      "regular_file_bytes": 284521,
+      "tools_total": 13,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 13
+      },
+      "tool_names": [
+        "config_helper",
+        "download_usage_api_data",
+        "find_flaky_tests",
+        "find_underused_resource_classes",
+        "get_build_failure_logs",
+        "get_job_test_results",
+        "get_latest_pipeline_status",
+        "list_artifacts",
+        "list_component_versions",
+        "list_followed_projects",
+        "rerun_workflow",
+        "run_pipeline",
+        "run_rollback_pipeline"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 90,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.15.1"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@crewhaus/mcp-host",
+      "version": "0.5.2",
+      "artifact_sha256": "64137f4e7f58778ccb6dc65aa88322193215f7d7628c1c9a2846a575091b8b9a",
+      "spec": "@crewhaus/mcp-host@0.5.2",
+      "entries": 13,
+      "regular_file_bytes": 53955,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 6,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@mapbox/mcp-server",
+      "version": "0.14.0",
+      "artifact_sha256": "090a728b790971804ee097f69ffaf577a384f0c068df49e5779a88e7a3809431",
+      "spec": "@mapbox/mcp-server@0.14.0",
+      "entries": 1233,
+      "regular_file_bytes": 2741089,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 306,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/ext-apps",
+            "range": "^1.1.1"
+          },
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@modelcontextprotocol/server-filesystem",
+      "version": "2026.7.10",
+      "artifact_sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+      "spec": "@modelcontextprotocol/server-filesystem@2026.7.10",
+      "entries": 7,
+      "regular_file_bytes": 69088,
+      "tools_total": 14,
+      "tools_by_discovery": {
+        "registration": 14,
+        "definition": 0
+      },
+      "tool_names": [
+        "create_directory",
+        "directory_tree",
+        "edit_file",
+        "get_file_info",
+        "list_allowed_directories",
+        "list_directory",
+        "list_directory_with_sizes",
+        "move_file",
+        "read_file",
+        "read_media_file",
+        "read_multiple_files",
+        "read_text_file",
+        "search_files",
+        "write_file"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 5,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@notionhq/notion-mcp-server",
+      "version": "2.5.1",
+      "artifact_sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+      "spec": "@notionhq/notion-mcp-server@2.5.1",
+      "entries": 51,
+      "regular_file_bytes": 3039434,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern",
+        "typescript_source_not_parsed"
+      ],
+      "scanned_files": 2,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@salesforce/mcp",
+      "version": "0.30.15",
+      "artifact_sha256": "7cd9f0a3437b5102d01d8d629fd1666487414c1256487fe60245a86b66e831b6",
+      "spec": "@salesforce/mcp@0.30.15",
+      "entries": 36,
+      "regular_file_bytes": 807563,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 17,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.18.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@sentry/mcp-server",
+      "version": "0.37.0",
+      "artifact_sha256": "416e1858134ab407c7e976f4dbcde2954fda22e6ef34603c14b1a7a495930814",
+      "spec": "@sentry/mcp-server@0.37.0",
+      "entries": 160,
+      "regular_file_bytes": 11168943,
+      "tools_total": 46,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 46
+      },
+      "tool_names": [
+        "add_issue_note",
+        "analyze_issue_with_seer",
+        "create_dsn",
+        "create_project",
+        "create_team",
+        "execute_sentry_tool",
+        "find_alert_rules",
+        "find_dashboards",
+        "find_dsns",
+        "find_monitors",
+        "find_organizations",
+        "find_projects",
+        "find_releases",
+        "find_teams",
+        "get_ai_conversation_details",
+        "get_alert_rule",
+        "get_dashboard_details",
+        "get_doc",
+        "get_event_attachment",
+        "get_event_stacktrace",
+        "get_issue_activity",
+        "get_issue_details",
+        "get_issue_tag_values",
+        "get_issue_user_reports",
+        "get_latest_base_snapshot",
+        "get_monitor_details",
+        "get_profile",
+        "get_profile_details",
+        "get_release_details",
+        "get_replay_details",
+        "get_sentry_resource",
+        "get_snapshot",
+        "get_snapshot_image",
+        "get_trace_details",
+        "json",
+        "search_ai_conversations",
+        "search_docs",
+        "search_events",
+        "search_issue_events",
+        "search_issues",
+        "search_sentry_tools",
+        "update_dsn",
+        "update_issue",
+        "update_project",
+        "use_sentry",
+        "whoami"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 68,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.26.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@smartbear/mcp",
+      "version": "0.35.0",
+      "artifact_sha256": "e38398f2914f004621eb3e24667e3a351f133a64a65f8f29ef8d87b901be0abe",
+      "spec": "@smartbear/mcp@0.35.0",
+      "entries": 251,
+      "regular_file_bytes": 1909505,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "registration_name_not_static"
+      ],
+      "scanned_files": 247,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.27.1"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@transcend-io/mcp-server-docs",
+      "version": "0.3.13",
+      "artifact_sha256": "11a4a22aeca712fb7286aaf199b1b062665160aeb2d2c757af0ea7c84e3bb44c",
+      "spec": "@transcend-io/mcp-server-docs@0.3.13",
+      "entries": 11,
+      "regular_file_bytes": 27710,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 3,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.29.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "@upstash/context7-mcp",
+      "version": "4.0.2",
+      "artifact_sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+      "spec": "@upstash/context7-mcp@4.0.2",
+      "entries": 12,
+      "regular_file_bytes": 95465,
+      "tools_total": 2,
+      "tools_by_discovery": {
+        "registration": 2,
+        "definition": 0
+      },
+      "tool_names": [
+        "query-docs",
+        "resolve-library-id"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 9,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/node",
+            "range": "2.0.0"
+          },
+          {
+            "name": "@modelcontextprotocol/server",
+            "range": "2.0.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "figma-console-mcp",
+      "version": "1.39.1",
+      "artifact_sha256": "d43dd5e5f3bb594b1cacf43ed1b2b788d7d526336cb30886c2c4e621c503c0ff",
+      "spec": "figma-console-mcp@1.39.1",
+      "entries": 458,
+      "regular_file_bytes": 5761623,
+      "tools_total": 115,
+      "tools_by_discovery": {
+        "registration": 115,
+        "definition": 0
+      },
+      "tool_names": [
+        "figjam_auto_arrange",
+        "figjam_create_code_block",
+        "figjam_create_connector",
+        "figjam_create_section",
+        "figjam_create_shape_with_text",
+        "figjam_create_stickies",
+        "figjam_create_sticky",
+        "figjam_create_table",
+        "figjam_get_board_contents",
+        "figjam_get_connections",
+        "figma_add_component_property",
+        "figma_add_mode",
+        "figma_add_shape_to_slide",
+        "figma_add_slot_property",
+        "figma_add_text_to_slide",
+        "figma_analyze_component_set",
+        "figma_append_to_slot",
+        "figma_arrange_component_set",
+        "figma_audit_component_accessibility",
+        "figma_audit_design_system_report",
+        "figma_batch_create_variables",
+        "figma_batch_update_variables",
+        "figma_blame_node",
+        "figma_capture_screenshot",
+        "figma_check_design_parity",
+        "figma_clear_console",
+        "figma_clone_node",
+        "figma_create_child",
+        "figma_create_component_set",
+        "figma_create_slide",
+        "figma_create_slot",
+        "figma_create_variable",
+        "figma_create_variable_collection",
+        "figma_delete_comment",
+        "figma_delete_component_property",
+        "figma_delete_node",
+        "figma_delete_slide",
+        "figma_delete_variable",
+        "figma_delete_variable_collection",
+        "figma_diagnose",
+        "figma_diff_versions",
+        "figma_duplicate_slide",
+        "figma_edit_component_property",
+        "figma_execute",
+        "figma_execute_across_files",
+        "figma_export_tokens",
+        "figma_focus_slide",
+        "figma_generate_changelog",
+        "figma_generate_component_doc",
+        "figma_get_annotation_categories",
+        "figma_get_annotations",
+        "figma_get_changes_since_version",
+        "figma_get_comments",
+        "figma_get_component",
+        "figma_get_component_details",
+        "figma_get_component_for_development",
+        "figma_get_component_for_development_deep",
+        "figma_get_component_image",
+        "figma_get_console_logs",
+        "figma_get_design_changes",
+        "figma_get_design_system_kit",
+        "figma_get_design_system_summary",
+        "figma_get_file_at_version",
+        "figma_get_file_data",
+        "figma_get_file_for_plugin",
+        "figma_get_file_versions",
+        "figma_get_focused_slide",
+        "figma_get_library_component_by_key",
+        "figma_get_library_components",
+        "figma_get_library_variables",
+        "figma_get_selection",
+        "figma_get_slide_content",
+        "figma_get_slide_grid",
+        "figma_get_slide_transition",
+        "figma_get_slots",
+        "figma_get_status",
+        "figma_get_styles",
+        "figma_get_text_styles",
+        "figma_get_token_values",
+        "figma_get_variables",
+        "figma_import_library_variable",
+        "figma_import_tokens",
+        "figma_instantiate_component",
+        "figma_lint_design",
+        "figma_list_open_files",
+        "figma_list_slides",
+        "figma_move_node",
+        "figma_navigate",
+        "figma_pair_plugin",
+        "figma_post_comment",
+        "figma_reconnect",
+        "figma_reload_plugin",
+        "figma_rename_mode",
+        "figma_rename_node",
+        "figma_rename_variable",
+        "figma_reorder_slides",
+        "figma_reset_slot",
+        "figma_resize_node",
+        "figma_scan_code_accessibility",
+        "figma_search_components",
+        "figma_set_annotations",
+        "figma_set_description",
+        "figma_set_fills",
+        "figma_set_image_fill",
+        "figma_set_instance_properties",
+        "figma_set_slide_background",
+        "figma_set_slide_transition",
+        "figma_set_slides_view_mode",
+        "figma_set_strokes",
+        "figma_set_text",
+        "figma_setup_design_tokens",
+        "figma_skip_slide",
+        "figma_take_screenshot",
+        "figma_update_variable",
+        "figma_watch_console"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": true,
+      "incompleteness": [],
+      "scanned_files": 182,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/ext-apps",
+            "range": "^1.0.1"
+          },
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "^1.26.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "firecrawl-mcp",
+      "version": "3.23.9",
+      "artifact_sha256": "e04a382e5540f277c57584dcb44409bed8845ac0d98cd37c73fc58fc69ca8d18",
+      "spec": "firecrawl-mcp@3.23.9",
+      "entries": 5,
+      "regular_file_bytes": 164673,
+      "tools_total": 0,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 0
+      },
+      "tool_names": [],
+      "inventory_recovered": false,
+      "statically_complete": false,
+      "incompleteness": [
+        "no_recognized_registration_pattern"
+      ],
+      "scanned_files": 2,
+      "sdk_evidence": {
+        "declared": null,
+        "declared_present": false
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    },
+    {
+      "package": "mcp-searxng",
+      "version": "1.15.0",
+      "artifact_sha256": "9dfd4f25f0d0c7035b3b6e7526036f736d161283360936c666a60e0710a6b918",
+      "spec": "mcp-searxng@1.15.0",
+      "entries": 57,
+      "regular_file_bytes": 268275,
+      "tools_total": 4,
+      "tools_by_discovery": {
+        "registration": 0,
+        "definition": 4
+      },
+      "tool_names": [
+        "searxng_instance_info",
+        "searxng_search_suggestions",
+        "searxng_web_search",
+        "web_url_read"
+      ],
+      "inventory_recovered": true,
+      "statically_complete": false,
+      "incompleteness": [
+        "list_tools_entry_not_static",
+        "tools_inferred_from_definitions_only"
+      ],
+      "scanned_files": 27,
+      "sdk_evidence": {
+        "declared": [
+          {
+            "name": "@modelcontextprotocol/sdk",
+            "range": "1.30.0"
+          }
+        ],
+        "declared_present": true
+      },
+      "analyzer": {
+        "engine": {
+          "name": "sentinel",
+          "version": "0.2.0",
+          "build_sha256": "17dfe6a3edb0303b5a5a8fd7c6495330b857547657c64cd7701c62f046016de7"
+        },
+        "protocol_profile": "mcp-2026-07-28"
+      }
+    }
+  ]
+}

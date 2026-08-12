@@ -1,0 +1,15 @@
+{
+  "@circleci/mcp-server-circleci@0.20.0": "eff9c9fc1ae82b2fe92245744caf2ec9c616b6a606e756edf10fc57c7e957190",
+  "@crewhaus/mcp-host@0.5.2": "64137f4e7f58778ccb6dc65aa88322193215f7d7628c1c9a2846a575091b8b9a",
+  "@mapbox/mcp-server@0.14.0": "090a728b790971804ee097f69ffaf577a384f0c068df49e5779a88e7a3809431",
+  "@modelcontextprotocol/server-filesystem@2026.7.10": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+  "@notionhq/notion-mcp-server@2.5.1": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+  "@salesforce/mcp@0.30.15": "7cd9f0a3437b5102d01d8d629fd1666487414c1256487fe60245a86b66e831b6",
+  "@sentry/mcp-server@0.37.0": "416e1858134ab407c7e976f4dbcde2954fda22e6ef34603c14b1a7a495930814",
+  "@smartbear/mcp@0.35.0": "e38398f2914f004621eb3e24667e3a351f133a64a65f8f29ef8d87b901be0abe",
+  "@transcend-io/mcp-server-docs@0.3.13": "11a4a22aeca712fb7286aaf199b1b062665160aeb2d2c757af0ea7c84e3bb44c",
+  "@upstash/context7-mcp@4.0.2": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+  "figma-console-mcp@1.39.1": "d43dd5e5f3bb594b1cacf43ed1b2b788d7d526336cb30886c2c4e621c503c0ff",
+  "firecrawl-mcp@3.23.9": "e04a382e5540f277c57584dcb44409bed8845ac0d98cd37c73fc58fc69ca8d18",
+  "mcp-searxng@1.15.0": "9dfd4f25f0d0c7035b3b6e7526036f736d161283360936c666a60e0710a6b918"
+}
