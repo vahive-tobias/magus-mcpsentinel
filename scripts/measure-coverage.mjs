@@ -2,7 +2,7 @@
 /**
  * Measure static tool-extraction coverage across the pinned corpus.
  *
- *   node scripts/measure-coverage.mjs [--accept-drift]
+ *   node scripts/measure-coverage.mjs [--refetch] [--accept-drift]
  *
  * Reads `corpus/packages.txt`, analyzes each artifact through the shipped CLI,
  * and writes `corpus/metrics.json`. Nothing improves reliably until it is
@@ -18,7 +18,7 @@
  * malware-handling questions that a digest in a lock file does not.
  */
 import { execFile } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -52,6 +52,21 @@ const cli = join(root, 'packages', 'sentinel', 'dist', 'src', 'cli.js');
  * decision about an artifact.
  */
 const acceptDrift = process.argv.includes('--accept-drift');
+
+/**
+ * Fetch every artifact again instead of reusing the locked one.
+ *
+ * The default reuses a cached tarball whose digest matches the lock, because the
+ * common case is re-measuring after an extractor change and the artifacts cannot
+ * have moved: the lock says which bytes they were. Fifty registry downloads to
+ * re-read fifty files already on disk is slow and impolite, and it was the actual
+ * cost of iterating today.
+ *
+ * The trade is explicit and recorded: a cached run cannot notice that npm has
+ * republished a pinned version, so `metrics.json` carries `drift_checked: false`
+ * and the scheduled CI job passes this flag.
+ */
+const refetch = process.argv.includes('--refetch');
 
 /**
  * Accepted re-baselinings, appended and never rewritten.
@@ -170,14 +185,35 @@ function measure(spec, report) {
   };
 }
 
-async function analyze(spec) {
+/**
+ * The cached tarball for a spec, if it is the one the lock names.
+ *
+ * The filename carries the digest, so this is a lookup rather than a hash: the
+ * acquisition path already verified the bytes when it wrote the file, and the
+ * lock is what says which bytes belong to this pinned version.
+ */
+async function lockedArtifact(spec, lock) {
+  const digest = lock[spec];
+  if (!digest) return undefined;
+  const suffix = `-artifact-${digest}.tgz`;
+  const found = (await readdir(cache)).find((name) => name.endsWith(suffix));
+  return found ? join(cache, found) : undefined;
+}
+
+async function analyze(spec, lock) {
   const safe = spec.replace(/[@/]/g, '_');
   const output = join(cache, `${safe}.report.json`);
-  await run('node', [cli, 'analyze', 'npm', spec, '--evidence-dir', cache, '--output', output], {
+  const cached = refetch ? undefined : await lockedArtifact(spec, lock);
+
+  // Analyzing the local artifact skips acquisition, so a `--refetch` run is what
+  // exercises registry fetching and integrity verification end to end.
+  const target = cached ? [cached] : ['npm', spec, '--evidence-dir', cache];
+
+  await run('node', [cli, 'analyze', ...target, '--output', output], {
     cwd: root,
     maxBuffer: 64 * 1024 * 1024
   });
-  return JSON.parse(await readFile(output, 'utf8'));
+  return { report: JSON.parse(await readFile(output, 'utf8')), fromCache: Boolean(cached) };
 }
 
 async function main() {
@@ -193,18 +229,21 @@ async function main() {
   const results = [];
   const failures = [];
   const drifted = [];
+  let cachedCount = 0;
 
   for (const spec of specs) {
     process.stderr.write(`  ${spec} … `);
     try {
-      const report = await analyze(spec);
+      const { report, fromCache } = await analyze(spec, lock);
       const row = measure(spec, report);
       row.role = roles[spec]?.role ?? 'unknown';
+      if (fromCache) cachedCount += 1;
 
       const known = lock[spec];
-      if (known && known !== row.artifact_sha256) {
-        // The version is pinned, so a different digest means npm served
-        // different bytes under the same number. That is a finding, not noise.
+      // Only a fetched artifact can disagree with the lock. A cached one was
+      // selected *by* that digest, so comparing it would be checking our own
+      // filename against itself.
+      if (!fromCache && known && known !== row.artifact_sha256) {
         drifted.push({ spec, locked: known, served: row.artifact_sha256, accepted: acceptDrift });
       }
       lock[spec] = acceptDrift ? row.artifact_sha256 : known ?? row.artifact_sha256;
@@ -235,6 +274,11 @@ async function main() {
     analyzed: results.length,
     failed: failures,
     artifact_drift: drifted,
+    // A cached run reuses locked artifacts and therefore cannot notice that npm
+    // republished a pinned version. Recorded so a figure is never read as
+    // drift-verified when it was not.
+    drift_checked: refetch,
+    artifacts_from_cache: cachedCount,
     // Two figures, because they answer different questions. Recovery means at
     // least one tool was found. Statically complete means extraction resolved
     // everything it looked at, which is the condition that licenses a removal

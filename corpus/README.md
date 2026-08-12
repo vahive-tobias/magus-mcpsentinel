@@ -6,7 +6,8 @@ rather than estimated.
 
 ```sh
 npm run build
-node scripts/measure-coverage.mjs
+node scripts/measure-coverage.mjs            # ~20s, reuses locked artifacts
+node scripts/measure-coverage.mjs --refetch  # fetches everything, checks drift
 ```
 
 ## What is here
@@ -14,7 +15,7 @@ node scripts/measure-coverage.mjs
 | File | Role |
 | --- | --- |
 | `packages.txt` | The pinned corpus. Exact `name@version`, never a range. |
-| `artifacts.lock.json` | The digest each pinned version resolved to. Verified on every run. |
+| `artifacts.lock.json` | The digest each pinned version resolved to. Selects the cached artifact by default; re-verified against the registry on `--refetch`. |
 | `metrics.json` | The measurement. Committed, so a regression shows up in a diff. |
 | `roles.json` | What each package is — `server`, `client`, `unknown` — with the evidence. |
 | `accepted-drift.json` | Append-only record of re-baselinings. Absent until one happens. |
@@ -28,6 +29,12 @@ with different bytes the run fails, which is a finding in its own right and the
 exact event this project exists to notice. It is not the guarantee a retained
 tarball gives. A withdrawn or unpublished package cannot be re-measured from a
 digest, and that risk is accepted here rather than solved.
+
+And drift is only detected by a run that actually fetches. The default reuses the
+locked artifact from `.cache/`, which is what makes re-measuring after an
+extractor change take about twenty seconds instead of fifty downloads — so a
+cached run records `drift_checked: false` rather than implying a check it did not
+perform. The weekly CI job passes `--refetch`.
 
 ## Two numbers, and they are not the same
 

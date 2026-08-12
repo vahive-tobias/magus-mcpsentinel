@@ -58,6 +58,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The coverage figure is only worth what its provenance is worth. If the
+      # analyzer changed and the corpus was not re-measured, the committed number
+      # describes a build that no longer exists — which is exactly how coverage
+      # regresses without anyone seeing it. No network: this compares the build
+      # digest recorded in metrics.json against the one just built.
+      - name: Coverage figures match the analyzer that produced them
+        run: |
+          npm ci
+          npm run build --workspace mcp-sentinel
+          recorded=$(node -p "require('./corpus/metrics.json').analyzer.engine.build_sha256")
+          current=$(node -p "require('./packages/sentinel/dist/src/build-info.js').ANALYZER_BUILD_SHA256")
+          if [ "$recorded" != "$current" ]; then
+            echo "::error::corpus/metrics.json was produced by analyzer build $recorded, but this tree builds $current."
+            echo "Re-run: node scripts/measure-coverage.mjs   (cached, no network, ~20s)"
+            exit 1
+          fi
+          echo "OK: the committed coverage figures came from this analyzer."
+
       # docs/ is internal by default and published by exception. The exceptions
       # are listed here as well as in .gitignore, so relaxing the ignore rule is
       # not enough on its own to publish a working document by accident.

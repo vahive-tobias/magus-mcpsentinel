@@ -1,0 +1,86 @@
+name: Coverage floor
+
+# Not a push gate. A full measurement fetches fifty artifacts from the registry,
+# which is slow, occasionally flaky — two transient failures were seen the day
+# this was written — and impolite to run on every commit. The push-time guard
+# lives in ci.yml and needs no network: it fails if the analyzer changed without
+# the corpus being re-measured, which is how coverage regresses unnoticed.
+#
+# This job is the other half: it re-fetches every artifact, so it verifies that a
+# pinned version still serves the bytes the lock records, and it fails if either
+# headline figure has dropped below the committed baseline.
+
+on:
+  schedule:
+    # Weekly. The corpus is pinned, so the only thing that changes underneath it
+    # is the registry republishing a version — rare, and worth catching, but not
+    # worth checking hourly.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  floor:
+    name: Coverage has not regressed
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+      - run: npm run build
+
+      # Keep the committed baseline to compare against: the harness overwrites
+      # metrics.json on a clean run, so the comparison has to hold a copy first.
+      - name: Record the committed baseline
+        run: cp corpus/metrics.json /tmp/baseline.json
+
+      # --refetch exercises acquisition and integrity verification, and is what
+      # makes drift detection meaningful. A cached run cannot notice a republish.
+      - name: Measure
+        run: node scripts/measure-coverage.mjs --refetch
+
+      - name: Compare against the committed baseline
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+          const before = JSON.parse(fs.readFileSync('/tmp/baseline.json', 'utf8'));
+          const after = JSON.parse(fs.readFileSync('corpus/metrics.json', 'utf8'));
+
+          const checks = [
+            ['inventories recovered', before.inventories_recovered, after.inventories_recovered],
+            ['statically complete', before.statically_complete_extractions, after.statically_complete_extractions],
+            ['classified-server recovered', before.eligible.inventories_recovered, after.eligible.inventories_recovered],
+            ['classified-server complete', before.eligible.statically_complete_extractions, after.eligible.statically_complete_extractions]
+          ];
+
+          let failed = false;
+          for (const [label, was, now] of checks) {
+            const verdict = now < was ? 'REGRESSED' : now > was ? 'improved' : 'held';
+            console.log(`${label}: ${was} -> ${now} (${verdict})`);
+            if (now < was) failed = true;
+          }
+
+          // A figure that rose is not automatically good news either: it may mean
+          // the corpus shrank. Say so rather than celebrating a smaller denominator.
+          if (after.analyzed !== before.analyzed) {
+            console.log(`::warning::corpus size changed ${before.analyzed} -> ${after.analyzed}; the rates are not directly comparable`);
+          }
+          if (after.artifact_drift.length > 0) {
+            console.log('::error::a pinned version served different bytes than the lock records');
+            failed = true;
+          }
+          if (failed) process.exit(1);
+          console.log('OK: no regression.');
+          JS
+
+      # The measurement is the artifact. Keeping it makes a failure diagnosable
+      # without re-running fifty downloads.
+      - name: Keep the measurement
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-metrics
+          path: corpus/metrics.json
