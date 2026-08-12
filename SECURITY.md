@@ -67,10 +67,17 @@ Its own boundary:
   bytes actually read. Operator endpoints are capped at 64 KB.
 - **A failed or delayed check is a failure state**, never rendered as a clean
   result.
+- **The link in a change notice is a capability, not a login.** Its token is
+  HMAC-derived from the notice id and scoped to that single notice — it reaches
+  no other notice, the watch list, or any report. With `NOTICE_LINK_SECRET`
+  unset the routes return 404 rather than serving anything unauthenticated.
+  Anyone holding a link can accept that one notice, so forwarding one hands over
+  the decision on that release; rotating the secret invalidates every link
+  already sent.
 
-If you deploy it, `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` are yours to
-generate and protect. Set them with `wrangler secret put`; never place them in
-`wrangler.toml`.
+If you deploy it, `OPERATOR_API_KEY`, `ANALYZER_INGEST_SECRET` and
+`NOTICE_LINK_SECRET` are yours to generate and protect. Set them with
+`wrangler secret put`; never place them in `wrangler.toml`.
 
 ## What Sentinel does not protect against
 

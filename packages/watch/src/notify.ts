@@ -1,3 +1,4 @@
+import { noticeLinkToken } from "./auth.js";
 import type { ChangeNoticeRecord, Env, WatchChange, WatchTargetRecord } from "./types.js";
 
 /**
@@ -24,12 +25,26 @@ export function deliveryConfigured(env: Env): boolean {
   return Boolean(env.RESEND_API_KEY && env.NOTIFY_FROM && env.NOTIFY_TO);
 }
 
+/**
+ * The capability link for this notice, when one can be signed.
+ *
+ * Absent secret or origin means no link, and the notice reads exactly as it did
+ * before. A link that cannot be honoured is worse than none: the reader clicks
+ * it, gets a 404, and learns that the product does not work.
+ */
+async function noticeLink(env: Env, noticeId: string): Promise<string | undefined> {
+  if (!env.NOTICE_LINK_SECRET || !env.NOTICE_LINK_ORIGIN) return undefined;
+  const token = await noticeLinkToken(noticeId, env.NOTICE_LINK_SECRET);
+  return `${env.NOTICE_LINK_ORIGIN.replace(/\/$/, "")}/notice/${noticeId}?t=${token}`;
+}
+
 export async function deliverNotice(env: Env, target: WatchTargetRecord, notice: ChangeNoticeRecord, versions: { baseline: string; candidate: string }): Promise<DeliveryOutcome> {
   if (!deliveryConfigured(env)) {
     return { state: "not_configured", detail: "No delivery channel is configured: set RESEND_API_KEY, NOTIFY_FROM and NOTIFY_TO." };
   }
 
   const changes = parseChanges(notice.changes_json);
+  const link = await noticeLink(env, notice.id);
   const subject = subjectLine(target.package_name, versions.candidate, notice.severity, changes.length);
 
   try {
@@ -43,8 +58,8 @@ export async function deliverNotice(env: Env, target: WatchTargetRecord, notice:
         from: env.NOTIFY_FROM,
         to: [env.NOTIFY_TO],
         subject,
-        text: renderText(target, notice, changes, versions),
-        html: renderHtml(target, notice, changes, versions)
+        text: renderText(target, notice, changes, versions, link),
+        html: renderHtml(target, notice, changes, versions, link)
       }),
       signal: AbortSignal.timeout(20_000)
     });
@@ -155,7 +170,7 @@ const SEVERITY_NOTE: Record<string, string> = {
   info: "Recorded for completeness. Not a reason to act on its own."
 };
 
-function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, changes: WatchChange[], versions: { baseline: string; candidate: string }): string {
+function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, changes: WatchChange[], versions: { baseline: string; candidate: string }, link?: string): string {
   const lines = [
     `${target.package_name}`,
     `${versions.baseline} -> ${versions.candidate}`,
@@ -174,6 +189,13 @@ function renderText(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
     const { items, omitted } = namedItems(change);
     for (const item of items) lines.push(`        ${item.marker ? `${item.marker} ` : ""}${item.value}`);
     if (omitted > 0) lines.push(`        … and ${omitted} more`);
+  }
+  if (link) {
+    lines.push(
+      "",
+      "Read this notice and accept the new version as your baseline:",
+      `  ${link}`
+    );
   }
   lines.push(
     "",
@@ -201,7 +223,7 @@ function escapeHtml(value: string): string {
 
 const SEVERITY_COLOUR: Record<string, string> = { high: "#b42318", review: "#b54708", info: "#475467" };
 
-function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, changes: WatchChange[], versions: { baseline: string; candidate: string }): string {
+function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, changes: WatchChange[], versions: { baseline: string; candidate: string }, link?: string): string {
   const rows = changes.map((change) => {
     const { items, omitted } = namedItems(change);
     const named = items.length === 0 && omitted === 0 ? "" : `
@@ -235,6 +257,10 @@ function renderHtml(target: WatchTargetRecord, notice: ChangeNoticeRecord, chang
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>
+  ${link ? `<p style="margin:24px 0 0">
+    <a href="${escapeHtml(link)}" style="display:inline-block;padding:10px 18px;border-radius:8px;background:#101828;color:#fff;font-size:14px;font-weight:600;text-decoration:none">Read this notice</a>
+  </p>
+  <p style="margin:8px 0 0;font-size:12px;color:#98a2b3">Opening the link only shows the notice. Accepting the new version as your baseline is a separate step on that page.</p>` : ""}
   <p style="margin:20px 0 0;font-size:13px;color:#475467;line-height:1.6">
     This compares the release against the version you approved, not against the previous release.
     Sentinel does not decide whether a package is safe &mdash; it reports what changed and leaves the judgement to you.

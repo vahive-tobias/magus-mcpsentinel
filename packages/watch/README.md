@@ -66,6 +66,8 @@ The dependency runs one way. The analyzer has no knowledge of Watch.
 - Email delivery of the change notice, with a per-notice delivery state and
   retries on every scheduled check. An undelivered notice is a failure state,
   never a clean result.
+- A signed per-notice link in that email, so the recipient can read the notice
+  and accept the new version as their baseline without an operator key.
 
 ## Not implemented
 
@@ -273,7 +275,8 @@ npm run deploy
 ```
 
 Then set `OPERATOR_API_KEY` and `ANALYZER_INGEST_SECRET` (both long random
-values), plus `RESEND_API_KEY`, `NOTIFY_FROM` and `NOTIFY_TO` for email.
+values), plus `RESEND_API_KEY`, `NOTIFY_FROM` and `NOTIFY_TO` for email, and
+`NOTICE_LINK_SECRET` and `NOTICE_LINK_ORIGIN` for the link in a notice.
 `wrangler secret put` prompts interactively; `wrangler secret bulk file.json`
 takes them from a JSON file if a prompt is awkward — delete the file afterwards.
 
@@ -300,6 +303,33 @@ to a notice will bounce; set a `reply_to` you actually read if that matters.
 Note that `wrangler` bundles `src/worker.ts` with esbuild, which strips types
 without checking them. **`npm run build` is the only typecheck** — do not deploy
 from a machine that skipped it.
+
+### The link in a notice
+
+A notice tells you what changed; the link is how you act on it. Without one the
+only way to accept a new baseline is the operator key, which means the same
+notice arrives again on every later release.
+
+Set `NOTICE_LINK_SECRET` (long and random) and `NOTICE_LINK_ORIGIN` (the
+Worker's own origin, e.g. `https://watch.example.com`). With either unset the
+feature is off: no link goes into a notice, and `/notice/…` returns 404 rather
+than falling back to serving anything.
+
+The link is a **capability**, not a login. Its token is HMAC-derived from the
+notice id, so it grants access to exactly that one notice — not the notice list,
+not the watch targets, not another notice. Two consequences worth knowing
+before you enable it:
+
+- Rotating `NOTICE_LINK_SECRET` invalidates every link already sent. That is the
+  correct blast radius for a credential that lives in other people's inboxes.
+- Anyone holding the link can accept that notice. Treat forwarding a notice as
+  handing over the decision on that one release.
+
+Opening a link only renders the notice — accepting is a separate POST from the
+page, because mail clients and security scanners fetch links on delivery and an
+accept behind a GET would fire before a human read it. A notice already decided
+through the operator route is shown as it stands and is not overturned by a
+later click.
 
 ## Why this cannot run up a D1 bill
 

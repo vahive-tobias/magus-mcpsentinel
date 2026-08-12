@@ -1,10 +1,10 @@
 import { analyzeNpmPackage, isArchiveTooLarge } from "mcp-sentinel/analyze";
 import { deliverNotice, deliveryConfigured } from "./notify.js";
-import { sha256Hex, verifyApiKey, verifyHmacSignature } from "./auth.js";
+import { sha256Hex, verifyApiKey, verifyHmacSignature, verifyNoticeLinkToken } from "./auth.js";
 import { assertSentinelReport } from "mcp-sentinel/report-contract";
 import { createChangeNotice } from "./policy.js";
 import { WatchRepository } from "./repository.js";
-import type { ChangeNoticeRecord, Env, JsonObject, SentinelReport, WatchTargetRecord } from "./types.js";
+import type { ChangeNoticeRecord, Env, JsonObject, SentinelReport, WatchChange, WatchTargetRecord } from "./types.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 
@@ -81,6 +81,20 @@ export default {
       if (request.method === "GET" && url.pathname === "/health") return json({ ok: true, service: "magus-mcp-watch" });
       if (url.pathname === "/api/reports" && request.method === "POST") return ingestReport(request, env, repository);
       if (url.pathname === "/api/pending" && request.method === "GET") return listPending(request, env, repository);
+
+      // Capability routes: authenticated by a per-notice token, not the operator
+      // key, which is why they sit above the gate and verify for themselves. Each
+      // grants access to exactly one notice and nothing else.
+      const noticeMatch = url.pathname.match(/^\/notice\/([0-9a-f-]{36})(\/accept)?$/i);
+      if (noticeMatch) {
+        const [, noticeId, isAccept] = noticeMatch;
+        // GET renders and never mutates. Mail clients and security scanners
+        // prefetch links, so an accept behind a GET would be triggered by the
+        // act of delivering the email.
+        if (isAccept && request.method === "POST") return acceptViaLink(url, env, repository, noticeId!);
+        if (!isAccept && request.method === "GET") return showNotice(url, env, repository, noticeId!);
+        return json({ error: "not found" }, 404);
+      }
       if (!await verifyApiKey(request, env.OPERATOR_API_KEY)) return json({ error: "operator authentication required" }, 401);
       if (url.pathname === "/api/targets" && request.method === "GET") return json({ targets: await repository.listTargets() });
       if (url.pathname === "/api/notices" && request.method === "GET") return json({ notices: await repository.listNotices() });
@@ -121,6 +135,64 @@ async function readReport(repository: WatchRepository, id: string): Promise<Resp
   const report = await repository.reportById(id);
   if (!report) return json({ error: "not found" }, 404);
   return json({ report });
+}
+
+/**
+ * Resolve a capability link to its notice, or explain nothing.
+ *
+ * A wrong token and a missing notice both return 404 with no detail. Telling an
+ * unauthenticated caller that a notice exists but their token is wrong confirms
+ * the identifier, and identifiers are the only thing protecting these records.
+ */
+async function noticeFromLink(
+  url: URL,
+  env: Env,
+  repository: WatchRepository,
+  noticeId: string
+): Promise<ChangeNoticeRecord | undefined> {
+  // No signing secret means the feature is off, not that anything is readable.
+  if (!env.NOTICE_LINK_SECRET) return undefined;
+  if (!await verifyNoticeLinkToken(noticeId, url.searchParams.get("t"), env.NOTICE_LINK_SECRET)) return undefined;
+  return (await repository.noticeById(noticeId)) ?? undefined;
+}
+
+async function showNotice(url: URL, env: Env, repository: WatchRepository, noticeId: string): Promise<Response> {
+  const notice = await noticeFromLink(url, env, repository, noticeId);
+  if (!notice) return json({ error: "not found" }, 404);
+  const target = await repository.targetById(notice.target_id);
+  const versions = await noticeVersions(repository, notice);
+  return new Response(renderNoticePage(notice, target?.package_name ?? "unknown", versions, url), {
+    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }
+  });
+}
+
+async function acceptViaLink(url: URL, env: Env, repository: WatchRepository, noticeId: string): Promise<Response> {
+  const notice = await noticeFromLink(url, env, repository, noticeId);
+  if (!notice) return json({ error: "not found" }, 404);
+
+  // Accepting is what rebaselines the target, which is the whole point: without
+  // it every later release diffs against a version the reader already approved
+  // and the same notice arrives again.
+  //
+  // A notice that was already decided is left alone. Re-posting is harmless for
+  // one already accepted, but a link accept must not overturn a freeze made
+  // through the operator route — the newer decision is not the more considered one.
+  const decided = notice.state !== "pending_review"
+    ? notice
+    : (await repository.decideNotice(noticeId, "accepted")) ?? notice;
+  const target = await repository.targetById(notice.target_id);
+  const versions = await noticeVersions(repository, notice);
+  return new Response(renderNoticePage(decided, target?.package_name ?? "unknown", versions, url), {
+    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }
+  });
+}
+
+async function noticeVersions(repository: WatchRepository, notice: ChangeNoticeRecord): Promise<{ baseline: string; candidate: string }> {
+  const [baseline, candidate] = await Promise.all([
+    repository.reportById(notice.baseline_report_id),
+    repository.reportById(notice.candidate_report_id)
+  ]);
+  return { baseline: baseline?.package_version ?? "unknown", candidate: candidate?.package_version ?? "unknown" };
 }
 
 async function createTarget(request: Request, repository: WatchRepository): Promise<Response> {
@@ -569,6 +641,95 @@ function messageOf(error: unknown): string {
 
 function json(value: unknown, status = 200): Response {
   return new Response(JSON.stringify(value), { status, headers: JSON_HEADERS });
+}
+
+/**
+ * One notice, for the person it was emailed to.
+ *
+ * Deliberately plain. This is a transactional page reached from an alert, not a
+ * place to browse, and it carries the same posture as the notice itself: it
+ * states what changed and never says whether the package is safe.
+ */
+function renderNoticePage(
+  notice: ChangeNoticeRecord,
+  packageName: string,
+  versions: { baseline: string; candidate: string },
+  url: URL
+): string {
+  const changes = parseChanges(notice.changes_json);
+  // `accepted` is not the only decided state — a notice can be frozen or ignored
+  // through the operator route. Telling the reader it was accepted when it was
+  // frozen would misreport which version their next notice compares against.
+  const outcome = notice.state === "pending_review" ? undefined : notice.state;
+  const rows = changes.map((change) => {
+    const named = namedItemsFor(change);
+    return `<tr><td class="k">${escapeHtml(change.kind)}</td><td>${escapeHtml(change.summary)}${
+      named.length > 0 ? `<ul>${named.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""
+    }</td></tr>`;
+  }).join("");
+
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(packageName)} — Sentinel change notice</title><style>
+:root{--paper:#f3f0e9;--ink:#111723;--body:#4f5967;--muted:#78818d;--line:#d5d0c5;--signal:#c84a20;--soft:#f3dfd6}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--body);font:16px/1.6 Inter,system-ui,sans-serif}
+.shell{width:min(100% - 3rem,52rem);margin:3rem auto}
+h1{font-family:Georgia,serif;font-weight:500;color:var(--ink);font-size:1.6rem;margin:.4rem 0 1.2rem;font-family:ui-monospace,monospace}
+.eyebrow{font:.7rem ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--signal)}
+.flow{display:flex;gap:.6rem;align-items:center;font:.8rem ui-monospace,monospace;margin-bottom:1.6rem}
+.flow span{border:1px solid var(--line);padding:.5rem .8rem;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td{padding:.7rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.k{font:.72rem ui-monospace,monospace;color:var(--muted);white-space:nowrap}
+ul{margin:.4rem 0 0;padding-left:1rem;font:.78rem ui-monospace,monospace;color:var(--ink)}
+form{margin-top:2rem}
+button{font:inherit;font-weight:650;background:var(--signal);color:#fff;border:1px solid var(--signal);padding:.7rem 1.2rem;cursor:pointer}
+.done{margin-top:2rem;padding:1rem 1.2rem;background:var(--soft);color:var(--ink)}
+.note{margin-top:2rem;font-size:.85rem;color:var(--muted)}
+</style></head><body><div class="shell">
+<span class="eyebrow">Sentinel change notice</span>
+<h1>${escapeHtml(packageName)}</h1>
+<div class="flow"><span>approved ${escapeHtml(versions.baseline)}</span>&rarr;<span>published ${escapeHtml(versions.candidate)}</span></div>
+<table>${rows}</table>
+${outcome
+  ? `<p class="done">${outcome === "accepted"
+      ? `Accepted. <strong>${escapeHtml(versions.candidate)}</strong> is now the approved version, so future notices compare against it rather than ${escapeHtml(versions.baseline)}.</p>`
+      : `Already decided: <strong>${escapeHtml(outcome)}</strong>. The approved version is unchanged, so later releases are still compared against ${escapeHtml(versions.baseline)}.</p>`}`
+  : `<form method="post" action="${escapeHtml(url.pathname)}/accept?t=${escapeHtml(url.searchParams.get("t") ?? "")}">
+<button type="submit">Accept this version as the new baseline</button>
+</form>
+<p class="note">Accepting records that you have read this change. Later releases are then compared against ${escapeHtml(versions.candidate)}, instead of repeating this notice against ${escapeHtml(versions.baseline)} every time.</p>`}
+<p class="note">Sentinel does not decide whether a package is safe. It reports what changed between two published artifacts and leaves the judgement to you.</p>
+</div></body></html>`;
+}
+
+/** The concrete items behind a change's count, matching what the email shows. */
+function namedItemsFor(change: WatchChange): string[] {
+  const detail = (change.detail ?? {}) as Record<string, unknown>;
+  const items: string[] = [];
+  for (const [key, value] of Object.entries(detail)) {
+    if (!Array.isArray(value)) continue;
+    const marker = key === "added" ? "+ " : key === "removed" ? "− " : "~ ";
+    for (const entry of value) {
+      if (typeof entry === "string" && !change.summary.includes(entry)) items.push(marker + entry);
+    }
+  }
+  return items.slice(0, 25);
+}
+
+function parseChanges(json: string): WatchChange[] {
+  try {
+    const parsed: unknown = JSON.parse(json);
+    return Array.isArray(parsed) ? parsed as WatchChange[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character] ?? character
+  ));
 }
 
 function htmlResponse(): Response {

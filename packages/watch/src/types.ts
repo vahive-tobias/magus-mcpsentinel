@@ -111,6 +111,17 @@ export interface Env {
   /** Signs reports posted to /api/reports by an operator running the CLI by hand. */
   ANALYZER_INGEST_SECRET: string;
   /**
+   * Signs per-notice capability links, so a recipient can read and accept the
+   * notice they were emailed without an account and without the operator key.
+   *
+   * Unset means the feature is off: no link is put in a notice, and the routes
+   * that would serve one return 404. A customer-reachable route whose signing
+   * secret is missing must not fall back to serving anything.
+   */
+  NOTICE_LINK_SECRET?: string;
+  /** Absolute base for links in a notice, e.g. https://watch.example.com. */
+  NOTICE_LINK_ORIGIN?: string;
+  /**
    * Set to "false" on Workers Free, where the 10 ms CPU limit per invocation is
    * far below what analyzing a package costs. The scheduled check then detects
    * releases and records them as awaiting a report posted to /api/reports.

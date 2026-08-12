@@ -146,6 +146,10 @@ export class WatchRepository {
     return result.results;
   }
 
+  async noticeById(id: string): Promise<ChangeNoticeRecord | null> {
+    return this.db.prepare("SELECT * FROM change_notices WHERE id = ?").bind(id).first<ChangeNoticeRecord>();
+  }
+
   async decideNotice(id: string, state: "accepted" | "frozen" | "ignored"): Promise<ChangeNoticeRecord | null> {
     const notice = await this.db.prepare("SELECT * FROM change_notices WHERE id = ?").bind(id).first<ChangeNoticeRecord>();
     if (!notice) return null;

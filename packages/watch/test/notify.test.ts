@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { verifyNoticeLinkToken } from "../src/auth.js";
 import { deliverNotice, deliveryConfigured } from "../src/notify.js";
 import type { ChangeNoticeRecord, Env, WatchTargetRecord } from "../src/types.js";
 
@@ -252,4 +253,53 @@ test("package text cannot inject markup into the email", async () => {
   assert.doesNotMatch(html, /<script>/, "package text must be escaped");
   assert.doesNotMatch(html, /<img src=x/, "change text must be escaped");
   assert.match(html, /&lt;script&gt;/);
+});
+
+/**
+ * The capability link, and the two ways it must not appear.
+ *
+ * The link is what turns a notice from a report into something the reader can
+ * act on without an account. It is also a credential in someone's inbox, so an
+ * unsigned or unroutable one is worse than none — the reader clicks it, gets a
+ * 404, and learns the product does not work.
+ */
+async function bodiesFrom(extra: Partial<Env>): Promise<string[]> {
+  let sent: Record<string, unknown> = {};
+  const restore = stubFetch((_url, init) => {
+    sent = JSON.parse(String(init.body));
+    return new Response(JSON.stringify({ id: "email-1" }), { status: 200 });
+  });
+  await deliverNotice({ ...configuredEnv(), ...extra } as Env, TARGET, notice("review", CHANGES), VERSIONS);
+  restore();
+  return [String(sent.text), String(sent.html)];
+}
+
+test("a notice carries a link that verifies against the signing secret", async () => {
+  const secret = "notice-link-secret-for-tests";
+  const bodies = await bodiesFrom({ NOTICE_LINK_SECRET: secret, NOTICE_LINK_ORIGIN: "https://watch.example.test/" });
+  const id = notice("review", []).id;
+
+  const prefix = `https://watch.example.test/notice/${id}?t=`;
+  for (const body of bodies) {
+    const index = body.indexOf(prefix);
+    assert.notEqual(index, -1, "both bodies carry the link");
+
+    const supplied = body.slice(index + prefix.length).match(/^[a-f0-9]{64}/)?.[0];
+    assert.ok(supplied, "the link carries a full-length token");
+    assert.equal(await verifyNoticeLinkToken(id, supplied, secret), true, "the token in the email is the one the Worker will accept");
+    // The trailing slash on the configured origin must not produce a double slash.
+    assert.doesNotMatch(body, /example\.test\/\/notice/);
+  }
+});
+
+test("no signing secret means no link, not an unsigned one", async () => {
+  for (const configuration of [
+    {},
+    { NOTICE_LINK_SECRET: "s" },
+    { NOTICE_LINK_ORIGIN: "https://watch.example.test" }
+  ]) {
+    for (const body of await bodiesFrom(configuration)) {
+      assert.doesNotMatch(body, /\/notice\//, `a link was rendered with ${JSON.stringify(configuration)}`);
+    }
+  }
 });
