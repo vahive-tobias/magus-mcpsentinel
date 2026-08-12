@@ -75,6 +75,20 @@ async function readLock() {
   return JSON.parse(await readFile(path, 'utf8'));
 }
 
+/**
+ * What each package is, so the denominator is data rather than prose.
+ *
+ * Recovery only means something over packages that expose a tool surface at all.
+ * `@crewhaus/mcp-host` is an MCP client, so its zero tools are correct and
+ * counting it as a miss understates the extractor. An unclassified package is
+ * `unknown` and stays out of the eligible subset rather than being assumed.
+ */
+async function readRoles() {
+  const path = join(corpus, 'roles.json');
+  if (!existsSync(path)) return {};
+  return JSON.parse(await readFile(path, 'utf8'));
+}
+
 function observation(report, id) {
   return report.observations.find((item) => item.id === id);
 }
@@ -156,6 +170,7 @@ async function main() {
 
   const specs = await readCorpus();
   const lock = await readLock();
+  const roles = await readRoles();
   const results = [];
   const failures = [];
   const drifted = [];
@@ -165,6 +180,7 @@ async function main() {
     try {
       const report = await analyze(spec);
       const row = measure(spec, report);
+      row.role = roles[spec]?.role ?? 'unknown';
 
       const known = lock[spec];
       if (known && known !== row.artifact_sha256) {
@@ -208,6 +224,28 @@ async function main() {
     recovery_rate: results.length > 0 ? Number((recovered / results.length).toFixed(4)) : 0,
     statically_complete_extractions: complete,
     statically_complete_rate: results.length > 0 ? Number((complete / results.length).toFixed(4)) : 0,
+    /**
+     * The same two figures over packages that expose a tool surface at all.
+     *
+     * A client has no tools to find, so counting it as a miss understates the
+     * extractor; counting it as a hit would overstate it. Excluding it belongs
+     * in the numbers rather than in a sentence underneath them, and `roles.json`
+     * carries the evidence for every classification.
+     */
+    eligible: (() => {
+      const servers = results.filter((row) => row.role === 'server');
+      const recoveredServers = servers.filter((row) => row.inventory_recovered).length;
+      const completeServers = servers.filter((row) => row.statically_complete).length;
+      return {
+        basis: 'role === "server" in corpus/roles.json',
+        packages: servers.length,
+        excluded: results.filter((row) => row.role !== 'server').map((row) => ({ package: row.package, role: row.role })),
+        inventories_recovered: recoveredServers,
+        recovery_rate: servers.length > 0 ? Number((recoveredServers / servers.length).toFixed(4)) : 0,
+        statically_complete_extractions: completeServers,
+        statically_complete_rate: servers.length > 0 ? Number((completeServers / servers.length).toFixed(4)) : 0
+      };
+    })(),
     tools_recovered_total: results.reduce((sum, row) => sum + row.tools_total, 0),
     incompleteness_reasons: Object.fromEntries(Object.entries(reasons).sort((a, b) => b[1] - a[1])),
     sdk_declared_count: results.filter((row) => row.sdk_evidence.declared_present).length,
@@ -221,8 +259,13 @@ async function main() {
     packages: results.sort((a, b) => a.package.localeCompare(b.package))
   };
 
-  console.log(`\n${recovered}/${results.length} inventories recovered (${(metrics.recovery_rate * 100).toFixed(1)}%)`);
-  console.log(`${complete}/${results.length} statically complete (${(metrics.statically_complete_rate * 100).toFixed(1)}%) · ${metrics.tools_recovered_total} tools recovered`);
+  const eligible = metrics.eligible;
+  console.log(`\nwhole corpus: ${recovered}/${results.length} recovered (${(metrics.recovery_rate * 100).toFixed(1)}%) · ${complete}/${results.length} statically complete`);
+  console.log(`servers only:  ${eligible.inventories_recovered}/${eligible.packages} recovered (${(eligible.recovery_rate * 100).toFixed(1)}%) · ${eligible.statically_complete_extractions}/${eligible.packages} statically complete`);
+  if (eligible.excluded.length > 0) {
+    console.log(`excluded: ${eligible.excluded.map((item) => `${item.package} (${item.role})`).join(', ')}`);
+  }
+  console.log(`${metrics.tools_recovered_total} tools recovered`);
   console.log(`SDK declared: ${metrics.sdk_declared_count}/${results.length}`);
   if (Object.keys(reasons).length > 0) {
     console.log('reasons: ' + Object.entries(metrics.incompleteness_reasons).map(([r, n]) => `${r} ${n}`).join(' · '));

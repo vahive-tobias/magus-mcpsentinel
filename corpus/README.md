@@ -16,6 +16,7 @@ node scripts/measure-coverage.mjs
 | `packages.txt` | The pinned corpus. Exact `name@version`, never a range. |
 | `artifacts.lock.json` | The digest each pinned version resolved to. Verified on every run. |
 | `metrics.json` | The measurement. Committed, so a regression shows up in a diff. |
+| `roles.json` | What each package is — `server`, `client`, `unknown` — with the evidence. |
 | `accepted-drift.json` | Append-only record of re-baselinings. Absent until one happens. |
 
 Artifacts themselves are cached under `.cache/` and are **not** committed, so
@@ -45,6 +46,13 @@ Note what "statically complete" does not mean: it is Sentinel's own condition
 about its own analysis, not external evidence that the package has no further
 tools. A server that builds its tool list at runtime can be statically complete
 and still expose tools no report will ever mention.
+
+Both are reported twice: over the whole corpus, and over the packages that expose
+a tool surface at all. `@crewhaus/mcp-host` is an MCP **client** — its own
+description says so — and it has no tools to find, so counting it as a miss
+understates the extractor while counting it as a hit would overstate it. The
+classification and its evidence live in `roles.json`, because an exclusion
+applied in prose is one nobody can check and one that quietly stops being applied.
 
 ## What is deliberately not measured
 

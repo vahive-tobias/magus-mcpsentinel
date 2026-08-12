@@ -269,6 +269,40 @@ test("a task registration off the supported path is recorded, not accepted", () 
 });
 
 /**
+ * KNOWN PRECISION DEBT, pinned deliberately.
+ *
+ * The receiver is not checked, so an unrelated object carrying the exact
+ * three-segment path is accepted as a registration. This test asserts that
+ * today's behaviour rather than the behaviour we want, so the debt cannot be
+ * broadened by accident and cannot be narrowed without a deliberate decision.
+ *
+ * Why it is not simply fixed: the obvious gate is SDK import lineage, and the
+ * one real artifact this recognises has none. `@mapbox/mcp-server` registers its
+ * task inside `OptimizationV2Tool.js`, which receives `server` as a function
+ * parameter and never mentions `modelcontextprotocol` — verified in the pinned
+ * artifact. Gating on lineage would refuse the only true positive we have.
+ *
+ * The package-level SDK dependency is available and is the likelier resolution,
+ * as a confidence input rather than a gate. That belongs to the lineage work.
+ */
+test("an unrelated receiver on the same path is still accepted — known debt", () => {
+  const surface = surfaceOf({
+    "package/dist/queue.js": [
+      "const other = makeQueue();",
+      "other.experimental.tasks.registerToolTask('queued_job', {",
+      "  description: 'Nothing to do with MCP.'",
+      "});"
+    ].join("\n")
+  });
+
+  assert.deepEqual(
+    surface.tools.map((tool) => tool.name), ["queued_job"],
+    "documents the false positive this shape admits; narrowing it is a deliberate change"
+  );
+  assert.equal(surface.tools[0]?.discovery, "registration");
+});
+
+/**
  * Shapes taken from pinned corpus artifacts, not invented.
  *
  * `@transcend-io/mcp-server-docs` keys its schema `zodSchema` and carries no

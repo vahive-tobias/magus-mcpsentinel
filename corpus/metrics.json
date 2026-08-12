@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T06:47:19.423Z",
+  "generated_at": "2026-08-12T06:54:16.726Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
@@ -16,6 +16,20 @@
   "recovery_rate": 0.6923,
   "statically_complete_extractions": 3,
   "statically_complete_rate": 0.2308,
+  "eligible": {
+    "basis": "role === \"server\" in corpus/roles.json",
+    "packages": 12,
+    "excluded": [
+      {
+        "package": "@crewhaus/mcp-host",
+        "role": "client"
+      }
+    ],
+    "inventories_recovered": 9,
+    "recovery_rate": 0.75,
+    "statically_complete_extractions": 3,
+    "statically_complete_rate": 0.25
+  },
   "tools_recovered_total": 224,
   "incompleteness_reasons": {
     "registration_name_not_static": 5,
@@ -80,7 +94,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@crewhaus/mcp-host",
@@ -117,7 +132,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "client"
     },
     {
       "package": "@mapbox/mcp-server",
@@ -160,7 +176,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@modelcontextprotocol/server-filesystem",
@@ -210,7 +227,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@notionhq/notion-mcp-server",
@@ -248,7 +266,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@salesforce/mcp",
@@ -285,7 +304,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@sentry/mcp-server",
@@ -370,7 +390,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@smartbear/mcp",
@@ -407,7 +428,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@transcend-io/mcp-server-docs",
@@ -448,7 +470,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "@upstash/context7-mcp",
@@ -490,7 +513,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "figma-console-mcp",
@@ -645,7 +669,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "firecrawl-mcp",
@@ -706,7 +731,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     },
     {
       "package": "mcp-searxng",
@@ -749,7 +775,8 @@
           "build_sha256": "0df4ddfaa65effe75ff002f4a08013da9da89acd0428697edf4affba82b177a0"
         },
         "protocol_profile": "mcp-2026-07-28"
-      }
+      },
+      "role": "server"
     }
   ]
 }
