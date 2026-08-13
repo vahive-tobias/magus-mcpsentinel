@@ -8,6 +8,23 @@
     "url": "git+https://github.com/vahive-tobias/magus-mcpsentinel.git",
     "directory": "packages/sentinel"
   },
+  "homepage": "https://github.com/vahive-tobias/magus-mcpsentinel#readme",
+  "bugs": {
+    "url": "https://github.com/vahive-tobias/magus-mcpsentinel/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "supply-chain-security",
+    "software-supply-chain",
+    "static-analysis",
+    "provenance",
+    "change-detection",
+    "npm",
+    "security",
+    "ai-agents"
+  ],
   "type": "module",
   "engines": {
     "node": ">=22"
