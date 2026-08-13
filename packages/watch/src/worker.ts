@@ -161,9 +161,15 @@ async function showNotice(url: URL, env: Env, repository: WatchRepository, notic
   if (!notice) return json({ error: "not found" }, 404);
   const target = await repository.targetById(notice.target_id);
   const versions = await noticeVersions(repository, notice);
-  return new Response(renderNoticePage(notice, target?.package_name ?? "unknown", versions, url), {
+  return new Response(renderNoticePage(notice, target?.package_name ?? "unknown", versions, url, await approvedVersion(repository, target)), {
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }
   });
+}
+
+/** The version currently approved for this target, whatever any one notice proposed. */
+async function approvedVersion(repository: WatchRepository, target: WatchTargetRecord | null): Promise<string | undefined> {
+  if (!target?.baseline_report_id) return undefined;
+  return (await repository.reportById(target.baseline_report_id))?.package_version;
 }
 
 async function acceptViaLink(url: URL, env: Env, repository: WatchRepository, noticeId: string): Promise<Response> {
@@ -180,9 +186,12 @@ async function acceptViaLink(url: URL, env: Env, repository: WatchRepository, no
   const decided = notice.state !== "pending_review"
     ? notice
     : (await repository.decideNotice(noticeId, "accepted")) ?? notice;
+  // Read back afterwards. Accepting an older notice than the one already accepted
+  // records the decision without moving the baseline, and the page must say what
+  // is actually approved rather than assume this release became it.
   const target = await repository.targetById(notice.target_id);
   const versions = await noticeVersions(repository, notice);
-  return new Response(renderNoticePage(decided, target?.package_name ?? "unknown", versions, url), {
+  return new Response(renderNoticePage(decided, target?.package_name ?? "unknown", versions, url, await approvedVersion(repository, target)), {
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }
   });
 }
@@ -660,7 +669,8 @@ function renderNoticePage(
   notice: ChangeNoticeRecord,
   packageName: string,
   versions: { baseline: string; candidate: string },
-  url: URL
+  url: URL,
+  approved?: string
 ): string {
   const changes = parseChanges(notice.changes_json);
   // `accepted` is not the only decided state — a notice can be frozen or ignored
@@ -698,9 +708,13 @@ button{font:inherit;font-weight:650;background:var(--signal);color:#fff;border:1
 <div class="flow"><span>approved ${escapeHtml(versions.baseline)}</span>&rarr;<span>published ${escapeHtml(versions.candidate)}</span></div>
 <table>${rows}</table>
 ${outcome
-  ? `<p class="done">${outcome === "accepted"
-      ? `Accepted. <strong>${escapeHtml(versions.candidate)}</strong> is now the approved version, so future notices compare against it rather than ${escapeHtml(versions.baseline)}.</p>`
-      : `Already decided: <strong>${escapeHtml(outcome)}</strong>. The approved version is unchanged, so later releases are still compared against ${escapeHtml(versions.baseline)}.</p>`}`
+  ? `<p class="done">${outcome !== "accepted"
+      ? `Already decided: <strong>${escapeHtml(outcome)}</strong>. The approved version is unchanged, so later releases are still compared against ${escapeHtml(versions.baseline)}.</p>`
+      : approved === undefined || approved === versions.candidate
+        ? `Accepted. <strong>${escapeHtml(versions.candidate)}</strong> is now the approved version, so future notices compare against it rather than ${escapeHtml(versions.baseline)}.</p>`
+        // A newer release was accepted first. Recording this decision is right;
+        // moving the approved version back to an older release is not.
+        : `Accepted. The approved version stays at <strong>${escapeHtml(approved)}</strong>, which is a later release than this one — accepting an older notice records that you read it and does not move the baseline backwards.</p>`}`
   : `<form method="post" action="${escapeHtml(url.pathname)}/accept?t=${escapeHtml(url.searchParams.get("t") ?? "")}">
 <button type="submit">Accept this version as the new baseline</button>
 </form>

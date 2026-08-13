@@ -49,9 +49,31 @@ interface Recorded { sql: string; parameters: unknown[] }
  * Recording is the point: "a GET does not mutate" is only checkable by looking at
  * what was executed, not at what came back.
  */
-function env(overrides: { notice?: ChangeNoticeRecord | null; secret?: string | undefined } = {}): { env: Env; executed: Recorded[] } {
+/**
+ * Report rows, keyed by id, in the order they arrived.
+ *
+ * `received_at` is what decides whether an accept moves the baseline forward, so
+ * the stub has to carry it — a fixture that returns only a version string cannot
+ * express "this release arrived before the one already approved".
+ */
+const REPORTS: Record<string, { package_version: string; received_at: string }> = {
+  b1: { package_version: "1.4.0", received_at: "2026-08-01T00:00:00.000Z" },
+  c1: { package_version: "2.0.0", received_at: "2026-08-08T00:00:00.000Z" },
+  c2: { package_version: "2.1.0", received_at: "2026-08-09T00:00:00.000Z" }
+};
+
+function env(overrides: {
+  notice?: ChangeNoticeRecord | null;
+  secret?: string | undefined;
+  /** What the target currently has approved. Defaults to the notice's baseline. */
+  baselineReportId?: string;
+} = {}): { env: Env; executed: Recorded[] } {
   const executed: Recorded[] = [];
   const notice = overrides.notice === undefined ? NOTICE : overrides.notice;
+  // Mutable, because the page is rendered from a read that happens *after* the
+  // accept. A stub that answered from a frozen row would report the old baseline
+  // as the new one and the assertion would be meaningless.
+  let baselineReportId = overrides.baselineReportId ?? "b1";
 
   const database = {
     prepare(sql: string) {
@@ -61,13 +83,19 @@ function env(overrides: { notice?: ChangeNoticeRecord | null; secret?: string | 
         async first() {
           executed.push({ sql, parameters });
           if (/FROM change_notices/.test(sql)) return notice;
-          if (/FROM watch_targets/.test(sql)) return { id: "t1", package_name: "@scope/example-mcp" };
+          if (/FROM watch_targets/.test(sql)) {
+            return { id: "t1", package_name: "@scope/example-mcp", baseline_report_id: baselineReportId };
+          }
           if (/FROM analysis_reports/.test(sql)) {
-            return { package_version: parameters[0] === "b1" ? "1.4.0" : "2.0.0" };
+            return REPORTS[String(parameters[0])] ?? null;
           }
           return null;
         },
-        async run() { executed.push({ sql, parameters }); return { success: true }; },
+        async run() {
+          executed.push({ sql, parameters });
+          if (/UPDATE watch_targets SET baseline_report_id/.test(sql)) baselineReportId = String(parameters[0]);
+          return { success: true };
+        },
         async all() { executed.push({ sql, parameters }); return { results: [] }; }
       };
       return statement;
@@ -168,6 +196,43 @@ test("the accept route exists only as a POST, and the read route only as a GET",
     assert.equal(response.status, 404, `${method} ${path} answered`);
     assert.deepEqual(writes(executed), []);
   }
+});
+
+/**
+ * Several releases can be outstanding at once, each with its own notice, all
+ * measured against the same approved version. Accepting them in inbox order means
+ * accepting an older one last — and an unconditional `setBaseline` would walk the
+ * approved version backwards, reopening the repeat chain the accept was closing.
+ *
+ * Found while clearing a real backlog: five notices for one package, every one of
+ * them proposing a different candidate against the same baseline.
+ */
+test("accepting an older notice does not move the baseline backwards", async () => {
+  // c2 arrived after this notice's candidate c1, and is already approved.
+  const { env: environment, executed } = env({ baselineReportId: "c2" });
+  const response = await worker.fetch(request(`/notice/${NOTICE_ID}/accept?t=${await token()}`, "POST"), environment, ctx);
+  assert.equal(response.status, 200);
+
+  const changed = writes(executed);
+  assert.ok(
+    changed.some((entry) => /UPDATE change_notices SET state/.test(entry.sql) && entry.parameters[0] === "accepted"),
+    "the decision itself must still be recorded"
+  );
+  assert.ok(
+    !changed.some((entry) => /UPDATE watch_targets SET baseline_report_id/.test(entry.sql)),
+    "the approved version was walked backwards to an older release"
+  );
+
+  const body = await response.text();
+  assert.match(body, /stays at <strong>2\.1\.0<\/strong>/, "the page states what is actually approved");
+  assert.doesNotMatch(body, /2\.0\.0<\/strong> is now the approved version/);
+});
+
+test("accepting the same notice twice does not rewrite the baseline", async () => {
+  // The target already points at this notice's candidate.
+  const { env: environment, executed } = env({ baselineReportId: "c1" });
+  await worker.fetch(request(`/notice/${NOTICE_ID}/accept?t=${await token()}`, "POST"), environment, ctx);
+  assert.ok(!writes(executed).some((entry) => /UPDATE watch_targets/.test(entry.sql)));
 });
 
 test("a link accept does not overturn a decision made through the operator route", async () => {

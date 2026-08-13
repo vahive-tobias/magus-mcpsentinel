@@ -155,8 +155,40 @@ export class WatchRepository {
     if (!notice) return null;
     const now = new Date().toISOString();
     await this.db.prepare("UPDATE change_notices SET state = ?, decided_at = ? WHERE id = ?").bind(state, now, id).run();
-    if (state === "accepted") await this.setBaseline(notice.target_id, notice.candidate_report_id);
+    if (state === "accepted" && await this.advancesBaseline(notice)) {
+      await this.setBaseline(notice.target_id, notice.candidate_report_id);
+    }
     return { ...notice, state, decided_at: now };
+  }
+
+  /**
+   * Whether accepting this notice moves the baseline forward.
+   *
+   * Several releases can be outstanding at once, each with its own notice, all
+   * measured against the same approved version. Accepting them in the order they
+   * appear in an inbox means accepting an older one last — and an unconditional
+   * `setBaseline` would then walk the approved version *backwards*, reopening the
+   * repeat chain the accept was meant to close.
+   *
+   * Arrival order decides it, not the version string: versions here are whatever
+   * the publisher chose, including dates, and parsing them would be a guess.
+   */
+  private async advancesBaseline(notice: ChangeNoticeRecord): Promise<boolean> {
+    const target = await this.targetById(notice.target_id);
+    if (!target?.baseline_report_id) return true;
+    if (target.baseline_report_id === notice.candidate_report_id) return false;
+    const [current, candidate] = await Promise.all([
+      this.reportArrival(target.baseline_report_id),
+      this.reportArrival(notice.candidate_report_id)
+    ]);
+    return current === undefined || (candidate !== undefined && candidate > current);
+  }
+
+  /** Just the arrival time. A report row carries the whole report JSON with it. */
+  private async reportArrival(reportId: string): Promise<string | undefined> {
+    const row = await this.db.prepare("SELECT received_at FROM analysis_reports WHERE id = ?")
+      .bind(reportId).first<{ received_at: string }>();
+    return row?.received_at;
   }
 
   /**
