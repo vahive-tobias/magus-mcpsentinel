@@ -55,6 +55,9 @@ const COVERAGE_LOSS_SEVERITY: Record<string, Severity> = {
 export const CLASSIFIED_COVERAGE_LOSS_REASONS = Object.keys(COVERAGE_LOSS_SEVERITY);
 
 /**
+ * Exported for the uniqueness enumeration, which drives the ranking decision
+ * directly rather than through a synthesized pair of reports.
+ *
  * Default severity per change kind.
  *
  * `high`   — the effective capability handed to an agent has grown, or code now
@@ -62,7 +65,7 @@ export const CLASSIFIED_COVERAGE_LOSS_REASONS = Object.keys(COVERAGE_LOSS_SEVERI
  * `review` — a real change to something previously approved. Read it.
  * `info`   — context. Not a reason to act on its own.
  */
-const SEVERITY: Record<ChangeKind, Severity> = {
+export const SEVERITY: Record<ChangeKind, Severity> = {
   tool_added: "high",
   tool_schema_changed: "review",
   tool_description_changed: "review",
@@ -118,7 +121,7 @@ export function createChangeNotice(baselineReport: SentinelReport, candidateRepo
  * Escalate above the default where the change detail shows the capability surface
  * actually grew, rather than merely moved.
  */
-function severityFor(change: ReportChange): Severity {
+export function severityFor(change: ReportChange): Severity {
   const detail = change.detail ?? {};
 
   if (change.kind === "tool_schema_changed") {
@@ -157,7 +160,7 @@ function severityFor(change: ReportChange): Severity {
   return SEVERITY[change.kind] ?? "review";
 }
 
-function highestSeverity(changes: WatchChange[]): Severity {
+export function highestSeverity(changes: WatchChange[]): Severity {
   if (changes.some((change) => change.severity === "high")) return "high";
   if (changes.some((change) => change.severity === "review")) return "review";
   return "info";
