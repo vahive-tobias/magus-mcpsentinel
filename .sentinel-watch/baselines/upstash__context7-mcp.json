@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "1ed6f022-d1a6-4566-a284-83c7214ec8a4",
-  "generated_at": "2026-08-09T06:08:00.394Z",
+  "report_id": "e121ad6e-8c5a-415f-a816-beac7ba90221",
+  "generated_at": "2026-08-13T02:47:58.069Z",
   "subject": {
     "server_name": "io.github.upstash/context7",
     "publisher_claim": "@upstash",
     "artifact": {
       "ecosystem": "npm",
       "package": "@upstash/context7-mcp",
-      "version": "4.0.0",
-      "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
-      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.0.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.0",
-      "acquired_at": "2026-08-09T06:08:00.370Z",
-      "registry_metadata_sha256": "76ded7222807295786c4278dcdef308675d3d524cf2fce12ba9077614e86e4a6",
-      "integrity_claim": "sha512-7TlB85xbKbSHzI4G//3Qm+g8ryW11WZLd7PAOFdH5IxzAv1Yk+lcSBgDM4lDoYHXltzSwK7iUciiFNbFj7493Q==",
+      "version": "4.0.2",
+      "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
+      "acquired_at": "2026-08-13T02:47:58.023Z",
+      "registry_metadata_sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
+      "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+      "build_sha256": "76ecfa3e5785d89b34d6618b32c84c01f0e40666b3541871cc874aba61200160"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb",
+          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@upstash/context7-mcp",
-        "version": "4.0.0",
+        "version": "4.0.2",
         "mcpName": "io.github.upstash/context7",
         "description": "MCP server for Context7",
         "bin": {
@@ -86,25 +86,25 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
+          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "entry_count": 12,
-        "regular_file_bytes": 95009,
+        "regular_file_bytes": 95465,
         "entries": [
           {
             "path": "package/dist/index.js",
             "type": "file",
-            "size": 23049,
-            "sha256": "8ed7998617cd610bd538416634166770d9eca1ff2f12975920ed314f066de1ef"
+            "size": 23398,
+            "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26"
           },
           {
             "path": "package/dist/lib/api.js",
             "type": "file",
-            "size": 5945,
-            "sha256": "16417e0ff8520eb2b455a24566cc9c5dae8926ec25e1bf0007d8a46a0f37d60f"
+            "size": 6337,
+            "sha256": "b40f4e35d756332fd12b930e037c20339552233fba1c12c872ecb98ac945cc74"
           },
           {
             "path": "package/dist/lib/auth/auth-prompt.js",
@@ -158,13 +158,13 @@
             "path": "package/package.json",
             "type": "file",
             "size": 1876,
-            "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb"
+            "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec"
           },
           {
             "path": "package/README.md",
             "type": "file",
-            "size": 45997,
-            "sha256": "7af66e09cddc0ea518f97cdee817274f28f001177271785d216db1299b640bf5"
+            "size": 45712,
+            "sha256": "51aa47eba44abd6998823221f3ecb132ad8e40fc38e72a236835aea93c88c550"
           }
         ]
       }
@@ -175,16 +175,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "76ded7222807295786c4278dcdef308675d3d524cf2fce12ba9077614e86e4a6",
+          "sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.0",
+        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
         "requested_package": "@upstash/context7-mcp",
-        "requested_version": "4.0.0",
-        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.0.tgz",
-        "integrity_claim": "sha512-7TlB85xbKbSHzI4G//3Qm+g8ryW11WZLd7PAOFdH5IxzAv1Yk+lcSBgDM4lDoYHXltzSwK7iUciiFNbFj7493Q==",
+        "requested_version": "4.0.2",
+        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
+        "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
         "integrity_verified": true
       }
     },
@@ -194,7 +194,7 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "1d17d4da19a641807daa886c11ff34b1a29568bd7cb7e5cbe33c931738435fdb",
+          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
@@ -213,17 +213,17 @@
       }
     },
     {
-      "id": "observation:network-api-53ada3e716b390a3",
+      "id": "observation:network-api-b63cd636512f0b3d",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "16417e0ff8520eb2b455a24566cc9c5dae8926ec25e1bf0007d8a46a0f37d60f",
+          "sha256": "b40f4e35d756332fd12b930e037c20339552233fba1c12c872ecb98ac945cc74",
           "artifact_path": "package/dist/lib/api.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            3853,
-            3859
+            4155,
+            4161
           ]
         }
       ],
@@ -233,17 +233,17 @@
       }
     },
     {
-      "id": "observation:network-api-f7290244a97e2fb4",
+      "id": "observation:network-api-eb8a56f7be916a5e",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "8ed7998617cd610bd538416634166770d9eca1ff2f12975920ed314f066de1ef",
+          "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26",
           "artifact_path": "package/dist/index.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            19443,
-            19449
+            19790,
+            19796
           ]
         }
       ],
@@ -278,7 +278,7 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "08118a6721df34594b804c0de6b8e6e039a8d9e3eff16e301955887aec57d66f",
+          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
           "capture_kind": "artifact_file"
         }
       ],
