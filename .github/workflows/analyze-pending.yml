@@ -45,7 +45,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build --workspace mcp-sentinel
+      - run: npm run build --workspace magus-mcpsentinel
 
       - name: Analyze and submit
         env:

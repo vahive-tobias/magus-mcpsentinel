@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { FORMAT_VERSION, OBSERVATION_IDS, OBSERVATION_KINDS } from "mcp-sentinel/report-contract";
-import type { ReportObservation, SentinelReport } from "mcp-sentinel/report-contract";
+import { FORMAT_VERSION, OBSERVATION_IDS, OBSERVATION_KINDS } from "magus-mcpsentinel/report-contract";
+import type { ReportObservation, SentinelReport } from "magus-mcpsentinel/report-contract";
 import { createChangeNotice } from "../src/policy.js";
 import type { Severity } from "../src/types.js";
 

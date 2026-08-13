@@ -1,6 +1,6 @@
-import { diffReports } from "mcp-sentinel/diff";
-import type { ChangeKind, ReportChange } from "mcp-sentinel/diff";
-import type { SentinelReport } from "mcp-sentinel/report-contract";
+import { diffReports } from "magus-mcpsentinel/diff";
+import type { ChangeKind, ReportChange } from "magus-mcpsentinel/diff";
+import type { SentinelReport } from "magus-mcpsentinel/report-contract";
 import type { ChangeNotice, Severity, WatchChange } from "./types.js";
 
 /**

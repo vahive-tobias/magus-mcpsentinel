@@ -40,11 +40,11 @@ but does not silently advance the baseline.
 
 ## How it relates to the analyzer
 
-Watch consumes [`mcp-sentinel`](../sentinel) through its published contract:
+Watch consumes [`magus-mcpsentinel`](../sentinel) through its published contract:
 
 ```ts
-import { analyzeNpmPackage } from "mcp-sentinel/analyze";
-import { diffReports } from "mcp-sentinel/diff";
+import { analyzeNpmPackage } from "magus-mcpsentinel/analyze";
+import { diffReports } from "magus-mcpsentinel/diff";
 ```
 
 The analyzer decides **what changed**. Watch decides **how much it matters** — that

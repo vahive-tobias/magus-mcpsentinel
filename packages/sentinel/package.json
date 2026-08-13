@@ -1,5 +1,5 @@
 {
-  "name": "mcp-sentinel",
+  "name": "magus-mcpsentinel",
   "version": "0.2.0",
   "description": "Deterministic, non-executing evidence reports for public npm MCP servers.",
   "license": "Apache-2.0",

@@ -1,7 +1,7 @@
-import { analyzeNpmPackage, isArchiveTooLarge } from "mcp-sentinel/analyze";
+import { analyzeNpmPackage, isArchiveTooLarge } from "magus-mcpsentinel/analyze";
 import { deliverNotice, deliveryConfigured } from "./notify.js";
 import { sha256Hex, verifyApiKey, verifyHmacSignature, verifyNoticeLinkToken } from "./auth.js";
-import { assertSentinelReport } from "mcp-sentinel/report-contract";
+import { assertSentinelReport } from "magus-mcpsentinel/report-contract";
 import { createChangeNotice } from "./policy.js";
 import { WatchRepository } from "./repository.js";
 import type { ChangeNoticeRecord, Env, JsonObject, SentinelReport, WatchChange, WatchTargetRecord } from "./types.js";

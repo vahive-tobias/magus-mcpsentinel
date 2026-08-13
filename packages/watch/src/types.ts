@@ -1,5 +1,5 @@
-import type { ChangeKind } from "mcp-sentinel/diff";
-import type { JsonObject } from "mcp-sentinel/report-contract";
+import type { ChangeKind } from "magus-mcpsentinel/diff";
+import type { JsonObject } from "magus-mcpsentinel/report-contract";
 
 /**
  * Watch-specific types.
@@ -9,8 +9,8 @@ import type { JsonObject } from "mcp-sentinel/report-contract";
  * that drifts silently.
  */
 
-export type { ChangeKind } from "mcp-sentinel/diff";
-export type { JsonObject, SentinelReport } from "mcp-sentinel/report-contract";
+export type { ChangeKind } from "magus-mcpsentinel/diff";
+export type { JsonObject, SentinelReport } from "magus-mcpsentinel/report-contract";
 
 /** Review urgency. This is Watch's judgement, not the analyzer's. */
 export type Severity = "info" | "review" | "high";

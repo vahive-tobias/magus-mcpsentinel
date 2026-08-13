@@ -26,11 +26,11 @@ import { promisify } from 'node:util';
 // The contract's own identifiers, not substring guesses. `id.includes('tool')`
 // reads the right observation today and would silently read the wrong one the
 // day an observation is named with an overlapping word.
-import { OBSERVATION_IDS } from 'mcp-sentinel/report-contract';
+import { OBSERVATION_IDS } from 'magus-mcpsentinel/report-contract';
 // Path-shape exclusion is an approximation, not proof that a file is irrelevant
 // at runtime. Recording what it skipped keeps that inspectable in the corpus
 // before any of it reaches the report contract.
-import { isOutsideToolSurface } from 'mcp-sentinel/analyze';
+import { isOutsideToolSurface } from 'magus-mcpsentinel/analyze';
 
 const run = promisify(execFile);
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');

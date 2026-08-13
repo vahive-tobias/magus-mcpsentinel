@@ -1,4 +1,4 @@
-# mcp-sentinel
+# magus-mcpsentinel
 
 **Deterministic, non-executing evidence reports for public npm MCP servers.**
 
@@ -72,9 +72,9 @@ edge worker, a browser — can import them. The CLI and the filesystem-backed
 helpers are deliberately not exported.
 
 ```ts
-import { analyzeNpmPackage } from "mcp-sentinel/analyze";
-import { diffReports } from "mcp-sentinel/diff";
-import { assertSentinelReport } from "mcp-sentinel/report-contract";
+import { analyzeNpmPackage } from "magus-mcpsentinel/analyze";
+import { diffReports } from "magus-mcpsentinel/diff";
+import { assertSentinelReport } from "magus-mcpsentinel/report-contract";
 ```
 
 `analyzeNpmPackage` acquires, reads and validates in one call. It takes an optional

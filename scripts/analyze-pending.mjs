@@ -10,7 +10,7 @@
 // It learns nothing about the monitor beyond two endpoints, and the monitor
 // learns nothing about it. Either half can be replaced without touching the other.
 import { createHmac } from "node:crypto";
-import { analyzeNpmPackage, isArchiveTooLarge } from "mcp-sentinel/analyze";
+import { analyzeNpmPackage, isArchiveTooLarge } from "magus-mcpsentinel/analyze";
 
 const watchUrl = requiredEnv("WATCH_URL").replace(/\/$/, "");
 const pollKey = requiredEnv("ANALYZER_POLL_KEY");

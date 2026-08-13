@@ -3,8 +3,8 @@ import test from "node:test";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { FORMAT_VERSION, OBSERVATION_IDS, OBSERVATION_KINDS } from "mcp-sentinel/report-contract";
-import type { ReportObservation, SentinelReport } from "mcp-sentinel/report-contract";
+import { FORMAT_VERSION, OBSERVATION_IDS, OBSERVATION_KINDS } from "magus-mcpsentinel/report-contract";
+import type { ReportObservation, SentinelReport } from "magus-mcpsentinel/report-contract";
 import { CLASSIFIED_COVERAGE_LOSS_REASONS, createChangeNotice } from "../src/policy.js";
 
 const HASH_A = "a".repeat(64);

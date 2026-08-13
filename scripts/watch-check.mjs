@@ -11,7 +11,7 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeNpmPackage } from "mcp-sentinel/analyze";
+import { analyzeNpmPackage } from "magus-mcpsentinel/analyze";
 import { createChangeNotice } from "../packages/watch/dist/src/policy.js";
 
 const repositoryRoot = join(dirname(fileURLToPath(import.meta.url)), "..");

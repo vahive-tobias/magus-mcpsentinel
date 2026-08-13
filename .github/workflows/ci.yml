@@ -59,7 +59,7 @@ jobs:
           echo "OK: the generated validator contains no runtime code generation."
 
       - name: Test analyzer
-        run: npm run test --workspace mcp-sentinel
+        run: npm run test --workspace magus-mcpsentinel
 
       - name: Test monitor
         run: npm run test --workspace @sentinel/watch
@@ -78,7 +78,7 @@ jobs:
       - name: Coverage figures match the analyzer that produced them
         run: |
           npm ci
-          npm run build --workspace mcp-sentinel
+          npm run build --workspace magus-mcpsentinel
           recorded=$(node -p "require('./corpus/metrics.json').analyzer.engine.build_sha256")
           current=$(node -p "require('./packages/sentinel/dist/src/build-info.js').ANALYZER_BUILD_SHA256")
           if [ "$recorded" != "$current" ]; then
@@ -110,10 +110,18 @@ jobs:
       # Matched narrowly and deliberately. A bare "watch" would fire on ordinary
       # English ("watch out", "stopwatch"), and a guard that cries wolf gets
       # disabled, which is worse than no guard.
+      #
+      # `magus` stays in the net even though the analyzer is now *called*
+      # magus-mcpsentinel: the token is what catches a sibling product creeping in,
+      # and narrowing it to a known list would only catch the ones already thought
+      # of. Its own name is filtered out afterwards instead. Without that filter
+      # the first comment in src/ naming the package fails this check with a
+      # message asserting the opposite of what happened.
       - name: Analyzer has no downstream dependency
         run: |
           if grep -rniE '@sentinel/watch|packages/watch|mcp-watch|magus|opensecmcp' \
-              packages/sentinel/src packages/sentinel/schemas 2>/dev/null; then
+              packages/sentinel/src packages/sentinel/schemas 2>/dev/null \
+              | grep -viE 'magus-mcpsentinel'; then
             echo "::error::The analyzer references a downstream consumer."
             exit 1
           fi
@@ -198,7 +206,7 @@ jobs:
       # reaching into analyzer internals or re-declaring the report shape.
       - name: Monitor uses the published contract only
         run: |
-          if grep -rnE 'from "mcp-sentinel/(src|dist)' packages/watch/src packages/watch/test 2>/dev/null; then
+          if grep -rnE 'from "magus-mcpsentinel/(src|dist)' packages/watch/src packages/watch/test 2>/dev/null; then
             echo "::error::The monitor reaches past the analyzer's exports."
             exit 1
           fi
@@ -280,7 +288,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build --workspace mcp-sentinel
+      - run: npm run build --workspace magus-mcpsentinel
 
       # A report that does not validate against its own schema is worthless as
       # evidence, so prove the CLI against a real published package.

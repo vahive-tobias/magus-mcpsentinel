@@ -19,7 +19,7 @@
     "deploy:init": "node -e \"const fs=require('fs');if(fs.existsSync('wrangler.private.toml')){console.log('wrangler.private.toml already exists.');process.exit(0)}fs.copyFileSync('wrangler.toml','wrangler.private.toml');console.log('Created wrangler.private.toml. Put your real database_id in it; it is gitignored.')\""
   },
   "dependencies": {
-    "mcp-sentinel": "*"
+    "magus-mcpsentinel": "*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260801.1",
