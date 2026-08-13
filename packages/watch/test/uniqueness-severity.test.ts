@@ -76,19 +76,19 @@ function tableEntryIsReachable(kind: ChangeKind): boolean {
 }
 
 /**
- * The five kinds whose table entry cannot affect any outcome.
+ * The kinds whose table entry cannot affect any outcome.
  *
- * Pinned rather than computed, so adding a sixth is a failure that has to be
- * looked at rather than a number that quietly moves. Two of these are worse than
- * dead: `skill_changed` and `mcp_declaration_changed` declare `high` in a table
- * whose live branch returns `review` by default, so the table states a policy the
- * code does not implement.
+ * Pinned rather than computed, so adding a fourth is a failure that has to be
+ * looked at rather than a number that quietly moves.
+ *
+ * This was five. `skill_changed` and `mcp_declaration_changed` left the list by
+ * having their branch deleted rather than corrected: once every change to a
+ * declared surface ranks the same way, the table is the only declaration and
+ * there is nothing left to disagree with it.
  */
 const SHADOWED: ChangeKind[] = [
   "coverage_regressed",
   "finding_added",
-  "mcp_declaration_changed",
-  "skill_changed",
   "tool_schema_changed"
 ];
 
@@ -102,14 +102,26 @@ test("the table states the default a kind actually gets", () => {
   // A shadowed entry is survivable; one that also misstates the answer is not.
   // The table is what a reader consults to learn how a kind is ranked, so where it
   // disagrees with the rank an ordinary change receives — detail carrying nothing
-  // the branch looks for — it is documentation that is simply false.
+  // the branch looks for — it is documentation that is simply false. Two entries
+  // did disagree; both were resolved in favour of the table.
   const misstated = KINDS.filter((kind) => SEVERITY[kind] !== rank(kind, {})).sort();
-  assert.deepEqual(misstated, ["mcp_declaration_changed", "skill_changed"],
-    "the table's stated severity for a kind is not the one an ordinary change of that kind receives");
+  assert.deepEqual(misstated, [], "the table states a severity an ordinary change of that kind does not receive");
+});
 
-  // Naming the actual defaults, so the discrepancy is legible without running it.
-  assert.equal(SEVERITY.skill_changed, "high");
-  assert.equal(rank("skill_changed", {}), "review");
+/**
+ * Any change to something the model reads as instruction ranks the same way.
+ *
+ * Direction was the wrong question. A reader does not need to know whether a
+ * capability grew — they need to know that what steers their agent is no longer
+ * what they approved, and a removal says that as loudly as an addition.
+ */
+test("a declared surface ranks high however it changed", () => {
+  for (const kind of ["skill_changed", "mcp_declaration_changed"] as ChangeKind[]) {
+    for (const state of ["added", "removed", "changed", undefined]) {
+      assert.equal(rank(kind, state === undefined ? {} : { state }), "high",
+        `${kind} with state ${state} did not rank high`);
+    }
+  }
 });
 
 test("no input reaches two severities", () => {
@@ -127,22 +139,17 @@ test("no input reaches two severities", () => {
 /**
  * Evidence monotonicity — detail may raise a rank, never lower it.
  *
- * One deliberate exception, and it is a real one rather than an oversight: a
- * declared-surface file that *vanished* is a capability the agent lost, which
- * ranks below the default rather than above it.
+ * This carried one exception, for a declared-surface file that vanished. The
+ * exception is gone: those now rank high however they changed, so the property
+ * holds without qualification and the assertion says so with no escape hatch.
  */
-const LOWERING_ALLOWED = new Set(["skill_changed", "mcp_declaration_changed"]);
-
-test("adding detail never lowers a severity, except where a capability was removed", () => {
+test("adding detail never lowers a severity", () => {
   for (const kind of KINDS) {
     const base = rank(kind, {});
     for (const detail of DETAILS) {
       const withDetail = rank(kind, detail);
-      if (RANK[withDetail] >= RANK[base]) continue;
-      assert.ok(
-        LOWERING_ALLOWED.has(kind) && detail.state === "removed",
-        `${kind} dropped from ${base} to ${withDetail} on ${JSON.stringify(detail)}`
-      );
+      assert.ok(RANK[withDetail] >= RANK[base],
+        `${kind} dropped from ${base} to ${withDetail} on ${JSON.stringify(detail)}`);
     }
   }
 });

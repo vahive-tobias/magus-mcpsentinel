@@ -62,39 +62,43 @@ function severityOf(baseline: SentinelReport, candidate: SentinelReport, kind: s
 
 const OTHER = { path: "package/index.js", sha256: HASH_A };
 
+/**
+ * Any change to a skill ranks high, whichever direction it went.
+ *
+ * Ranking these by direction asked the wrong question. A skill is a document the
+ * model reads as instruction, so what matters to the reader is that the thing
+ * steering their agent is no longer the thing they approved — and a skill that
+ * vanished says that as plainly as one that appeared. `high` is a recommendation
+ * to read the diff, not a claim about the package; the notice says so in words.
+ */
 test("a new skill is high: the agent gained instructions it did not have", () => {
   const baseline = report("1.0.0", HASH_A, [OTHER]);
   const candidate = report("1.1.0", HASH_B, [OTHER, { path: SKILL, sha256: HASH_B }]);
   assert.equal(severityOf(baseline, candidate, "skill_changed"), "high");
 });
 
-test("a rewritten skill is review: instructions changed, read them", () => {
+test("a rewritten skill is high: the instructions are not the ones approved", () => {
   const baseline = report("1.0.0", HASH_A, [{ path: SKILL, sha256: HASH_A }]);
   const candidate = report("1.1.0", HASH_B, [{ path: SKILL, sha256: HASH_B }]);
-  assert.equal(severityOf(baseline, candidate, "skill_changed"), "review");
+  assert.equal(severityOf(baseline, candidate, "skill_changed"), "high");
 });
 
-test("a removed skill is info: a capability lost is not an alarm", () => {
+test("a removed skill is high: what the agent reads has changed either way", () => {
   const baseline = report("1.0.0", HASH_A, [{ path: SKILL, sha256: HASH_A }]);
   const candidate = report("1.1.0", HASH_B, [OTHER]);
-  assert.equal(severityOf(baseline, candidate, "skill_changed"), "info");
+  assert.equal(severityOf(baseline, candidate, "skill_changed"), "high");
 });
 
-test("mcp.json follows the same ordering, because it declares what runs", () => {
+test("mcp.json ranks the same way, because it declares what runs", () => {
   const mcp = (sha: string) => ({ path: "package/mcp.json", sha256: sha });
 
-  assert.equal(
-    severityOf(report("1.0.0", HASH_A, [OTHER]), report("1.1.0", HASH_B, [OTHER, mcp(HASH_B)]), "mcp_declaration_changed"),
-    "high"
-  );
-  assert.equal(
-    severityOf(report("1.0.0", HASH_A, [mcp(HASH_A)]), report("1.1.0", HASH_B, [mcp(HASH_B)]), "mcp_declaration_changed"),
-    "review"
-  );
-  assert.equal(
-    severityOf(report("1.0.0", HASH_A, [mcp(HASH_A)]), report("1.1.0", HASH_B, [OTHER]), "mcp_declaration_changed"),
-    "info"
-  );
+  for (const [baseline, candidate] of [
+    [report("1.0.0", HASH_A, [OTHER]), report("1.1.0", HASH_B, [OTHER, mcp(HASH_B)])],
+    [report("1.0.0", HASH_A, [mcp(HASH_A)]), report("1.1.0", HASH_B, [mcp(HASH_B)])],
+    [report("1.0.0", HASH_A, [mcp(HASH_A)]), report("1.1.0", HASH_B, [OTHER])]
+  ] as const) {
+    assert.equal(severityOf(baseline, candidate, "mcp_declaration_changed"), "high");
+  }
 });
 
 test("the plugin manifest is review: it is metadata, not capability", () => {

@@ -186,8 +186,20 @@ const SEVERITY_LABEL: Record<string, string> = {
   info: "Context"
 };
 
+/**
+ * What the severity is telling the reader to do.
+ *
+ * `high` ranks what to read first. It is never a claim about the package, and it
+ * has to say so, because the word invites the other reading. It covers any change
+ * to something that steers an agent, including a removal, so the note cannot
+ * describe growth: what unites those cases is that the thing shaping the agent's
+ * behaviour is no longer the thing that was approved.
+ *
+ * Phrased around the verdict words rather than through them — the notice tests ban
+ * them outright, and a denial reads as one to anything scanning for the word.
+ */
 const SEVERITY_NOTE: Record<string, string> = {
-  high: "The capability this server declares has grown, or code now runs that did not run before.",
+  high: "Something that shapes what an agent will do has changed — a tool, an entrypoint, code that runs on install, or an instruction the model reads. This ranks what to read first; it is not a judgement about the package.",
   review: "Something you approved has changed. Worth reading before you upgrade.",
   info: "Recorded for completeness. Not a reason to act on its own."
 };

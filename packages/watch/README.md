@@ -342,9 +342,21 @@ before you enable it:
 
 Opening a link only renders the notice — accepting is a separate POST from the
 page, because mail clients and security scanners fetch links on delivery and an
-accept behind a GET would fire before a human read it. A notice already decided
-through the operator route is shown as it stands and is not overturned by a
-later click.
+accept behind a GET would fire before a human read it.
+
+**The operator route outranks the link.** A link holder can move a *pending*
+notice forward and can do nothing else: a notice you have already accepted,
+frozen or ignored is shown as it stands and a later click will not overturn it.
+The operator key can redecide anything, at any time. This is not configurable,
+and deliberately so — the whole value of freezing a release is that it stays
+frozen, and a switch that let a forwarded email undo it would make the freeze a
+suggestion.
+
+Accepting is also monotone: it can only move the approved version to a *later*
+release. With several notices outstanding for one package — five is not unusual
+after a busy week — accepting them in whatever order they appear in an inbox
+lands on the newest either way. An older notice records that you read it and
+leaves the baseline alone.
 
 ## Why this cannot run up a D1 bill
 

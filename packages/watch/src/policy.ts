@@ -81,8 +81,13 @@ export const SEVERITY: Record<ChangeKind, Severity> = {
   // A skill is a document a model reads as instructions, and mcp.json says which
   // servers run and over what transport. Both change what an agent will do
   // without necessarily changing a line of executable code, which is the exact
-  // shape this tool exists to surface. `severityFor` lowers these where the
-  // change is a removal.
+  // shape this tool exists to surface.
+  //
+  // Any change ranks `high`, including a removal. Ranking these by direction
+  // asked the wrong question: the reader does not need to know whether a
+  // capability grew, they need to know that the thing steering their agent is not
+  // the thing they approved. `high` here means read the diff, not that the package
+  // is dangerous — see SEVERITY_NOTE in notify.ts, which says so to the reader.
   skill_changed: "high",
   mcp_declaration_changed: "high",
   plugin_manifest_changed: "review",
@@ -147,14 +152,6 @@ export function severityFor(change: ReportChange): Severity {
       .filter((reason): reason is string => typeof reason === "string")
       .map((reason) => COVERAGE_LOSS_SEVERITY[reason] ?? "review");
     return severities.includes("high") ? "high" : "review";
-  }
-
-  // A declared-surface file that appeared hands the agent something it did not
-  // have before; one that was rewritten is a change to read; one that vanished is
-  // a capability the agent lost. Same ordering as tools.
-  if (change.kind === "skill_changed" || change.kind === "mcp_declaration_changed") {
-    if (detail.state === "removed") return "info";
-    return detail.state === "added" ? "high" : "review";
   }
 
   return SEVERITY[change.kind] ?? "review";

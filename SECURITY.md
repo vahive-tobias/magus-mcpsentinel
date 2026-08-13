@@ -74,6 +74,11 @@ Its own boundary:
   Anyone holding a link can accept that one notice, so forwarding one hands over
   the decision on that release; rotating the secret invalidates every link
   already sent.
+- **The operator key outranks a link.** A link can move a pending notice forward
+  and nothing else — it cannot overturn a decision already made, and accepting
+  can only move the approved version to a later release, never back to an earlier
+  one. Deliberately not configurable: a freeze that a forwarded email could undo
+  would not be a freeze.
 
 If you deploy it, `OPERATOR_API_KEY`, `ANALYZER_INGEST_SECRET` and
 `NOTICE_LINK_SECRET` are yours to generate and protect. Set them with

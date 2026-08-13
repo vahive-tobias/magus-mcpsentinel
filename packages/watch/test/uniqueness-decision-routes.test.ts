@@ -9,14 +9,16 @@ import type { ChangeNoticeRecord, Env } from "../src/types.js";
  * S3 of the uniqueness enumeration — one notice, two routes that may decide it.
  *
  * The operator route and the capability link both reach `decideNotice`, and they
- * do not agree about a notice that has already been decided: the link refuses to
- * overturn one, the operator route will happily flip `accepted → ignored →
- * accepted`. Where two paths to the same mutation disagree, the authority is
- * whichever path the caller happened to use, which is the violation shape.
+ * do not agree about a notice that has already been decided. That asymmetry is
+ * now the decided policy rather than an accident: **the operator route outranks
+ * the link.** Whoever runs the deployment can redecide anything; whoever holds a
+ * link can move a pending notice forward and cannot overturn a decision made
+ * above them.
  *
- * **This pins current behaviour; it does not endorse it.** Whether a decision is
- * absorbing is a product call, and either answer is defensible. Two answers is
- * not. See `docs/PLAN_UNIQUENESS_ENUMERATION_WATCH.md`, S3.
+ * So the authority is not "whichever path the caller used" — it is the operator,
+ * and the two paths differ because they carry different authority. That is a
+ * resolution of the uniqueness question, not an exception to it. What the matrix
+ * below protects is that the difference stays exactly this one.
  */
 
 const KEY = "operator-key-for-tests";
@@ -61,19 +63,13 @@ async function viaLink(from: State) {
   return { status: response.status, state: store.notices[0]!.state, baseline: store.targets[0]!.baseline_report_id };
 }
 
-test("the two routes disagree about a notice that is already decided", async () => {
-  // The finding, stated as an assertion so it cannot quietly change.
+test("the operator route outranks the link on an already-decided notice", async () => {
   for (const from of STATES.filter((state) => state !== "pending_review")) {
     const link = await viaLink(from);
     assert.equal(link.state, from, `the link overturned a ${from} notice`);
 
     const operator = await viaOperator(from, "accepted");
-    assert.equal(operator.state, "accepted", `the operator route refused to redecide a ${from} notice`);
-
-    if (from !== "accepted") {
-      assert.notEqual(link.state, operator.state,
-        `the routes agreed about a ${from} notice, so this test is now stating something false`);
-    }
+    assert.equal(operator.state, "accepted", `the operator route could not redecide a ${from} notice`);
   }
 });
 
@@ -128,8 +124,8 @@ test("every route and starting state has exactly one recorded outcome", async ()
     "operator accepted -> ignored": "200 ignored r1",
     "link accepted -> accept": "200 accepted r1",
 
-    // The asymmetry, in two rows: the operator route accepts a frozen notice and
-    // moves the baseline; the link leaves it frozen and moves nothing.
+    // Operator precedence, in two rows: the operator route accepts a frozen
+    // notice and moves the baseline; the link leaves it frozen and moves nothing.
     "operator frozen -> accepted": "200 accepted r1",
     "operator frozen -> frozen": "200 frozen r0",
     "operator frozen -> ignored": "200 ignored r0",
