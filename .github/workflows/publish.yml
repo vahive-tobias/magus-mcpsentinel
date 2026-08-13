@@ -1,0 +1,92 @@
+
+# Publishing the analyzer, with an attestation of where it came from.
+#
+# A supply-chain provenance tool whose own package carries no provenance is an
+# argument against itself. npm can sign a published tarball with a statement of
+# the exact commit, workflow and runner that produced it, verifiable by anyone
+# with `npm audit signatures` — and that statement is only worth something if a
+# human never touches the tarball, which is why publishing moves here rather than
+# staying on a laptop.
+#
+# 0.2.0 was published by hand on 2026-08-13 to claim the name. Everything from
+# 0.2.1 onward goes through this.
+#
+# Required once, in repository settings:
+#   NPM_TOKEN   an npm *granular* access token with write access to
+#               magus-mcpsentinel, and "bypass 2FA" enabled — a workflow cannot
+#               answer a one-time-code prompt. Scope it to this package only.
+name: Publish to npm
+
+on:
+  # Deliberately manual. A tag push would publish whatever the tag pointed at, and
+  # the version has to be chosen by someone who knows why it is changing.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish, e.g. 0.2.1. Must already be committed in packages/sentinel/package.json."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  # The whole point: this is what lets npm mint a provenance attestation tied to
+  # this repository, this workflow and this commit.
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish magus-mcpsentinel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install workspace
+        run: npm ci
+
+      # The version is stated at dispatch and committed in the manifest. If they
+      # disagree, one of them is a mistake and neither is safe to guess at.
+      - name: The requested version is the committed version
+        run: |
+          set -euo pipefail
+          committed=$(node -p "require('./packages/sentinel/package.json').version")
+          if [ "$committed" != "${{ inputs.version }}" ]; then
+            echo "::error::Dispatch asked for ${{ inputs.version }}, but packages/sentinel/package.json says $committed. Commit the version bump first."
+            exit 1
+          fi
+          echo "OK: publishing $committed."
+
+      # A version already on the registry cannot be replaced, and npm's own error
+      # arrives after prepublishOnly has run the whole suite. Fail early instead.
+      - name: This version is not already published
+        run: |
+          set -euo pipefail
+          if npm view "magus-mcpsentinel@${{ inputs.version }}" version >/dev/null 2>&1; then
+            echo "::error::magus-mcpsentinel@${{ inputs.version }} is already on the registry. A published version can never be replaced, only superseded."
+            exit 1
+          fi
+          echo "OK: ${{ inputs.version }} is unpublished."
+
+      # `npm publish` runs prepublishOnly, which builds and runs the analyzer
+      # suite. The build is not repeated here — a second build would be a second
+      # artifact, and the attestation must describe the one that ships.
+      - name: Publish with provenance
+        run: npm publish --provenance --access public
+        working-directory: packages/sentinel
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Reads the registry, not the local build. What matters is whether the
+      # attestation is retrievable by the people it is for.
+      - name: The published version carries a verifiable attestation
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/verify && cd /tmp/verify
+          npm init -y >/dev/null
+          npm install --ignore-scripts "magus-mcpsentinel@${{ inputs.version }}" >/dev/null
+          npm audit signatures

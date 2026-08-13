@@ -9,18 +9,30 @@ reports and states what changed.
 It does **not** decide whether a package is safe. It produces evidence; you set the
 policy.
 
+See it working before installing anything: **[aivare.ai/watch](https://aivare.ai/watch)**
+publishes real reports for real MCP servers, with the raw JSON downloadable so you
+can fetch the same artifact from npm and hash it yourself.
+
 ## Use it
 
-Requires Node.js 22 or later.
+Requires Node.js 22 or later. Nothing to configure and no account anywhere.
+
+```sh
+npx magus-mcpsentinel analyze npm @modelcontextprotocol/server-filesystem@2026.7.10 --evidence-dir ./evidence --output report.json --pretty
+```
+
+That acquires the exact published version, verifies the registry's
+`dist.integrity` claim, reads the artifact without running any of it, and writes a
+schema-validated report.
+
+Install it properly if you would rather have the `sentinel` command:
+
+```sh
+npm install -g magus-mcpsentinel
+```
 
 ```sh
 sentinel analyze ./server-filesystem-2026.7.10.tgz --output report.json --pretty
-```
-
-Acquire and analyze an exact published version, keeping the raw inputs:
-
-```sh
-sentinel analyze npm @scope/package@1.2.3 --evidence-dir ./evidence --output report.json
 ```
 
 The evidence directory receives the registry's unmodified metadata and the
@@ -51,7 +63,7 @@ sentinel diff baseline.json candidate.json
 
 ## What a report contains
 
-Schema: [`schemas/report.schema.json`](schemas/report.schema.json), format `0.2.0`.
+Schema: [`schemas/report.schema.json`](https://github.com/vahive-tobias/magus-mcpsentinel/blob/main/packages/sentinel/schemas/report.schema.json), format `0.2.0`.
 
 - **Artifact identity** — package, version, SHA-256, acquisition evidence.
 - **Package metadata** — entrypoints, scripts, engines, declared server name.
@@ -97,7 +109,7 @@ completely, on every package, every time.
 `diff` reports *what* changed and assigns no severity, because ranking a change is
 policy and belongs to whoever has to act on it.
 
-**[docs/LIMITATIONS.md](../../docs/LIMITATIONS.md) states the boundaries in full,
+**[docs/LIMITATIONS.md](https://github.com/vahive-tobias/magus-mcpsentinel/blob/main/docs/LIMITATIONS.md) states the boundaries in full,
 including the five specific ways extraction fails. Read it before relying on a
 report.**
 
@@ -113,6 +125,6 @@ reinterpreted.
 
 ## Licence
 
-Apache 2.0. Part of the [Sentinel](../../README.md) workspace, alongside
-[`@sentinel/watch`](../watch), a self-hosted monitor built on this analyzer. The
+Apache 2.0. Part of the [Sentinel](https://github.com/vahive-tobias/magus-mcpsentinel) workspace, alongside
+[`@sentinel/watch`](https://github.com/vahive-tobias/magus-mcpsentinel/blob/main/packages/watch), a self-hosted monitor built on this analyzer. The
 dependency runs one way — this package has no knowledge of its consumers.
