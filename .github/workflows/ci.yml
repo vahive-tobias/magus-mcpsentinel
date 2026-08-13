@@ -4,6 +4,18 @@ on:
   push:
     branches: [main]
   pull_request:
+    # The baseline pull request carries data, not code: `.sentinel-watch/` holds
+    # committed baselines and a watchlist, and the analyzer that produced them
+    # already ran in the Sentinel Watch job. Building the workspace again proves
+    # nothing about it.
+    #
+    # Skipping it also stops a run piling up every six hours. That pull request is
+    # opened by the github-actions app, so its runs land on `action_required` and
+    # wait for a human who has no reason to approve them — seven had accumulated
+    # before anyone looked. Merging still triggers the full suite via the push to
+    # main, so nothing reaches main unchecked.
+    paths-ignore:
+      - ".sentinel-watch/**"
   workflow_dispatch:
 
 permissions:
