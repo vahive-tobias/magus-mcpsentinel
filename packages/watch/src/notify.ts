@@ -26,16 +26,38 @@ export function deliveryConfigured(env: Env): boolean {
 }
 
 /**
- * The capability link for this notice, when one can be signed.
+ * Where a notice link points, or nothing.
  *
- * Absent secret or origin means no link, and the notice reads exactly as it did
- * before. A link that cannot be honoured is worse than none: the reader clicks
- * it, gets a 404, and learns that the product does not work.
+ * A configured origin that is not an absolute http(s) URL is treated as absent.
+ * Checking only that the value was *set* is what put `hnhdyl70k…/notice/…` in
+ * four delivered notices: a browser reads that as a hostname, so every button
+ * failed DNS. Presence was never the property that mattered.
+ *
+ * `URL.origin` is what is kept, so a value carrying a path loses it rather than
+ * producing a link the Worker does not serve — `/notice/…` is at the root.
+ */
+function noticeOrigin(configured: string | undefined): string | undefined {
+  if (!configured) return undefined;
+  try {
+    const url = new URL(configured);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * The capability link for this notice, when one can be signed and reached.
+ *
+ * No secret or no usable origin means no link, and the notice reads exactly as it
+ * did before. A link that cannot be honoured is worse than none: the reader clicks
+ * it, gets an error, and learns that the product does not work.
  */
 async function noticeLink(env: Env, noticeId: string): Promise<string | undefined> {
-  if (!env.NOTICE_LINK_SECRET || !env.NOTICE_LINK_ORIGIN) return undefined;
+  const origin = noticeOrigin(env.NOTICE_LINK_ORIGIN);
+  if (!env.NOTICE_LINK_SECRET || !origin) return undefined;
   const token = await noticeLinkToken(noticeId, env.NOTICE_LINK_SECRET);
-  return `${env.NOTICE_LINK_ORIGIN.replace(/\/$/, "")}/notice/${noticeId}?t=${token}`;
+  return `${origin}/notice/${noticeId}?t=${token}`;
 }
 
 export async function deliverNotice(env: Env, target: WatchTargetRecord, notice: ChangeNoticeRecord, versions: { baseline: string; candidate: string }): Promise<DeliveryOutcome> {

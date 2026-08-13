@@ -323,6 +323,13 @@ Worker's own origin, e.g. `https://watch.example.com`). With either unset the
 feature is off: no link goes into a notice, and `/notice/…` returns 404 rather
 than falling back to serving anything.
 
+**`NOTICE_LINK_ORIGIN` is a URL, not a secret** — scheme included, no path. Only
+the origin is used, so a path is discarded rather than producing a link the
+Worker does not route. Anything that is not an absolute `http`/`https` URL turns
+the link off entirely, exactly as an unset value does; a notice with no button is
+a worse product than one with a working button, and much better than one with a
+button that fails.
+
 The link is a **capability**, not a login. Its token is HMAC-derived from the
 notice id, so it grants access to exactly that one notice — not the notice list,
 not the watch targets, not another notice. Two consequences worth knowing

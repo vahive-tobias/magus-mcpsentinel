@@ -303,3 +303,36 @@ test("no signing secret means no link, not an unsigned one", async () => {
     }
   }
 });
+
+/**
+ * An origin that is not a URL is not an origin.
+ *
+ * Found in production, not in review: a random token was configured where a URL
+ * belongs, and four delivered notices carried a button pointing at it as a
+ * hostname. Every one failed DNS. The feature checked that the value was set,
+ * which is not the property that makes a link reachable.
+ */
+test("an origin that is not an absolute http(s) URL disables the link", async () => {
+  for (const origin of [
+    "hnhdyl70k_5fkbcsdy43jsy69jnegy20ljop",
+    "watch.example.test",
+    "/notice",
+    "javascript:alert(1)",
+    "ftp://watch.example.test",
+    " "
+  ]) {
+    for (const body of await bodiesFrom({ NOTICE_LINK_SECRET: "s", NOTICE_LINK_ORIGIN: origin })) {
+      assert.doesNotMatch(body, /\/notice\//, `${JSON.stringify(origin)} produced a link`);
+      assert.ok(!body.includes(origin.trim()) || origin.trim() === "", `${JSON.stringify(origin)} reached the reader`);
+    }
+  }
+});
+
+test("an origin carrying a path keeps only the origin", async () => {
+  // `/notice/:id` is served at the root, so a base path would produce a URL the
+  // Worker does not route.
+  for (const body of await bodiesFrom({ NOTICE_LINK_SECRET: "s", NOTICE_LINK_ORIGIN: "https://watch.example.test/watch/" })) {
+    assert.match(body, /https:\/\/watch\.example\.test\/notice\//);
+    assert.doesNotMatch(body, /watch\.example\.test\/watch/);
+  }
+});
