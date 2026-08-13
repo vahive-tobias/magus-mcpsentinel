@@ -57,7 +57,8 @@
     "build": "npm run generate && tsc -p tsconfig.json && node scripts/copy-generated.mjs",
     "generate": "node scripts/generate-validator.cjs && node scripts/generate-build-info.mjs",
     "test": "npm run build && node --test dist/test/*.test.js",
-    "start": "node dist/src/cli.js"
+    "start": "node dist/src/cli.js",
+    "prepublishOnly": "npm run test"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
