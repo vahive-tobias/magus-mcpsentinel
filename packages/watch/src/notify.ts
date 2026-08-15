@@ -172,17 +172,25 @@ function namedItems(change: WatchChange): { items: NamedItem[]; omitted: number 
 /**
  * How a severity reads to someone who does not work in this vocabulary.
  *
- * `info` is the one that matters: it is a machine word that tells a reader
+ * `info` is the one that started this: it is a machine word that tells a reader
  * nothing, and on a page that most people meet once, next to a package they are
  * deciding whether to upgrade, "Context" says what it actually is. The stored
  * values are unchanged — this is presentation, and the API still speaks
  * `high`/`review`/`info`.
  *
- * The public watch page uses these same three words. One product, one language.
+ * All three name a reading order rather than a level of danger, because that is
+ * what they actually rank. `high` was "Worth reading", which was both too soft
+ * for the top of the list and the same phrase the `review` note uses — and since
+ * `high` began firing on any change to a declared surface it appears far more
+ * often, so the collision mattered more than it had.
+ *
+ * The public watch page uses these same three words. One product, one language:
+ * changing them here means changing them there in the same pass, or the email
+ * and the page disagree about what they are telling the same person.
  */
 const SEVERITY_LABEL: Record<string, string> = {
-  high: "Worth reading",
-  review: "Review",
+  high: "Read first",
+  review: "Worth reading",
   info: "Context"
 };
 

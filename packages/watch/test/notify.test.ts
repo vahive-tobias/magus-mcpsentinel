@@ -207,8 +207,8 @@ test("severities are worded for a reader, in both bodies", async () => {
     { kind: 'artifact_changed', severity: 'review', summary: 'Artifact digest changed: aaaa… → bbbb….' },
     { kind: 'file_content_changed', severity: 'info', summary: '2 files changed contents without changing the inventory.' }
   ])) {
+    assert.match(body, /Read first/);
     assert.match(body, /Worth reading/);
-    assert.match(body, /Review/);
     assert.match(body, /Context/);
     // The severity column must not still be printing the raw value beside them.
     assert.doesNotMatch(body, /\[info\]/);
