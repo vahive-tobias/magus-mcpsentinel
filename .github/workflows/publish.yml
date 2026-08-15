@@ -83,10 +83,41 @@ jobs:
 
       # Reads the registry, not the local build. What matters is whether the
       # attestation is retrievable by the people it is for.
+      #
+      # The wait is not padding. `npm publish` returns as soon as the write is
+      # durable, but the packument served to readers lags behind it — the first
+      # run of this workflow published 0.2.1 successfully and then failed here one
+      # second later with ETARGET, because the version it had just created was not
+      # yet resolvable. Poll until the registry admits the version exists, then
+      # verify; a fixed sleep would be either too short on a bad day or wasted on
+      # every good one.
       - name: The published version carries a verifiable attestation
         run: |
           set -euo pipefail
+          version="${{ inputs.version }}"
+
+          for attempt in $(seq 1 20); do
+            if npm view "magus-mcpsentinel@${version}" version >/dev/null 2>&1; then
+              echo "Registry resolves ${version} after ${attempt} attempt(s)."
+              break
+            fi
+            if [ "$attempt" -eq 20 ]; then
+              echo "::error::Published ${version}, but the registry still does not resolve it after 20 attempts. The publish itself succeeded — check https://www.npmjs.com/package/magus-mcpsentinel before republishing anything."
+              exit 1
+            fi
+            sleep 6
+          done
+
           mkdir -p /tmp/verify && cd /tmp/verify
           npm init -y >/dev/null
-          npm install --ignore-scripts "magus-mcpsentinel@${{ inputs.version }}" >/dev/null
-          npm audit signatures
+          npm install --ignore-scripts "magus-mcpsentinel@${version}" >/dev/null
+
+          # `npm audit signatures` exits 0 when it verifies registry signatures
+          # even if nothing carries provenance, so the attestation line is checked
+          # explicitly rather than trusted to the exit code.
+          output=$(npm audit signatures 2>&1)
+          echo "$output"
+          if ! echo "$output" | grep -q "verified attestation"; then
+            echo "::error::${version} published without a verifiable provenance attestation."
+            exit 1
+          fi
