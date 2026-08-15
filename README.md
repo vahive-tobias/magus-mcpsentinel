@@ -163,6 +163,8 @@ severity mapping on top; you can replace it.
 
 - [Report schema](packages/sentinel/schemas/report.schema.json) — the output contract.
 - [Limitations](docs/LIMITATIONS.md) — what Sentinel cannot detect.
+- [AGENTS.md](AGENTS.md) — for an AI agent running this or reading its output: exit codes, the JSON contract, and the conclusions a report does *not* license. Worth a human's time too; the exit-code behaviour surprises people.
+- [Change reports](docs/change-reports/) — four real package updates, reproducible from the published package.
 - [Protocol profile](docs/PROTOCOL_PROFILE_2026-07-28.md) — the MCP revision this build targets.
 - [Spec provenance](docs/SPEC_PROVENANCE.md) — the specification snapshot the profile derives from, with digests.
 - [Security](SECURITY.md) — threat model and how to report a vulnerability.
