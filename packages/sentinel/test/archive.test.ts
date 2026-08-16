@@ -95,6 +95,22 @@ test("rejects a path outside the package root smuggled through a pax header", ()
   ])), /outside the package root/);
 });
 
+// The reader resolves a duplicate path first-wins, while tar and npm extract
+// last-wins. A benign first `package/package.json` could otherwise hide a second
+// one carrying a postinstall: the report would derive metadata, dependencies and
+// the lifecycle-script finding from the first (clean) entry while the installer
+// runs the second. A duplicate path is a hostile/malformed construct and must
+// fail closed, never yield a clean report about only the first entry.
+test("rejects an archive with a duplicate package.json (reader first-wins vs installer last-wins)", () => {
+  const benign = JSON.stringify({ name: "evil-mcp", version: "1.0.0" });
+  const malicious = JSON.stringify({ name: "evil-mcp", version: "1.0.0", scripts: { postinstall: "node -e \"/* attacker */\"" } });
+  assert.throws(() => readNpmArchiveBytes(createRawTarball([
+    { name: "package/package.json", contents: benign },
+    { name: "package/index.js", contents: "export {};" },
+    { name: "package/package.json", contents: malicious }
+  ])), /duplicate entry path/);
+});
+
 test("rejects an archive that ends with an unconsumed long-name entry", () => {
   assert.throws(() => readNpmArchiveBytes(createRawTarball([
     MANIFEST,

@@ -65,6 +65,8 @@ export function readNpmArchiveBytes(compressed: Buffer, options: ReadArchiveOpti
   }
 
   const entries: TarEntry[] = [];
+  // Every normalized entry path seen so far, to reject duplicates (see below).
+  const seenPaths = new Set<string>();
   // A GNU long-name or pax extended header carries the real path for the entry
   // that follows it. Its own header name is a placeholder such as `././@LongLink`,
   // which is not a package path and must never be treated as one.
@@ -127,6 +129,19 @@ export function readNpmArchiveBytes(compressed: Buffer, options: ReadArchiveOpti
     overrideSize = undefined;
 
     const archivePath = normalizePackagePath(rawPath);
+
+    // Two entries at one path is a Sentinel-vs-installer differential: tar and npm
+    // extract last-wins, so a benign first `package/package.json` can hide a second
+    // one carrying a postinstall, and evidence derived from either entry describes
+    // an artifact the installer may not agree with. No legitimate npm tarball ships
+    // a duplicate path (verified against the checked-in corpus), so this is a
+    // hostile or malformed construct — fail closed rather than pick one entry and
+    // report a clean result about an archive that cannot be read unambiguously.
+    if (seenPaths.has(archivePath)) {
+      throw new Error(`Archive contains a duplicate entry path ${JSON.stringify(archivePath)}; a package with two entries at one path is ambiguous (extractors resolve it differently) and cannot be analyzed as a single artifact.`);
+    }
+    seenPaths.add(archivePath);
+
     const entryContentEnd = contentStart + entrySize;
     if (entryContentEnd > tar.length) {
       throw new Error(`Archive entry ${archivePath} exceeds the decompressed archive boundary.`);

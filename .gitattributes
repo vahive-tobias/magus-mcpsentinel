@@ -1,0 +1,33 @@
+# Normalize line endings so a file's bytes are the same on every machine.
+#
+# Without this, a Windows checkout gets CRLF working-tree files and every diff
+# opens with "LF will be replaced by CRLF" warnings. That noise is not harmless:
+# on the sibling repository a line-ending mismatch once made a ~35-line change
+# look like hundreds, during a verification pass.
+#
+# This does not affect `analysis.engine.build_sha256`. `generate-build-info.mjs`
+# normalises line endings before hashing on purpose, so the analyzer's identity
+# is a property of the code rather than of how it was checked out — which is why
+# CI's coverage-provenance invariant passes today from a CRLF working tree.
+* text=auto
+
+# Explicit LF in the working tree too, so the bytes match the index everywhere.
+*.ts   text eol=lf
+*.mjs  text eol=lf
+*.cjs  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.md   text eol=lf
+*.sql  text eol=lf
+*.toml text eol=lf
+
+# Binary, and must never be transformed. The corpus stores real published npm
+# artifacts; rewriting a byte would invalidate the digests recorded against them
+# in artifacts.lock.json, which is the whole basis for the corpus being
+# reproducible rather than merely re-runnable.
+*.tgz  binary
+*.gz   binary
+*.png  binary
+*.ico  binary

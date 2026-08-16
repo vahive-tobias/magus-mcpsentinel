@@ -1,7 +1,12 @@
 export async function verifyApiKey(request: Request, expected: string): Promise<boolean> {
   const value = request.headers.get("Authorization");
   if (!value?.startsWith("Bearer ")) return false;
-  return timingSafeEqual(value.slice(7), expected);
+  // Compare fixed-length digests, not the raw operator key. `timingSafeEqual`'s
+  // length short-circuit would otherwise leak the key's length here, since the
+  // bearer token has no `^[a-f0-9]{64}$` gate the HMAC paths use to make length
+  // constant. Hashing both sides removes the length leak and reveals nothing
+  // about the key itself.
+  return timingSafeEqual(await sha256Hex(value.slice(7)), await sha256Hex(expected));
 }
 
 export async function verifyHmacSignature(body: string, supplied: string | null, secret: string): Promise<boolean> {

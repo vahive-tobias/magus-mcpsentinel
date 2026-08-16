@@ -63,6 +63,22 @@ rephrasings and will occasionally flag benign text.
 An empty `findings` array means the current rules matched nothing. It does not mean
 the package is clean.
 
+## Archives that cannot be read unambiguously are refused
+
+An archive containing **two entries at the same path** is rejected rather than
+analyzed. This is not a limitation of what can be seen; it is a refusal to report
+on an artifact whose contents depend on who extracts it.
+
+The reason is a real difference in behaviour, not a theoretical one. Sentinel's
+reader resolved a duplicate path first-wins while `tar` and `npm` extract
+last-wins, so a tarball carrying a benign `package/package.json` followed by a
+second one with an install script would have produced a clean report describing
+the first while an install ran the second. Found by an adversarial review on
+2026-08-16 and closed the same day.
+
+A duplicate path is itself the signal. No legitimate npm package in the pinned
+corpus ships one.
+
 ## Not covered at all
 
 - Prompts and resources. Only tools are extracted, though prompt text is a known
