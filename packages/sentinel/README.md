@@ -39,6 +39,17 @@ The evidence directory receives the registry's unmodified metadata and the
 downloaded tarball, each named by its SHA-256. The registry's `dist.integrity`
 claim is verified when one is published, and a mismatch is refused.
 
+Releases are published from CI with an npm provenance attestation binding the
+tarball to the commit and workflow that produced it. A tool that reports on supply
+chains should be checkable itself:
+
+```sh
+npm audit signatures
+```
+
+`0.2.0` was published by hand to claim the name and predates that, so it carries
+no attestation.
+
 Compare two reports:
 
 ```sh
