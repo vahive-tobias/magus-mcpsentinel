@@ -138,3 +138,39 @@ test("rejects a tarball that does not match the registry integrity claim", async
     /does not match the registry integrity claim/
   );
 });
+
+/**
+ * The indicator scanner and the tool extractor filter files differently, and that
+ * asymmetry is load-bearing rather than an oversight.
+ *
+ * `isOutsideToolSurface` keeps vendored and fixture code from *declaring this
+ * package's tools* — a provenance judgement. It says nothing about whether that
+ * code runs, and it ships either way. So an indicator found in an excluded path is
+ * a true statement about the artifact and must still be reported.
+ *
+ * This exists because the two look inconsistent, and "tidying" them into agreement
+ * would silently narrow detection: a process spawn inside vendored code would stop
+ * being reported while remaining in the installed package. Applying
+ * `isOutsideToolSurface` inside `staticIndicatorObservations` fails this test.
+ */
+test("an indicator in vendored code is still reported", async () => {
+  const report = await createStaticReport(await readNpmArchive(await fixturePath({
+    "package/package.json": JSON.stringify({ name: "@fixture/vendored", version: "1.0.0" }),
+    "package/index.js": "module.exports = {};\n",
+    // Excluded from tool extraction; still shipped, and still able to run.
+    "package/node_modules/vendored-thing/run.js": "const { spawn } = require('node:child_process'); spawn('sh');\n"
+  })));
+
+  const indicators = (report.observations as Array<{
+    kind: string;
+    data: Record<string, unknown>;
+    evidence: Array<{ artifact_path: string }>;
+  }>).filter((observation) => observation.kind === "code_indicator");
+
+  const spawned = indicators.find((observation) => observation.data.indicator === "process-spawn-api");
+  assert.ok(spawned, "a process spawn inside an excluded path must still be reported");
+
+  // The evidence names the file, so a reader can go and look rather than being
+  // told only that the artifact spawns a process somewhere inside itself.
+  assert.match(spawned.evidence[0]!.artifact_path, /node_modules\/vendored-thing\/run\.js/);
+});

@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-16T13:49:28.678Z",
+  "generated_at": "2026-08-16T14:08:13.554Z",
   "analyzer": {
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+      "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
     },
     "protocol_profile": "mcp-2026-07-28"
   },
@@ -265,7 +265,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -338,7 +338,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -408,7 +408,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -463,7 +463,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -514,7 +514,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -557,7 +557,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -629,7 +629,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -676,7 +676,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -719,7 +719,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1050,7 +1050,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1110,7 +1110,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1153,7 +1153,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1207,7 +1207,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1318,7 +1318,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1369,7 +1369,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1412,7 +1412,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1483,7 +1483,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1531,7 +1531,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1584,7 +1584,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -1622,7 +1622,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2414,7 +2414,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2457,7 +2457,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -2888,7 +2888,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3026,7 +3026,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3093,7 +3093,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3202,7 +3202,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3254,7 +3254,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3389,7 +3389,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3508,7 +3508,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3675,7 +3675,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3725,7 +3725,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3780,7 +3780,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3873,7 +3873,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3924,7 +3924,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -3990,7 +3990,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4267,7 +4267,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4362,7 +4362,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4539,7 +4539,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4798,7 +4798,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4847,7 +4847,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4918,7 +4918,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -4990,7 +4990,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5044,7 +5044,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5091,7 +5091,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5262,7 +5262,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5416,7 +5416,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5516,7 +5516,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5697,7 +5697,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5750,7 +5750,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },
@@ -5799,7 +5799,7 @@
         "engine": {
           "name": "sentinel",
           "version": "0.2.0",
-          "build_sha256": "d2e4e5d67e3ee3f9e322c3149b90445df1d6b4393f5aacfab0032be5202d7b30"
+          "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
         },
         "protocol_profile": "mcp-2026-07-28"
       },

@@ -199,6 +199,23 @@ function fileRecord(entry: TarEntry): JsonObject {
   };
 }
 
+/**
+ * Scans **every** shipped source file, including paths `isOutsideToolSurface`
+ * excludes from tool extraction. The asymmetry is deliberate and must stay.
+ *
+ * The two filters answer different questions. Tool extraction asks whether a file
+ * may *declare this package's tool surface*, which is a question about provenance
+ * — a vendored copy of someone else's server does not speak for this package. An
+ * indicator asks whether the artifact *contains code referencing an API*, which is
+ * a question about what ships. Excluded code still ships and can still run;
+ * `isOutsideToolSurface` is a conservative provenance filter, never a claim that
+ * the code it excludes cannot execute.
+ *
+ * Applying the exclusion here for consistency would silently narrow detection:
+ * a `spawn(` inside vendored code would stop being reported while still being
+ * present in the installed package. `does not narrow indicator scanning to the
+ * tool surface` in `report.test.ts` fails if anyone does it.
+ */
 function staticIndicatorObservations(entries: TarEntry[]): JsonObject[] {
   const indicators: Array<{ id: string; pattern: RegExp; description: string }> = [
     { id: "network-api", pattern: /\b(?:fetch|https?\.request|net\.connect)\s*\(/, description: "Source references a network API." },
