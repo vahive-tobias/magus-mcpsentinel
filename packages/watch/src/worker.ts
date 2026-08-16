@@ -79,8 +79,8 @@ export default {
       const repository = new WatchRepository(env.DB);
       if (request.method === "GET" && url.pathname === "/") return htmlResponse();
       if (request.method === "GET" && url.pathname === "/health") return json({ ok: true, service: "magus-mcp-watch" });
-      if (url.pathname === "/api/reports" && request.method === "POST") return ingestReport(request, env, repository);
-      if (url.pathname === "/api/pending" && request.method === "GET") return listPending(request, env, repository);
+      if (url.pathname === "/api/reports" && request.method === "POST") return await ingestReport(request, env, repository);
+      if (url.pathname === "/api/pending" && request.method === "GET") return await listPending(request, env, repository);
 
       // Capability routes: authenticated by a per-notice token, not the operator
       // key, which is why they sit above the gate and verify for themselves. Each
@@ -91,20 +91,20 @@ export default {
         // GET renders and never mutates. Mail clients and security scanners
         // prefetch links, so an accept behind a GET would be triggered by the
         // act of delivering the email.
-        if (isAccept && request.method === "POST") return acceptViaLink(url, env, repository, noticeId!);
-        if (!isAccept && request.method === "GET") return showNotice(url, env, repository, noticeId!);
+        if (isAccept && request.method === "POST") return await acceptViaLink(url, env, repository, noticeId!);
+        if (!isAccept && request.method === "GET") return await showNotice(url, env, repository, noticeId!);
         return json({ error: "not found" }, 404);
       }
       if (!await verifyApiKey(request, env.OPERATOR_API_KEY)) return json({ error: "operator authentication required" }, 401);
       if (url.pathname === "/api/targets" && request.method === "GET") return json({ targets: await repository.listTargets() });
       if (url.pathname === "/api/notices" && request.method === "GET") return json({ notices: await repository.listNotices() });
-      if (url.pathname === "/api/targets" && request.method === "POST") return createTarget(request, repository);
+      if (url.pathname === "/api/targets" && request.method === "POST") return await createTarget(request, repository);
       // `/api/reports` alone is the ingest route above, matched exactly, so a read
       // of one report cannot fall through to it.
       const reportMatch = url.pathname.match(/^\/api\/reports\/([0-9a-f-]{36})$/i);
-      if (reportMatch && request.method === "GET") return readReport(repository, reportMatch[1]!);
+      if (reportMatch && request.method === "GET") return await readReport(repository, reportMatch[1]!);
       const decisionMatch = url.pathname.match(/^\/api\/notices\/([0-9a-f-]{36})\/decision$/i);
-      if (decisionMatch && request.method === "POST") return decideNotice(request, repository, decisionMatch[1]);
+      if (decisionMatch && request.method === "POST") return await decideNotice(request, repository, decisionMatch[1]);
       return json({ error: "not found" }, 404);
     } catch (error) {
       if (error instanceof BodyTooLargeError) return json({ error: error.message }, 413);
