@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "e121ad6e-8c5a-415f-a816-beac7ba90221",
-  "generated_at": "2026-08-13T02:47:58.069Z",
+  "report_id": "cfe41a1d-d8e3-44a7-9129-96f55523ddbc",
+  "generated_at": "2026-08-22T13:01:00.325Z",
   "subject": {
     "server_name": "io.github.upstash/context7",
     "publisher_claim": "@upstash",
     "artifact": {
       "ecosystem": "npm",
       "package": "@upstash/context7-mcp",
-      "version": "4.0.2",
-      "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
-      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
-      "acquired_at": "2026-08-13T02:47:58.023Z",
-      "registry_metadata_sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
-      "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
+      "version": "4.0.3",
+      "sha256": "c307d28c7b953331653c78317651ef8dfd847ac04b9b0cc3e6bd1fcf449cccd8",
+      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.3.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.3",
+      "acquired_at": "2026-08-22T13:01:00.268Z",
+      "registry_metadata_sha256": "bb42bb03d3bf7ce1554212b833996373258186b3ac3ea0d7472cf49c2dcc2542",
+      "integrity_claim": "sha512-aLXIM12D4I+2Bw25cM4cUJLN3zhoBhx0hO2nGW2tCq9r8SnDhInO/w953xBlVwDfw7bHYXbFS1ae3OaeLk3asw==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "76ecfa3e5785d89b34d6618b32c84c01f0e40666b3541871cc874aba61200160"
+      "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
+          "sha256": "fe6a420dda2d924d1a04cc2227cd2e5d72cc13c6eedfb239737226dd620310e7",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@upstash/context7-mcp",
-        "version": "4.0.2",
+        "version": "4.0.3",
         "mcpName": "io.github.upstash/context7",
         "description": "MCP server for Context7",
         "bin": {
@@ -86,19 +86,19 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+          "sha256": "c307d28c7b953331653c78317651ef8dfd847ac04b9b0cc3e6bd1fcf449cccd8",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "entry_count": 12,
-        "regular_file_bytes": 95465,
+        "regular_file_bytes": 96417,
         "entries": [
           {
             "path": "package/dist/index.js",
             "type": "file",
-            "size": 23398,
-            "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26"
+            "size": 23679,
+            "sha256": "524ee7582872a95e799454af3b9fc56bf74f22ff41b376d34b39d688754781b0"
           },
           {
             "path": "package/dist/lib/api.js",
@@ -121,8 +121,8 @@
           {
             "path": "package/dist/lib/constants.js",
             "type": "file",
-            "size": 1063,
-            "sha256": "8d6aca5875a6b2b7f0181ce5907e98e611d5c177439a8eb56250147ae2760c32"
+            "size": 1781,
+            "sha256": "0c1db5dac21d3e4d97b6aa1c1e0e1e362575d807afd0a4b4705a4a05ddc3c384"
           },
           {
             "path": "package/dist/lib/encryption.js",
@@ -133,8 +133,8 @@
           {
             "path": "package/dist/lib/jwt.js",
             "type": "file",
-            "size": 3772,
-            "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5"
+            "size": 3725,
+            "sha256": "49bd29c304204f54f3cbfb31a503e1b4fc570f90d3d1c23841a593deb5d1d8f6"
           },
           {
             "path": "package/dist/lib/types.js",
@@ -158,7 +158,7 @@
             "path": "package/package.json",
             "type": "file",
             "size": 1876,
-            "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec"
+            "sha256": "fe6a420dda2d924d1a04cc2227cd2e5d72cc13c6eedfb239737226dd620310e7"
           },
           {
             "path": "package/README.md",
@@ -175,16 +175,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
+          "sha256": "bb42bb03d3bf7ce1554212b833996373258186b3ac3ea0d7472cf49c2dcc2542",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
+        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.3",
         "requested_package": "@upstash/context7-mcp",
-        "requested_version": "4.0.2",
-        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
-        "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
+        "requested_version": "4.0.3",
+        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.3.tgz",
+        "integrity_claim": "sha512-aLXIM12D4I+2Bw25cM4cUJLN3zhoBhx0hO2nGW2tCq9r8SnDhInO/w953xBlVwDfw7bHYXbFS1ae3OaeLk3asw==",
         "integrity_verified": true
       }
     },
@@ -194,7 +194,7 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
+          "sha256": "fe6a420dda2d924d1a04cc2227cd2e5d72cc13c6eedfb239737226dd620310e7",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
@@ -233,17 +233,17 @@
       }
     },
     {
-      "id": "observation:network-api-eb8a56f7be916a5e",
+      "id": "observation:network-api-f6df6c3a69028377",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26",
+          "sha256": "524ee7582872a95e799454af3b9fc56bf74f22ff41b376d34b39d688754781b0",
           "artifact_path": "package/dist/index.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            19790,
-            19796
+            20071,
+            20077
           ]
         }
       ],
@@ -253,17 +253,17 @@
       }
     },
     {
-      "id": "observation:network-api-1d7c277b867e6664",
+      "id": "observation:network-api-239e0ac2031c69e9",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5",
+          "sha256": "49bd29c304204f54f3cbfb31a503e1b4fc570f90d3d1c23841a593deb5d1d8f6",
           "artifact_path": "package/dist/lib/jwt.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            1057,
-            1063
+            1001,
+            1007
           ]
         }
       ],
@@ -278,7 +278,7 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+          "sha256": "c307d28c7b953331653c78317651ef8dfd847ac04b9b0cc3e6bd1fcf449cccd8",
           "capture_kind": "artifact_file"
         }
       ],
@@ -303,8 +303,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              10099,
-              12467
+              10117,
+              12485
             ],
             "description_sha256": "0ad4a5e4f24c62473be1e3dca954fbd685b3c10af757550bf525b52bf0134327",
             "description_repr": "string_literal",
@@ -316,8 +316,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              6003,
-              10093
+              6021,
+              10111
             ],
             "description_sha256": "6d85cad96641caacff07e8c20523a1455fa5f89f776681ca9f81dcda58b0468d",
             "description_repr": "string_literal",
