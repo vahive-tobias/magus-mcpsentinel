@@ -9,7 +9,7 @@ reports and states what changed.
 It does **not** decide whether a package is safe. It produces evidence; you set the
 policy.
 
-See it working before installing anything: **[aivare.ai/watch](https://aivare.ai/watch)**
+See it working before installing anything: **[virasai.com/watch](https://virasai.com/watch)**
 publishes real reports for real MCP servers, with the raw JSON downloadable so you
 can fetch the same artifact from npm and hash it yourself.
 
