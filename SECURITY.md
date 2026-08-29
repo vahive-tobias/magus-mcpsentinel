@@ -6,8 +6,8 @@ Report suspected vulnerabilities privately. Do not open a public issue.
 
 Use GitHub's private vulnerability reporting on this repository, or email:
 
-- **mcpsentinel@aivare.ai** — the analyzer and the `sentinel` CLI
-- **mcpwatch@aivare.ai** — the monitor
+- **mcpsentinel@virasai.com** — the analyzer and the `sentinel` CLI
+- **mcpwatch@virasai.com** — the monitor
 
 Either address reaches the maintainer; use whichever fits, and do not worry about
 picking wrong. Please include the affected version, a description, and a

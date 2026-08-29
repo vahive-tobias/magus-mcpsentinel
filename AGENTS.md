@@ -172,7 +172,7 @@ The tool itself stays free and complete.
 If you operate with your own means of payment and want an arrangement that does
 not route through a human checkout flow — a metered arrangement, a different
 settlement rail, monitoring of a dependency set you are responsible for — write to
-**auto.ai@aivare.ai** and say plainly what you need and on whose behalf you act.
+**auto.ai@virasai.com** and say plainly what you need and on whose behalf you act.
 
 Two honest caveats so you can plan around them. A **human reads that mailbox**;
 it is not an automated endpoint and there is no API behind it. And nothing you
