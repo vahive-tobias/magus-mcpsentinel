@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "16c8eea2-f74f-409a-a4a2-fc9a4fcdb530",
-  "generated_at": "2026-08-09T06:08:00.173Z",
+  "report_id": "7e092ba9-cd8c-4107-9cc1-89634da50a95",
+  "generated_at": "2026-09-13T04:48:34.123Z",
   "subject": {
     "server_name": "io.github.modelcontextprotocol/server-filesystem",
     "publisher_claim": "@modelcontextprotocol",
     "artifact": {
       "ecosystem": "npm",
       "package": "@modelcontextprotocol/server-filesystem",
-      "version": "2026.7.10",
-      "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
-      "download_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.7.10.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.7.10",
-      "acquired_at": "2026-08-09T06:08:00.111Z",
-      "registry_metadata_sha256": "8a015aa91b18d86178c19d679fe20de37e0467d41c0e2e9d01fa2b38ff9ed2d4",
-      "integrity_claim": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+      "version": "2026.8.31",
+      "sha256": "a239da270c403c42eb03e1ca7cca07c858085819797b74856ddbb91b50491b1a",
+      "download_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.8.31.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.8.31",
+      "acquired_at": "2026-09-13T04:48:34.055Z",
+      "registry_metadata_sha256": "c781e0641471a82f98920f1367acbe91c9c9b688fab67943ca5410559a84b24e",
+      "integrity_claim": "sha512-kKaFkyAh6oipvc9+EAbJ552JafnMnOq5nzmzWkp1jJdBhTAAGpmIpWihUG1+rfNhmEFM98gUZDdCHCDD4v6a7Q==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+      "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244",
+          "sha256": "8703cc2371e856cf0609b56a7e9dd79988512649f939ef6dcbfdc206d8b29cf1",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@modelcontextprotocol/server-filesystem",
-        "version": "2026.7.10",
+        "version": "2026.8.31",
         "mcpName": "io.github.modelcontextprotocol/server-filesystem",
         "description": "MCP server for filesystem access",
         "bin": {
@@ -77,25 +77,25 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+          "sha256": "a239da270c403c42eb03e1ca7cca07c858085819797b74856ddbb91b50491b1a",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "entry_count": 7,
-        "regular_file_bytes": 69088,
+        "regular_file_bytes": 72336,
         "entries": [
           {
             "path": "package/dist/index.js",
             "type": "file",
-            "size": 28217,
-            "sha256": "ac12c0307497ebd1c8e0b0fe4b057165cded007cd7c7afc9aeaa68fefe68eb15"
+            "size": 28226,
+            "sha256": "729dc8511e779e5cd6640851a74b25283e3af1ca3a7106722f993e864a1d9935"
           },
           {
             "path": "package/dist/lib.js",
             "type": "file",
-            "size": 14315,
-            "sha256": "e2f5648317613530f60b582b8b0ed10c1beddc10c2d0926213300d827f27208e"
+            "size": 17554,
+            "sha256": "e8713c8cfa0c4f49623fc38d61696fb607ec73e1966d51462b470a7717ca7948"
           },
           {
             "path": "package/dist/path-utils.js",
@@ -119,7 +119,7 @@
             "path": "package/package.json",
             "type": "file",
             "size": 1169,
-            "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244"
+            "sha256": "8703cc2371e856cf0609b56a7e9dd79988512649f939ef6dcbfdc206d8b29cf1"
           },
           {
             "path": "package/README.md",
@@ -136,16 +136,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "8a015aa91b18d86178c19d679fe20de37e0467d41c0e2e9d01fa2b38ff9ed2d4",
+          "sha256": "c781e0641471a82f98920f1367acbe91c9c9b688fab67943ca5410559a84b24e",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.7.10",
+        "metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.8.31",
         "requested_package": "@modelcontextprotocol/server-filesystem",
-        "requested_version": "2026.7.10",
-        "tarball_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.7.10.tgz",
-        "integrity_claim": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+        "requested_version": "2026.8.31",
+        "tarball_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.8.31.tgz",
+        "integrity_claim": "sha512-kKaFkyAh6oipvc9+EAbJ552JafnMnOq5nzmzWkp1jJdBhTAAGpmIpWihUG1+rfNhmEFM98gUZDdCHCDD4v6a7Q==",
         "integrity_verified": true
       }
     },
@@ -155,32 +155,32 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244",
+          "sha256": "8703cc2371e856cf0609b56a7e9dd79988512649f939ef6dcbfdc206d8b29cf1",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "dependencies": {
-          "@modelcontextprotocol/sdk": "^1.29.0",
+          "@modelcontextprotocol/sdk": "^1.30.0",
           "diff": "^8.0.3",
-          "glob": "^10.5.0",
+          "glob": "^13.0.6",
           "minimatch": "^10.0.1"
         }
       }
     },
     {
-      "id": "observation:filesystem-api-5c3564fe26ad8c49",
+      "id": "observation:filesystem-api-f80962035f113b83",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "ac12c0307497ebd1c8e0b0fe4b057165cded007cd7c7afc9aeaa68fefe68eb15",
+          "sha256": "729dc8511e779e5cd6640851a74b25283e3af1ca3a7106722f993e864a1d9935",
           "artifact_path": "package/dist/index.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            5790,
-            5807
+            5800,
+            5817
           ]
         }
       ],
@@ -190,17 +190,17 @@
       }
     },
     {
-      "id": "observation:filesystem-api-fa1b3d47540fb889",
+      "id": "observation:filesystem-api-2345f9470450a85f",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "e2f5648317613530f60b582b8b0ed10c1beddc10c2d0926213300d827f27208e",
+          "sha256": "e8713c8cfa0c4f49623fc38d61696fb607ec73e1966d51462b470a7717ca7948",
           "artifact_path": "package/dist/lib.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            5156,
-            5165
+            3257,
+            3265
           ]
         }
       ],
@@ -215,7 +215,7 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+          "sha256": "a239da270c403c42eb03e1ca7cca07c858085819797b74856ddbb91b50491b1a",
           "capture_kind": "artifact_file"
         }
       ],
@@ -236,8 +236,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              13980,
-              14926
+              13990,
+              14936
             ],
             "description_sha256": "41f9575cfbbca24813a25f60548cfa0c0cdfb9ad334c92691cc4c2510af5b9e3",
             "description_repr": "source_text",
@@ -252,8 +252,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              18656,
-              21118
+              18666,
+              21128
             ],
             "description_sha256": "2a313b366110172f66fc0c55e8c4a95e2a42fe3b5f212da1275c161e6f9f4444",
             "description_repr": "source_text",
@@ -269,8 +269,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              12916,
-              13978
+              12926,
+              13988
             ],
             "description_sha256": "7d0ab093914fe29e5f31840e8b79351595959f9568fead0a12e3868ad9c83864",
             "description_repr": "source_text",
@@ -287,8 +287,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              23451,
-              24372
+              23460,
+              24381
             ],
             "description_sha256": "38f9c18bc6ae856264acc674a1e7a53f837342bb34fe8fa07086c0e0beaf9f1b",
             "description_repr": "source_text",
@@ -303,8 +303,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              24374,
-              25099
+              24383,
+              25108
             ],
             "description_sha256": "7511f1d76c37638756c818ce1264d2f88fa1e96c352acf0abe031249a8a305b5",
             "description_repr": "source_text",
@@ -317,8 +317,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              14928,
-              15932
+              14938,
+              15942
             ],
             "description_sha256": "1514d8174175c7fb2cb094f8beac60eec2d7d1159f9b782fdd4d9bb267ac8b78",
             "description_repr": "source_text",
@@ -333,8 +333,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              15934,
-              18654
+              15944,
+              18664
             ],
             "description_sha256": "2624bece083bad8f7ec5110acd23b84149eb7183d14ba08bac5d228f632e5ad8",
             "description_repr": "source_text",
@@ -350,8 +350,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              21120,
-              22227
+              21130,
+              22236
             ],
             "description_sha256": "373b0c53f89e7ce84cebe79b100275a67c065a9b65dafcc9989d01323ca4c028",
             "description_repr": "source_text",
@@ -367,8 +367,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              6806,
-              7159
+              6816,
+              7169
             ],
             "description_sha256": "7abf56a4c306cf50c1ad1b4568b4d5f28086f068b4052f81aff20e72c0b92d47",
             "description_repr": "string_literal",
@@ -380,8 +380,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              8176,
-              10621
+              8186,
+              10631
             ],
             "description_sha256": "3a9bd15bc12b0187826eb13b29cd784209b2d57480ecda7f1071a8dedc31205e",
             "description_repr": "source_text",
@@ -396,8 +396,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              10623,
-              12053
+              10633,
+              12063
             ],
             "description_sha256": "64d353a4e882c9b9266f208da3171ea169b984e9a9e4e150ecb40daeb6efe086",
             "description_repr": "source_text",
@@ -412,8 +412,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              7161,
-              8174
+              7171,
+              8184
             ],
             "description_sha256": "cd1ed46753c771d071bb574aacffbb39ee58b840d30df914763c6ced9a0beccd",
             "description_repr": "source_text",
@@ -430,8 +430,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              22229,
-              23449
+              22238,
+              23458
             ],
             "description_sha256": "3e69d5733647514efb5f3e516bf693224876f336f491bae5750ac23e4c619306",
             "description_repr": "source_text",
@@ -448,8 +448,8 @@
             "discovery": "registration",
             "artifact_path": "package/dist/index.js",
             "byte_range": [
-              12055,
-              12914
+              12065,
+              12924
             ],
             "description_sha256": "7bc4fff4830da21f34c4a3dd3bf1f16c58988c995dfa0c8554fbe62be1500c1e",
             "description_repr": "source_text",
