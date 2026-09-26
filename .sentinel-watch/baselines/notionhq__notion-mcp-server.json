@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "17bd1367-2bd0-4a82-9cd9-03db375d0859",
-  "generated_at": "2026-08-09T06:08:01.107Z",
+  "report_id": "bf8c0029-c264-40c5-b3d1-152365645d2b",
+  "generated_at": "2026-09-26T16:24:36.316Z",
   "subject": {
     "server_name": "@notionhq/notion-mcp-server",
     "publisher_claim": "@notionhq",
     "artifact": {
       "ecosystem": "npm",
       "package": "@notionhq/notion-mcp-server",
-      "version": "2.5.1",
-      "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
-      "download_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
-      "acquired_at": "2026-08-09T06:08:00.622Z",
-      "registry_metadata_sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
-      "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+      "version": "2.5.2",
+      "sha256": "2506106e21e2487531d106cf0b37cd3b1b18913c91dc141719f1c05b91f8bbce",
+      "download_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.2.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.2",
+      "acquired_at": "2026-09-26T16:24:35.854Z",
+      "registry_metadata_sha256": "c41c941bbf1192f6846da6425f01b9e653367aa4113796a168926aabfa81737b",
+      "integrity_claim": "sha512-5nPSwHMnugSGAhSJS5vVIlMao+iTJO9HoWGpCnT8lJNrPy3rZMqs1V/CPiN4MuxF+5EBgRE/f/Tirl6Wfi75Mg==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+      "build_sha256": "62823b3ef16e4791ec4b9c2b40f3b4c15f81a4bdf89bf9f6204e8d7bdd0224dc"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "sha256": "bfaae66c82171772fd5c02a70389858015d1a0646ec19a39cd8bebc0e5a2ff07",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@notionhq/notion-mcp-server",
-        "version": "2.5.1",
+        "version": "2.5.2",
         "description": "Official MCP server for Notion API",
         "main": "index.js",
         "bin": {
@@ -78,13 +78,13 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "sha256": "2506106e21e2487531d106cf0b37cd3b1b18913c91dc141719f1c05b91f8bbce",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "entry_count": 51,
-        "regular_file_bytes": 3039434,
+        "regular_file_bytes": 3040694,
         "entries": [
           {
             "path": "package/.dockerignore",
@@ -180,13 +180,13 @@
             "path": "package/package.json",
             "type": "file",
             "size": 1737,
-            "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea"
+            "sha256": "bfaae66c82171772fd5c02a70389858015d1a0646ec19a39cd8bebc0e5a2ff07"
           },
           {
             "path": "package/README.md",
             "type": "file",
-            "size": 16267,
-            "sha256": "8dd7a5336a9e5044840c0109dd53a379b28402b6e23956bd0099d0f79bc3add7"
+            "size": 17527,
+            "sha256": "d21612966c3b4d8747dfddbb99199b44730f0092c3869225b7cd5dc4607a0f86"
           },
           {
             "path": "package/RELEASING.md",
@@ -401,16 +401,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
+          "sha256": "c41c941bbf1192f6846da6425f01b9e653367aa4113796a168926aabfa81737b",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
+        "metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.2",
         "requested_package": "@notionhq/notion-mcp-server",
-        "requested_version": "2.5.1",
-        "tarball_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
-        "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+        "requested_version": "2.5.2",
+        "tarball_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.2.tgz",
+        "integrity_claim": "sha512-5nPSwHMnugSGAhSJS5vVIlMao+iTJO9HoWGpCnT8lJNrPy3rZMqs1V/CPiN4MuxF+5EBgRE/f/Tirl6Wfi75Mg==",
         "integrity_verified": true
       }
     },
@@ -420,7 +420,7 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "sha256": "bfaae66c82171772fd5c02a70389858015d1a0646ec19a39cd8bebc0e5a2ff07",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
@@ -568,7 +568,7 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "sha256": "2506106e21e2487531d106cf0b37cd3b1b18913c91dc141719f1c05b91f8bbce",
           "capture_kind": "artifact_file"
         }
       ],
