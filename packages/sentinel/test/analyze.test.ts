@@ -174,3 +174,48 @@ test("an indicator in vendored code is still reported", async () => {
   // told only that the artifact spawns a process somewhere inside itself.
   assert.match(spawned.evidence[0]!.artifact_path, /node_modules\/vendored-thing\/run\.js/);
 });
+
+async function spawnIndicatorFiles(files: Record<string, string>): Promise<string[]> {
+  const report = await createStaticReport(await readNpmArchive(await fixturePath({
+    "package/package.json": JSON.stringify({ name: "@fixture/spawn", version: "1.0.0" }),
+    ...files
+  })));
+  return (report.observations as Array<{
+    kind: string;
+    data: Record<string, unknown>;
+    evidence: Array<{ artifact_path: string }>;
+  }>)
+    .filter((observation) => observation.kind === "code_indicator" && observation.data.indicator === "process-spawn-api")
+    .map((observation) => observation.evidence[0]!.artifact_path);
+}
+
+// `RegExp.prototype.exec` is the most common `exec(` in real packages; flagging
+// it raised a "high" on @upstash/context7-mcp@4.2.0 for a Bearer-header parse.
+test("a regex .exec() call is not a process spawn", async () => {
+  const flagged = await spawnIndicatorFiles({
+    "package/auth.js": "const bearer = /^Bearer(?:\\s+(.*))?$/i.exec(header);\nconst m = pattern.exec(text);\n"
+  });
+  assert.deepEqual(flagged, []);
+});
+
+// The old pattern required `exec(` right after the name, so the synchronous
+// variants never matched — the miss ran the other way from the false positive.
+test("synchronous spawn variants are detected", async () => {
+  const flagged = await spawnIndicatorFiles({
+    "package/a.js": "const { execSync } = require('x');\nexecSync('id');\n",
+    "package/b.js": "import { spawnSync } from 'y';\nspawnSync('sh');\n",
+    "package/c.js": "import { execFileSync } from 'z';\nexecFileSync('sh');\n"
+  });
+  assert.deepEqual(flagged.sort(), ["package/a.js", "package/b.js", "package/c.js"]);
+});
+
+// A member `.exec(` is still a spawn when the receiver is child_process — the
+// module reference is what distinguishes it from a regex call.
+test("child_process member calls and bare exec() are detected", async () => {
+  const flagged = await spawnIndicatorFiles({
+    "package/member.js": "const cp = require('child_process');\ncp.exec('id');\n",
+    "package/esm.js": "import * as cp from \"node:child_process\";\ncp.exec('id');\n",
+    "package/bare.js": "exec('id', cb);\n"
+  });
+  assert.deepEqual(flagged.sort(), ["package/bare.js", "package/esm.js", "package/member.js"]);
+});

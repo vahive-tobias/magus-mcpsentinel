@@ -220,7 +220,13 @@ function staticIndicatorObservations(entries: TarEntry[]): JsonObject[] {
   const indicators: Array<{ id: string; pattern: RegExp; description: string }> = [
     { id: "network-api", pattern: /\b(?:fetch|https?\.request|net\.connect)\s*\(/, description: "Source references a network API." },
     { id: "filesystem-api", pattern: /\b(?:readFile|writeFile|rm|unlink|readdir|createReadStream|createWriteStream)\s*\(/, description: "Source references a filesystem API." },
-    { id: "process-spawn-api", pattern: /\b(?:spawn|exec|execFile|fork)\s*\(/, description: "Source references a process-spawning API." }
+    // A member `.exec(` is usually RegExp.prototype.exec, so it counts only via the
+    // child_process module reference; bare `exec(` and the unambiguous names count anywhere.
+    {
+      id: "process-spawn-api",
+      pattern: /\b(?:spawn|spawnSync|execSync|execFile|execFileSync|fork)\s*\(|(?<![.\w$])exec\s*\(|["'](?:node:)?child_process["']/,
+      description: "Source references a process-spawning API."
+    }
   ];
   const observations: JsonObject[] = [];
   for (const entry of entries) {
