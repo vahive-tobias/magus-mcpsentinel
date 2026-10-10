@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "e121ad6e-8c5a-415f-a816-beac7ba90221",
-  "generated_at": "2026-08-13T02:47:58.069Z",
+  "report_id": "98ce789d-d51d-4aac-a28e-a4317471103a",
+  "generated_at": "2026-10-10T21:44:31.032Z",
   "subject": {
     "server_name": "io.github.upstash/context7",
     "publisher_claim": "@upstash",
     "artifact": {
       "ecosystem": "npm",
       "package": "@upstash/context7-mcp",
-      "version": "4.0.2",
-      "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
-      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
-      "acquired_at": "2026-08-13T02:47:58.023Z",
-      "registry_metadata_sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
-      "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
+      "version": "4.3.0",
+      "sha256": "0b08bbf437ed895b6f59132d4537683fde2a1c0545767fa65576f060fda3b50b",
+      "download_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.3.0.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.3.0",
+      "acquired_at": "2026-10-10T21:44:31.000Z",
+      "registry_metadata_sha256": "1bd6da60103193e802ef041e6d6ebe30064f2499eb0894e81d84f8c3202aa8e2",
+      "integrity_claim": "sha512-fuDt5nWjE5JkAPLjU0m+m0LlJphxyegAvAmcwHoA5jrzAhKo/rVV0RFA8TOwODGdDVdt/nPxNslkxeDIDp/rPA==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "76ecfa3e5785d89b34d6618b32c84c01f0e40666b3541871cc874aba61200160"
+      "build_sha256": "ed6f4bcb8c0ad7e6ef63f07a0aad92e382379bd04f02a53fb9eb8688f38a1eb9"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
+          "sha256": "b834957b86d131317eae38cbc972c6b5bbb7a3cdddc7f0fa377aee1dddba352c",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@upstash/context7-mcp",
-        "version": "4.0.2",
+        "version": "4.3.0",
         "mcpName": "io.github.upstash/context7",
         "description": "MCP server for Context7",
         "bin": {
@@ -73,7 +73,8 @@
           "format:check": "prettier --check .",
           "dev": "tsc --watch",
           "start": "node dist/index.js --transport http",
-          "pack-mcpb": "pnpm install && pnpm run build && rm -rf node_modules && pnpm install --prod && cp mcpb/manifest.json manifest.json && cp mcpb/.mcpbignore .mcpbignore && cp ../../public/icon.png icon.png && mcpb validate manifest.json && mcpb pack . mcpb/context7.mcpb && rm manifest.json .mcpbignore icon.png && pnpm install"
+          "build:mcpb": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=mcpb/stage/server/dist/index.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\"",
+          "pack-mcpb": "rm -rf mcpb/stage && pnpm run build:mcpb && cp package.json mcpb/stage/package.json && cp mcpb/manifest.json mcpb/stage/manifest.json && cp ../../public/icon.png mcpb/stage/icon.png && mcpb validate mcpb/stage/manifest.json && mcpb pack mcpb/stage mcpb/context7.mcpb && rm -rf mcpb/stage"
         },
         "engines": {
           "node": ">=20.18.1"
@@ -86,25 +87,31 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+          "sha256": "0b08bbf437ed895b6f59132d4537683fde2a1c0545767fa65576f060fda3b50b",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
-        "entry_count": 12,
-        "regular_file_bytes": 95465,
+        "entry_count": 29,
+        "regular_file_bytes": 202409,
         "entries": [
           {
             "path": "package/dist/index.js",
             "type": "file",
-            "size": 23398,
-            "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26"
+            "size": 30665,
+            "sha256": "f81dc7d90245406e4dd1115d78d9f1e0452d7a4a5622ac27d18b50920446bbe4"
           },
           {
             "path": "package/dist/lib/api.js",
             "type": "file",
-            "size": 6337,
-            "sha256": "b40f4e35d756332fd12b930e037c20339552233fba1c12c872ecb98ac945cc74"
+            "size": 7913,
+            "sha256": "28546e960ad4b120ad71253487164162792868342ee9e325279796c93c624aef"
+          },
+          {
+            "path": "package/dist/lib/auth-lifecycle-telemetry.js",
+            "type": "file",
+            "size": 1450,
+            "sha256": "ee7ee5c418ecfdf9fc1327d859c4eeff889f33b3ca3bbbb676b3e643964e8ff8"
           },
           {
             "path": "package/dist/lib/auth/auth-prompt.js",
@@ -113,28 +120,118 @@
             "sha256": "9d6ef90e4a7cb750b6502dba7eb1ba4bd7236379d724bbd164ef70982e696460"
           },
           {
-            "path": "package/dist/lib/client-ip.js",
-            "type": "file",
-            "size": 2056,
-            "sha256": "88d8680311e6cde15208defc019ed4a75a7e2df690e89a588ef4786cd551003f"
-          },
-          {
             "path": "package/dist/lib/constants.js",
             "type": "file",
-            "size": 1063,
-            "sha256": "8d6aca5875a6b2b7f0181ce5907e98e611d5c177439a8eb56250147ae2760c32"
+            "size": 3256,
+            "sha256": "2374c0cbe6ff711b79b8121d58430b6e5d8407e2ccbdee3085c171c1dd239c25"
           },
           {
             "path": "package/dist/lib/encryption.js",
             "type": "file",
-            "size": 2057,
-            "sha256": "900e8581677754570dc1874cc05f20033e62c5b66f178a47f307a87eb720e083"
+            "size": 2823,
+            "sha256": "8e949eb881dbcecca19c1cf88fa18ca0d2d991823361f1471d5e9143ac4fcd10"
           },
           {
             "path": "package/dist/lib/jwt.js",
             "type": "file",
-            "size": 3772,
-            "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5"
+            "size": 6900,
+            "sha256": "6eaf9a9001170f64a4c660e333fac0ba77b26af64bf6939c36b7251ca529cd0e"
+          },
+          {
+            "path": "package/dist/lib/log-throttle.js",
+            "type": "file",
+            "size": 958,
+            "sha256": "0b13ffb116df5f16fcae1d1a09177ace4528272d366086996a728b4a239c5522"
+          },
+          {
+            "path": "package/dist/lib/mcp-body-error-handler.js",
+            "type": "file",
+            "size": 1276,
+            "sha256": "c7f9fdea91bbab6c88789de35a34a962b3d4e8bd914f7719e64cbcc1bbbad7d0"
+          },
+          {
+            "path": "package/dist/lib/mcp-http-auth.js",
+            "type": "file",
+            "size": 6937,
+            "sha256": "c89bedfff8b0ff72fbe5fad7ce1045f7761232543b15d5843048ed014df4b5d9"
+          },
+          {
+            "path": "package/dist/lib/mcp-operation-scope.js",
+            "type": "file",
+            "size": 542,
+            "sha256": "2e760473829e37d412cdc14ad94474bee1f1b56a66e6e78c59d4afd340899cbc"
+          },
+          {
+            "path": "package/dist/lib/mcp-route.js",
+            "type": "file",
+            "size": 201,
+            "sha256": "7cd0ea2c309601c18a8fac5a2082bb3bafe7181d9db38e30b0dc7205feb3d487"
+          },
+          {
+            "path": "package/dist/lib/mcp-subscription-telemetry.js",
+            "type": "file",
+            "size": 19329,
+            "sha256": "ca2e94ee248cec99cde0b77c00ec39d9dfbec9a3714fcfd93cf2ef972c284a51"
+          },
+          {
+            "path": "package/dist/lib/mcp-telemetry.js",
+            "type": "file",
+            "size": 23512,
+            "sha256": "5888da0da429e004754b2674fa422214f77ff6c76fed6d51004f1585c8715f6a"
+          },
+          {
+            "path": "package/dist/lib/oauth-audience.js",
+            "type": "file",
+            "size": 2895,
+            "sha256": "e00852ac4e1727516564060d2fc758da5fa478e10a98b2fe82b9f7a4862dbbc7"
+          },
+          {
+            "path": "package/dist/lib/oauth-token-validation.js",
+            "type": "file",
+            "size": 5806,
+            "sha256": "2e536598497f8ed277c7ab585393863a88f5013eb7a45ce16578db0aced5758d"
+          },
+          {
+            "path": "package/dist/lib/process-shutdown.js",
+            "type": "file",
+            "size": 2077,
+            "sha256": "59688a21a4b5b3ba548b01a381dc9ad622c80937079f390c74e84a663d84fb43"
+          },
+          {
+            "path": "package/dist/lib/telemetry-config.js",
+            "type": "file",
+            "size": 535,
+            "sha256": "c1d4f2346fd3e7e911dbbe15c3de531f37dea0b570c3ec4a0f55a86856fa5e87"
+          },
+          {
+            "path": "package/dist/lib/telemetry-contracts.js",
+            "type": "file",
+            "size": 11,
+            "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+          },
+          {
+            "path": "package/dist/lib/telemetry-provider.js",
+            "type": "file",
+            "size": 3455,
+            "sha256": "7e5b740b3b266fea10f0cfcb2379bbf8e8b5ba0a161fe9b17fb7b86cd9129df5"
+          },
+          {
+            "path": "package/dist/lib/telemetry-runtime.js",
+            "type": "file",
+            "size": 2701,
+            "sha256": "302de7e531a07362344f102d6fdb8a1d12e644ebaaa4351f67e22aa6c0606089"
+          },
+          {
+            "path": "package/dist/lib/telemetry.js",
+            "type": "file",
+            "size": 8761,
+            "sha256": "6cce05424fd358dbee5c8f577104375dedadab4e27ab89c6a11c8572da4f908b"
+          },
+          {
+            "path": "package/dist/lib/tool-names.js",
+            "type": "file",
+            "size": 180,
+            "sha256": "57422b59138db769769f92b902c854d131d0a513b4fb0cb8b7fbf5c9fd229b82"
           },
           {
             "path": "package/dist/lib/types.js",
@@ -149,6 +246,12 @@
             "sha256": "edeb5a9e74a8e4c81e6072b4830c31d050c5bca2045aa6b84c140778d8c0dd77"
           },
           {
+            "path": "package/dist/lib/vercelMarketplaceJwt.js",
+            "type": "file",
+            "size": 1925,
+            "sha256": "a26a5e5e88de60ff3ac9b00c7726a4bfdb26417e89386f4968b7236998841063"
+          },
+          {
             "path": "package/LICENSE",
             "type": "file",
             "size": 1079,
@@ -157,14 +260,14 @@
           {
             "path": "package/package.json",
             "type": "file",
-            "size": 1876,
-            "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec"
+            "size": 2509,
+            "sha256": "b834957b86d131317eae38cbc972c6b5bbb7a3cdddc7f0fa377aee1dddba352c"
           },
           {
             "path": "package/README.md",
             "type": "file",
-            "size": 45712,
-            "sha256": "51aa47eba44abd6998823221f3ecb132ad8e40fc38e72a236835aea93c88c550"
+            "size": 56598,
+            "sha256": "a4c6eab49b54f04f5af7e28301e528f0e7352a09da52993d71fac6874a09b991"
           }
         ]
       }
@@ -175,16 +278,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "bf5576abc7963a0d059602a50861e8f47c2e4da4b8094ade3d32675d50d4ab6d",
+          "sha256": "1bd6da60103193e802ef041e6d6ebe30064f2499eb0894e81d84f8c3202aa8e2",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.0.2",
+        "metadata_url": "https://registry.npmjs.org/%40upstash%2Fcontext7-mcp/4.3.0",
         "requested_package": "@upstash/context7-mcp",
-        "requested_version": "4.0.2",
-        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.0.2.tgz",
-        "integrity_claim": "sha512-PdNL3hFK7tFe4oDzTa10nH8M+Ue82ShZXrsKnY0OY29TXhazeb9qZp2B/BwrxHfKua3ywu7FlqQ8HG6uyQHdaw==",
+        "requested_version": "4.3.0",
+        "tarball_url": "https://registry.npmjs.org/@upstash/context7-mcp/-/context7-mcp-4.3.0.tgz",
+        "integrity_claim": "sha512-fuDt5nWjE5JkAPLjU0m+m0LlJphxyegAvAmcwHoA5jrzAhKo/rVV0RFA8TOwODGdDVdt/nPxNslkxeDIDp/rPA==",
         "integrity_verified": true
       }
     },
@@ -194,36 +297,41 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "5b4d4d98eece9eb76dc6b178da4869a78ed77d8e7968b8d2bf4af68bf52afaec",
+          "sha256": "b834957b86d131317eae38cbc972c6b5bbb7a3cdddc7f0fa377aee1dddba352c",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "dependencies": {
-          "@modelcontextprotocol/node": "2.0.0",
-          "@modelcontextprotocol/server": "2.0.0",
+          "@modelcontextprotocol/node": "2.1.0",
+          "@modelcontextprotocol/server": "2.2.0",
+          "@opentelemetry/api": "^1.9.1",
+          "@opentelemetry/exporter-prometheus": "^0.222.0",
+          "@opentelemetry/instrumentation-runtime-node": "^0.35.0",
+          "@opentelemetry/resources": "^2.11.0",
+          "@opentelemetry/sdk-metrics": "^2.11.0",
           "@types/express": "^5.0.4",
           "commander": "^13.1.0",
           "express": "^5.1.0",
-          "jose": "^6.2.3",
-          "undici": "^7.0.0",
-          "zod": "^4.4.3"
+          "jose": "^6.2.12",
+          "undici": "^7.30.0",
+          "zod": "^4.6.5"
         }
       }
     },
     {
-      "id": "observation:network-api-b63cd636512f0b3d",
+      "id": "observation:network-api-927929b757afdc36",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "b40f4e35d756332fd12b930e037c20339552233fba1c12c872ecb98ac945cc74",
+          "sha256": "28546e960ad4b120ad71253487164162792868342ee9e325279796c93c624aef",
           "artifact_path": "package/dist/lib/api.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            4155,
-            4161
+            5304,
+            5310
           ]
         }
       ],
@@ -233,17 +341,17 @@
       }
     },
     {
-      "id": "observation:network-api-eb8a56f7be916a5e",
+      "id": "observation:network-api-ad514a5aef7e6323",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "42af5458441535244927719f23484416b77bd89d81189bf4af0ef5395ae14d26",
+          "sha256": "f81dc7d90245406e4dd1115d78d9f1e0452d7a4a5622ac27d18b50920446bbe4",
           "artifact_path": "package/dist/index.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            19790,
-            19796
+            24873,
+            24879
           ]
         }
       ],
@@ -253,17 +361,57 @@
       }
     },
     {
-      "id": "observation:network-api-1d7c277b867e6664",
+      "id": "observation:network-api-501829d96bdd55e7",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "13f647d686ba9ad5c108ab1e382adc3e3dcf97eed8c4844bde846d4845caf2e5",
+          "sha256": "6eaf9a9001170f64a4c660e333fac0ba77b26af64bf6939c36b7251ca529cd0e",
           "artifact_path": "package/dist/lib/jwt.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            1057,
-            1063
+            1377,
+            1383
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:network-api-eb69e6be9e1d0866",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "ca2e94ee248cec99cde0b77c00ec39d9dfbec9a3714fcfd93cf2ef972c284a51",
+          "artifact_path": "package/dist/lib/mcp-subscription-telemetry.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            16476,
+            16482
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "network-api",
+        "description": "Source references a network API."
+      }
+    },
+    {
+      "id": "observation:network-api-95fe62eaf7e24060",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "2e536598497f8ed277c7ab585393863a88f5013eb7a45ce16578db0aced5758d",
+          "artifact_path": "package/dist/lib/oauth-token-validation.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            2938,
+            2944
           ]
         }
       ],
@@ -278,53 +426,45 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "da9f9793678aa332cd9a74a9f118c638764ac69c34e95c1d139e7e7c15903071",
+          "sha256": "0b08bbf437ed895b6f59132d4537683fde2a1c0545767fa65576f060fda3b50b",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "extraction": "static_source_analysis",
-        "complete": true,
-        "incompleteness": [],
+        "complete": false,
+        "incompleteness": [
+          "registration_name_not_static"
+        ],
         "scanned_files": [
           "package/dist/index.js",
           "package/dist/lib/api.js",
+          "package/dist/lib/auth-lifecycle-telemetry.js",
           "package/dist/lib/auth/auth-prompt.js",
-          "package/dist/lib/client-ip.js",
           "package/dist/lib/constants.js",
           "package/dist/lib/encryption.js",
           "package/dist/lib/jwt.js",
+          "package/dist/lib/log-throttle.js",
+          "package/dist/lib/mcp-body-error-handler.js",
+          "package/dist/lib/mcp-http-auth.js",
+          "package/dist/lib/mcp-operation-scope.js",
+          "package/dist/lib/mcp-route.js",
+          "package/dist/lib/mcp-subscription-telemetry.js",
+          "package/dist/lib/mcp-telemetry.js",
+          "package/dist/lib/oauth-audience.js",
+          "package/dist/lib/oauth-token-validation.js",
+          "package/dist/lib/process-shutdown.js",
+          "package/dist/lib/telemetry-config.js",
+          "package/dist/lib/telemetry-contracts.js",
+          "package/dist/lib/telemetry-provider.js",
+          "package/dist/lib/telemetry-runtime.js",
+          "package/dist/lib/telemetry.js",
+          "package/dist/lib/tool-names.js",
           "package/dist/lib/types.js",
-          "package/dist/lib/utils.js"
+          "package/dist/lib/utils.js",
+          "package/dist/lib/vercelMarketplaceJwt.js"
         ],
-        "tools": [
-          {
-            "name": "query-docs",
-            "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
-            "byte_range": [
-              10099,
-              12467
-            ],
-            "description_sha256": "0ad4a5e4f24c62473be1e3dca954fbd685b3c10af757550bf525b52bf0134327",
-            "description_repr": "string_literal",
-            "input_schema_sha256": "e1f907f9bc34e8e5674a9cc34668ae715c784adc16498d947b02ab63d76477b6",
-            "input_schema_repr": "source_text"
-          },
-          {
-            "name": "resolve-library-id",
-            "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
-            "byte_range": [
-              6003,
-              10093
-            ],
-            "description_sha256": "6d85cad96641caacff07e8c20523a1455fa5f89f776681ca9f81dcda58b0468d",
-            "description_repr": "string_literal",
-            "input_schema_sha256": "bfbf196f629386c923d46f1f7929f1c29ea702c2c4c8364ece2b9998af08861a",
-            "input_schema_repr": "source_text"
-          }
-        ]
+        "tools": []
       }
     }
   ],
@@ -341,6 +481,10 @@
     {
       "code": "semantic_analysis_not_run",
       "summary": "No semantic model analysis was run."
+    },
+    {
+      "code": "static_tool_extraction_incomplete",
+      "summary": "The declared tool surface could not be fully resolved from source (registration_name_not_static). Treat the inventory as a lower bound, not a complete list."
     }
   ]
 }
