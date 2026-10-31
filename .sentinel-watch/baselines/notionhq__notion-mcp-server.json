@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "17bd1367-2bd0-4a82-9cd9-03db375d0859",
-  "generated_at": "2026-08-09T06:08:01.107Z",
+  "report_id": "06d81d69-d804-46f7-a0ca-b4a4a4da367a",
+  "generated_at": "2026-10-31T12:29:47.427Z",
   "subject": {
     "server_name": "@notionhq/notion-mcp-server",
     "publisher_claim": "@notionhq",
     "artifact": {
       "ecosystem": "npm",
       "package": "@notionhq/notion-mcp-server",
-      "version": "2.5.1",
-      "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
-      "download_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
-      "acquired_at": "2026-08-09T06:08:00.622Z",
-      "registry_metadata_sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
-      "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+      "version": "2.6.1",
+      "sha256": "dda051e78271e754b6c6fe6907bfb71ee28b3cd81efe8d39fb39268c3b10aec5",
+      "download_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.6.1.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.6.1",
+      "acquired_at": "2026-10-31T12:29:46.979Z",
+      "registry_metadata_sha256": "546519ee706b1e57243b76654361931d9c2fd1172df82a1491236b22303c939f",
+      "integrity_claim": "sha512-CJ83Z6o93d85RbQnJWYlKTdY2vplU02yvHCSIRSGcuQppzeV3roaiuj3yM28v85mOUr6aQgsUR9CrxxTvO62jQ==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+      "build_sha256": "ed6f4bcb8c0ad7e6ef63f07a0aad92e382379bd04f02a53fb9eb8688f38a1eb9"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "sha256": "3559160f5d806eef0f63ccf47c59ba939c85023c6b345c503317ad57e3c45569",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@notionhq/notion-mcp-server",
-        "version": "2.5.1",
+        "version": "2.6.1",
         "description": "Official MCP server for Notion API",
         "main": "index.js",
         "bin": {
@@ -78,13 +78,13 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "sha256": "dda051e78271e754b6c6fe6907bfb71ee28b3cd81efe8d39fb39268c3b10aec5",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
-        "entry_count": 51,
-        "regular_file_bytes": 3039434,
+        "entry_count": 52,
+        "regular_file_bytes": 3014075,
         "entries": [
           {
             "path": "package/.dockerignore",
@@ -119,8 +119,8 @@
           {
             "path": "package/bin/cli.mjs",
             "type": "file",
-            "size": 1404967,
-            "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0"
+            "size": 1380194,
+            "sha256": "3651096ba5b38140ea01f49fcba3160f4967acee2b549ebd6ea372e2bb8887fc"
           },
           {
             "path": "package/CLAUDE.md",
@@ -137,8 +137,8 @@
           {
             "path": "package/Dockerfile",
             "type": "file",
-            "size": 957,
-            "sha256": "9097ee99329f61f79642bb7e42737ede947f380630d94e67085080026503a4c8"
+            "size": 967,
+            "sha256": "19360648c29f7f066500894fe8b94e976cd5d1c57029c95f4a2f7326ac06d341"
           },
           {
             "path": "package/docs/images/connections.png",
@@ -179,14 +179,14 @@
           {
             "path": "package/package.json",
             "type": "file",
-            "size": 1737,
-            "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea"
+            "size": 1713,
+            "sha256": "3559160f5d806eef0f63ccf47c59ba939c85023c6b345c503317ad57e3c45569"
           },
           {
             "path": "package/README.md",
             "type": "file",
-            "size": 16267,
-            "sha256": "8dd7a5336a9e5044840c0109dd53a379b28402b6e23956bd0099d0f79bc3add7"
+            "size": 17527,
+            "sha256": "d21612966c3b4d8747dfddbb99199b44730f0092c3869225b7cd5dc4607a0f86"
           },
           {
             "path": "package/RELEASING.md",
@@ -225,10 +225,16 @@
             "sha256": "b11c66a16bdf65472f8782561c377b9b7ec05db30fbde40734a0bb82bd1aee08"
           },
           {
+            "path": "package/src/__tests__/init-server.test.ts",
+            "type": "file",
+            "size": 2691,
+            "sha256": "2117ea1040d2ddcd995b951daa6e9225023d646c4e04b84b54126270c51877d1"
+          },
+          {
             "path": "package/src/init-server.ts",
             "type": "file",
-            "size": 1428,
-            "sha256": "2eeca6eb4d79ac3473883e789f2bfbd8f1b1077311c8883a856acbf5cb7be0c4"
+            "size": 2322,
+            "sha256": "99717c8808bd46da88ddafca7b4f3af9785820d62cad59dafec27449e3dca432"
           },
           {
             "path": "package/src/openapi-mcp-server/auth/index.ts",
@@ -251,8 +257,8 @@
           {
             "path": "package/src/openapi-mcp-server/client/__tests__/http-client-upload.test.ts",
             "type": "file",
-            "size": 6397,
-            "sha256": "a576fa3a246fa483a197163c489a38beaeba912859e6178150e29b052b26594c"
+            "size": 2418,
+            "sha256": "f4e26c8900764f2ef5e3c9787452de4eed79ec2efa29f464b21b8dee42aeb7a3"
           },
           {
             "path": "package/src/openapi-mcp-server/client/__tests__/http-client.headers.test.ts",
@@ -281,8 +287,8 @@
           {
             "path": "package/src/openapi-mcp-server/client/http-client.ts",
             "type": "file",
-            "size": 8258,
-            "sha256": "388640e020591babec78c88471b3318a7df1a211422254110311a7d08a86da0b"
+            "size": 6752,
+            "sha256": "2ae0c96db1e6c4ea35dd45ed786c2ee77f820121b86916411d9fffbb2a5dbf38"
           },
           {
             "path": "package/src/openapi-mcp-server/client/polyfill-headers.ts",
@@ -377,8 +383,8 @@
           {
             "path": "package/src/openapi-mcp-server/README.md",
             "type": "file",
-            "size": 1876,
-            "sha256": "2e08720388e9044e93a79091706c6b09bbe4e93b222986c18be44f9ca71f837a"
+            "size": 1944,
+            "sha256": "033b9452ca4aec7d4c09f9c2531a6e417beeb13ae29550ba6fe52e69237c070b"
           },
           {
             "path": "package/tsconfig.json",
@@ -401,16 +407,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "62a678817f2d1107d82e44088932a79eb4cb16eb25b10cbafbe0595269293fd6",
+          "sha256": "546519ee706b1e57243b76654361931d9c2fd1172df82a1491236b22303c939f",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.5.1",
+        "metadata_url": "https://registry.npmjs.org/%40notionhq%2Fnotion-mcp-server/2.6.1",
         "requested_package": "@notionhq/notion-mcp-server",
-        "requested_version": "2.5.1",
-        "tarball_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.5.1.tgz",
-        "integrity_claim": "sha512-JPG38WoSxYxZMk+fLgqsibU1rhvCSbK1JSMUlw5DPyoc1LveN2cz5C1lbJFcv7mZTa/DAOP4zbfxNj4YtN/lcQ==",
+        "requested_version": "2.6.1",
+        "tarball_url": "https://registry.npmjs.org/@notionhq/notion-mcp-server/-/notion-mcp-server-2.6.1.tgz",
+        "integrity_claim": "sha512-CJ83Z6o93d85RbQnJWYlKTdY2vplU02yvHCSIRSGcuQppzeV3roaiuj3yM28v85mOUr6aQgsUR9CrxxTvO62jQ==",
         "integrity_verified": true
       }
     },
@@ -420,40 +426,39 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "63b1be816a00fb1ab2fadc8511412d86488cf8cfb04ed3c3a604fc7cea3c5bea",
+          "sha256": "3559160f5d806eef0f63ccf47c59ba939c85023c6b345c503317ad57e3c45569",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "dependencies": {
-          "@modelcontextprotocol/sdk": "^1.29.0",
-          "axios": "^1.8.4",
-          "express": "^4.21.2",
-          "form-data": "^4.0.1",
+          "@modelcontextprotocol/sdk": "^1.32.2",
+          "axios": "^1.21.0",
+          "express": "^4.22.3",
           "mustache": "^4.2.0",
           "node-fetch": "^3.3.2",
-          "openapi-client-axios": "^7.5.5",
+          "openapi-client-axios": "^7.9.1",
           "openapi-schema-validator": "^12.1.3",
           "openapi-types": "^12.1.3",
           "which": "^5.0.0",
-          "yargs": "^17.7.2",
-          "zod": "3.24.1"
+          "yargs": "^17.7.3",
+          "zod": "^4.6.7"
         }
       }
     },
     {
-      "id": "observation:network-api-8c2edb341e1078cc",
+      "id": "observation:network-api-635d9602b66dd78c",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
+          "sha256": "3651096ba5b38140ea01f49fcba3160f4967acee2b549ebd6ea372e2bb8887fc",
           "artifact_path": "package/bin/cli.mjs",
           "capture_kind": "artifact_file",
           "byte_range": [
-            1398265,
-            1398271
+            1373492,
+            1373498
           ]
         }
       ],
@@ -463,57 +468,17 @@
       }
     },
     {
-      "id": "observation:filesystem-api-7329639c09accdcc",
+      "id": "observation:filesystem-api-79220d6933858990",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
+          "sha256": "3651096ba5b38140ea01f49fcba3160f4967acee2b549ebd6ea372e2bb8887fc",
           "artifact_path": "package/bin/cli.mjs",
           "capture_kind": "artifact_file",
           "byte_range": [
-            799564,
-            799581
-          ]
-        }
-      ],
-      "data": {
-        "indicator": "filesystem-api",
-        "description": "Source references a filesystem API."
-      }
-    },
-    {
-      "id": "observation:process-spawn-api-214c0ae3cc593862",
-      "kind": "code_indicator",
-      "coverage": "inferred",
-      "evidence": [
-        {
-          "sha256": "70a958eff66104a3a76857a63206e8494548e9358031907905bcdadd52cb72b0",
-          "artifact_path": "package/bin/cli.mjs",
-          "capture_kind": "artifact_file",
-          "byte_range": [
-            6401,
-            6406
-          ]
-        }
-      ],
-      "data": {
-        "indicator": "process-spawn-api",
-        "description": "Source references a process-spawning API."
-      }
-    },
-    {
-      "id": "observation:filesystem-api-7660ed71c12a58d8",
-      "kind": "code_indicator",
-      "coverage": "inferred",
-      "evidence": [
-        {
-          "sha256": "388640e020591babec78c88471b3318a7df1a211422254110311a7d08a86da0b",
-          "artifact_path": "package/src/openapi-mcp-server/client/http-client.ts",
-          "capture_kind": "artifact_file",
-          "byte_range": [
-            4523,
-            4540
+            803747,
+            803764
           ]
         }
       ],
@@ -543,32 +508,12 @@
       }
     },
     {
-      "id": "observation:process-spawn-api-61c590a61326e21e",
-      "kind": "code_indicator",
-      "coverage": "inferred",
-      "evidence": [
-        {
-          "sha256": "dda544bf580f4523ce65f5281616f31cf9927fe581ef15ca644031aaf4097956",
-          "artifact_path": "package/src/openapi-mcp-server/mcp/token.ts",
-          "capture_kind": "artifact_file",
-          "byte_range": [
-            3982,
-            3987
-          ]
-        }
-      ],
-      "data": {
-        "indicator": "process-spawn-api",
-        "description": "Source references a process-spawning API."
-      }
-    },
-    {
       "id": "observation:static-tool-inventory",
       "kind": "protocol_inventory",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "d399ef17d829e15768a620dd65efbe1110736ca24d83dfcf8548323b02fb843d",
+          "sha256": "dda051e78271e754b6c6fe6907bfb71ee28b3cd81efe8d39fb39268c3b10aec5",
           "capture_kind": "artifact_file"
         }
       ],
