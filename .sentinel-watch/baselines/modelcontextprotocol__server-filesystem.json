@@ -1,20 +1,20 @@
 {
   "format_version": "0.2.0",
-  "report_id": "16c8eea2-f74f-409a-a4a2-fc9a4fcdb530",
-  "generated_at": "2026-08-09T06:08:00.173Z",
+  "report_id": "5fb32af7-81c0-4707-b936-ea9685e71e07",
+  "generated_at": "2026-10-31T12:29:46.269Z",
   "subject": {
     "server_name": "io.github.modelcontextprotocol/server-filesystem",
     "publisher_claim": "@modelcontextprotocol",
     "artifact": {
       "ecosystem": "npm",
       "package": "@modelcontextprotocol/server-filesystem",
-      "version": "2026.7.10",
-      "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
-      "download_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.7.10.tgz",
-      "registry_metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.7.10",
-      "acquired_at": "2026-08-09T06:08:00.111Z",
-      "registry_metadata_sha256": "8a015aa91b18d86178c19d679fe20de37e0467d41c0e2e9d01fa2b38ff9ed2d4",
-      "integrity_claim": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+      "version": "2.1.0",
+      "sha256": "65aba6b962efa7fdfdd51d70b48c06e7786c8bbc57292520dec21924836031df",
+      "download_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2.1.0.tgz",
+      "registry_metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2.1.0",
+      "acquired_at": "2026-10-31T12:29:46.200Z",
+      "registry_metadata_sha256": "2ef413a870eced085f881771771c194724295bdaadae441b6078b861b5e6ea73",
+      "integrity_claim": "sha512-BMihuyTNi975iQTQDsZ6x+JVg99CAiX83jBV0wGMyc/0DcBO55ulCQqEzwx7lbG5U9/97XiPP9n0sK/iUtSsEg==",
       "integrity_verified": true
     }
   },
@@ -22,7 +22,7 @@
     "engine": {
       "name": "sentinel",
       "version": "0.2.0",
-      "build_sha256": "d012d031290ee7e48f8906fb71216dc01c62cb0bd2dc9feeb3ab81ac19961506"
+      "build_sha256": "ed6f4bcb8c0ad7e6ef63f07a0aad92e382379bd04f02a53fb9eb8688f38a1eb9"
     },
     "protocol_profile": {
       "id": "mcp-2026-07-28",
@@ -50,14 +50,14 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244",
+          "sha256": "42ddd58e3f5580d07af425bc7394d78496db410c3a522c73c174ea108a051771",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "name": "@modelcontextprotocol/server-filesystem",
-        "version": "2026.7.10",
+        "version": "2.1.0",
         "mcpName": "io.github.modelcontextprotocol/server-filesystem",
         "description": "MCP server for filesystem access",
         "bin": {
@@ -67,7 +67,16 @@
           "build": "tsc && shx chmod +x dist/*.js",
           "prepare": "npm run build",
           "watch": "tsc --watch",
-          "test": "vitest run --coverage"
+          "test": "vitest run",
+          "format": "prettier --write \"**/*.{ts,mts,cts,js,mjs,cjs}\" --ignore-path ../../.prettierignore",
+          "format:check": "prettier --check \"**/*.{ts,mts,cts,js,mjs,cjs}\" --ignore-path ../../.prettierignore",
+          "lint": "eslint . --max-warnings 0",
+          "typecheck": "tsc -p tsconfig.test.json",
+          "coverage": "vitest run --coverage",
+          "validate": "npm run format:check && npm run lint && npm run typecheck && npm run build && npm run test"
+        },
+        "engines": {
+          "node": ">=24"
         }
       }
     },
@@ -77,55 +86,73 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+          "sha256": "65aba6b962efa7fdfdd51d70b48c06e7786c8bbc57292520dec21924836031df",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
-        "entry_count": 7,
-        "regular_file_bytes": 69088,
+        "entry_count": 10,
+        "regular_file_bytes": 132659,
         "entries": [
           {
             "path": "package/dist/index.js",
             "type": "file",
-            "size": 28217,
-            "sha256": "ac12c0307497ebd1c8e0b0fe4b057165cded007cd7c7afc9aeaa68fefe68eb15"
+            "size": 6258,
+            "sha256": "fd44be644b81d088eded98d73a5521a179850e716102aa1d7a9edccf6d79fba9"
           },
           {
             "path": "package/dist/lib.js",
             "type": "file",
-            "size": 14315,
-            "sha256": "e2f5648317613530f60b582b8b0ed10c1beddc10c2d0926213300d827f27208e"
+            "size": 34380,
+            "sha256": "7acd502f656812f99e22e0352649564b5ce2707b5623a136239c0da7ab36b72c"
           },
           {
             "path": "package/dist/path-utils.js",
             "type": "file",
-            "size": 4655,
-            "sha256": "2129214ece0aa7ee51a0e7d615bfdd9266c7284d8d5ecf02aff07d0a2c3dacd1"
+            "size": 6342,
+            "sha256": "5736001d7214f0d8eb47abeb0849f777529c17aa7b8b5c3320209e89bd963f38"
           },
           {
             "path": "package/dist/path-validation.js",
             "type": "file",
-            "size": 2904,
-            "sha256": "c2d5481e236814c3a4f32c74580f03fb19b25ff7d0b743cf9d51555c9399d9b6"
+            "size": 3905,
+            "sha256": "07fbf314443ad3f4a30ab462b122a18f53bbc895f628e3a5830bca8aed59386b"
+          },
+          {
+            "path": "package/dist/pinned-directory.js",
+            "type": "file",
+            "size": 19703,
+            "sha256": "170ab06bde78c692297ead795c279dae77db7c57f1dd37fc907a8304ce8fdd85"
           },
           {
             "path": "package/dist/roots-utils.js",
             "type": "file",
-            "size": 2760,
-            "sha256": "4074f48adb2a22d9d07792cbe0d8b8f59c63e499ef7b9722066fbb8d3d4d74b0"
+            "size": 3532,
+            "sha256": "750172b0d92bdcccd17925e04f80b18aeb284e844b1fdd0a457fabf4a3e76ef9"
+          },
+          {
+            "path": "package/dist/server.js",
+            "type": "file",
+            "size": 34915,
+            "sha256": "139c72a59734005319ea66463ea4d405bb29b456082b9a6b68074d1063dbbc34"
+          },
+          {
+            "path": "package/dist/version.js",
+            "type": "file",
+            "size": 1415,
+            "sha256": "044a3819acfb25e8038eb742845502eb255fa719aaa158b4befad5a58a44854d"
           },
           {
             "path": "package/package.json",
             "type": "file",
-            "size": 1169,
-            "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244"
+            "size": 1715,
+            "sha256": "42ddd58e3f5580d07af425bc7394d78496db410c3a522c73c174ea108a051771"
           },
           {
             "path": "package/README.md",
             "type": "file",
-            "size": 15068,
-            "sha256": "df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd"
+            "size": 20494,
+            "sha256": "29c91673b2c0eae97c40f71a76971ec6478a5cbbd4ade63fa5cce84cc50b39e8"
           }
         ]
       }
@@ -136,16 +163,16 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "8a015aa91b18d86178c19d679fe20de37e0467d41c0e2e9d01fa2b38ff9ed2d4",
+          "sha256": "2ef413a870eced085f881771771c194724295bdaadae441b6078b861b5e6ea73",
           "capture_kind": "registry_metadata"
         }
       ],
       "data": {
-        "metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2026.7.10",
+        "metadata_url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2.1.0",
         "requested_package": "@modelcontextprotocol/server-filesystem",
-        "requested_version": "2026.7.10",
-        "tarball_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2026.7.10.tgz",
-        "integrity_claim": "sha512-Mmjg4anFBD5OzbPnGJOA0jPPN8645ERhQk38HQLpSenx1ox9bfdPkmAzUnNjeQtqQGFLtKe13J20RtLBmUKMZA==",
+        "requested_version": "2.1.0",
+        "tarball_url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem/-/server-filesystem-2.1.0.tgz",
+        "integrity_claim": "sha512-BMihuyTNi975iQTQDsZ6x+JVg99CAiX83jBV0wGMyc/0DcBO55ulCQqEzwx7lbG5U9/97XiPP9n0sK/iUtSsEg==",
         "integrity_verified": true
       }
     },
@@ -155,32 +182,33 @@
       "coverage": "declared",
       "evidence": [
         {
-          "sha256": "6b2c11d4d348cace9c652636d602713c377ba59d868e013de69f3a9046d61244",
+          "sha256": "42ddd58e3f5580d07af425bc7394d78496db410c3a522c73c174ea108a051771",
           "artifact_path": "package/package.json",
           "capture_kind": "artifact_file"
         }
       ],
       "data": {
         "dependencies": {
-          "@modelcontextprotocol/sdk": "^1.29.0",
+          "@modelcontextprotocol/server": "^2.3.1",
           "diff": "^8.0.3",
-          "glob": "^10.5.0",
-          "minimatch": "^10.0.1"
+          "glob": "^13.0.6",
+          "minimatch": "^10.0.1",
+          "zod": "^4.2.0"
         }
       }
     },
     {
-      "id": "observation:filesystem-api-5c3564fe26ad8c49",
+      "id": "observation:filesystem-api-5e127a0dbbeabe15",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "ac12c0307497ebd1c8e0b0fe4b057165cded007cd7c7afc9aeaa68fefe68eb15",
-          "artifact_path": "package/dist/index.js",
+          "sha256": "7acd502f656812f99e22e0352649564b5ce2707b5623a136239c0da7ab36b72c",
+          "artifact_path": "package/dist/lib.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            5790,
-            5807
+            3665,
+            3673
           ]
         }
       ],
@@ -190,17 +218,37 @@
       }
     },
     {
-      "id": "observation:filesystem-api-fa1b3d47540fb889",
+      "id": "observation:filesystem-api-f006d5758e2fe439",
       "kind": "code_indicator",
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "e2f5648317613530f60b582b8b0ed10c1beddc10c2d0926213300d827f27208e",
-          "artifact_path": "package/dist/lib.js",
+          "sha256": "170ab06bde78c692297ead795c279dae77db7c57f1dd37fc907a8304ce8fdd85",
+          "artifact_path": "package/dist/pinned-directory.js",
           "capture_kind": "artifact_file",
           "byte_range": [
-            5156,
-            5165
+            1707,
+            1717
+          ]
+        }
+      ],
+      "data": {
+        "indicator": "filesystem-api",
+        "description": "Source references a filesystem API."
+      }
+    },
+    {
+      "id": "observation:filesystem-api-ce76af8f1e0c9de8",
+      "kind": "code_indicator",
+      "coverage": "inferred",
+      "evidence": [
+        {
+          "sha256": "139c72a59734005319ea66463ea4d405bb29b456082b9a6b68074d1063dbbc34",
+          "artifact_path": "package/dist/server.js",
+          "capture_kind": "artifact_file",
+          "byte_range": [
+            4243,
+            4260
           ]
         }
       ],
@@ -215,7 +263,7 @@
       "coverage": "inferred",
       "evidence": [
         {
-          "sha256": "c17c1da371c8089cff2206cce3001194d8276bae2b5ac1e2b425b6612068e3ba",
+          "sha256": "65aba6b962efa7fdfdd51d70b48c06e7786c8bbc57292520dec21924836031df",
           "capture_kind": "artifact_file"
         }
       ],
@@ -228,237 +276,193 @@
           "package/dist/lib.js",
           "package/dist/path-utils.js",
           "package/dist/path-validation.js",
-          "package/dist/roots-utils.js"
+          "package/dist/pinned-directory.js",
+          "package/dist/roots-utils.js",
+          "package/dist/server.js",
+          "package/dist/version.js"
         ],
         "tools": [
           {
             "name": "create_directory",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              13980,
-              14926
+              17512,
+              18622
             ],
             "description_sha256": "41f9575cfbbca24813a25f60548cfa0c0cdfb9ad334c92691cc4c2510af5b9e3",
             "description_repr": "source_text",
-            "input_schema_sha256": "ad5a9636e33a7dcf4cf8b706cb05a5c5b944ffe5cf17cf09b60d9c8afe35519c",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "path"
-            ]
+            "input_schema_sha256": "97bd1f2f11c8c3e0c03a78b52278357bbdf8f70f93024eebbf635dffe2581a4e",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "directory_tree",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              18656,
-              21118
+              22989,
+              25929
             ],
             "description_sha256": "2a313b366110172f66fc0c55e8c4a95e2a42fe3b5f212da1275c161e6f9f4444",
             "description_repr": "source_text",
-            "input_schema_sha256": "07525ce8aa102099347495a5b6aa088d8dcfce1993525ebf73f768bb6933868e",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "excludePatterns",
-              "path"
-            ]
+            "input_schema_sha256": "7f6d7884a8a08a093ffbc7eafcc628d4fb0299cc7cc145af81de85315dc70580",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "edit_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              12916,
-              13978
+              16578,
+              17506
             ],
             "description_sha256": "7d0ab093914fe29e5f31840e8b79351595959f9568fead0a12e3868ad9c83864",
             "description_repr": "source_text",
-            "input_schema_sha256": "eae15dc4bfcc55830bbc1cdcabdb572a599d7bacdbf660a60615b165ac930ad2",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "dryRun",
-              "edits",
-              "path"
-            ]
+            "input_schema_sha256": "d7de7a42aa04545a65314f69ba7cfd692276794f48a45403bf411b2c17c23f06",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "get_file_info",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              23451,
-              24372
+              28460,
+              29522
             ],
-            "description_sha256": "38f9c18bc6ae856264acc674a1e7a53f837342bb34fe8fa07086c0e0beaf9f1b",
+            "description_sha256": "3589cfa4bb54441a51a41fb7815959c8b2aead877776e9a689c32305574f0b5d",
             "description_repr": "source_text",
-            "input_schema_sha256": "ad5a9636e33a7dcf4cf8b706cb05a5c5b944ffe5cf17cf09b60d9c8afe35519c",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "path"
-            ]
+            "input_schema_sha256": "baf3921efff65aac5889103fe3227ae9f05d3c687f6ae23e77f81ce33264ce45",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "list_allowed_directories",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              24374,
-              25099
+              29528,
+              30347
             ],
             "description_sha256": "7511f1d76c37638756c818ce1264d2f88fa1e96c352acf0abe031249a8a305b5",
             "description_repr": "source_text",
-            "input_schema_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-            "input_schema_repr": "json_literal",
-            "input_schema_properties": []
+            "input_schema_sha256": "eabe566b12edccb13a42cec6f8adf3748c772a69f9f14bfa9c471fef1399f9cf",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "list_directory",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              14928,
-              15932
+              18628,
+              19759
             ],
             "description_sha256": "1514d8174175c7fb2cb094f8beac60eec2d7d1159f9b782fdd4d9bb267ac8b78",
             "description_repr": "source_text",
-            "input_schema_sha256": "ad5a9636e33a7dcf4cf8b706cb05a5c5b944ffe5cf17cf09b60d9c8afe35519c",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "path"
-            ]
+            "input_schema_sha256": "d08ab695a79df5767e8b2c6afe80d6d50321e9ade44aa8b24f5f82b0a1c1df87",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "list_directory_with_sizes",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              15934,
-              18654
+              19765,
+              22983
             ],
             "description_sha256": "2624bece083bad8f7ec5110acd23b84149eb7183d14ba08bac5d228f632e5ad8",
             "description_repr": "source_text",
-            "input_schema_sha256": "1bd69c37106c8a198a559767fd3e1c6d7c70ef5f89ebad62481c838f5d789607",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "path",
-              "sortBy"
-            ]
+            "input_schema_sha256": "bf5409b6aeeb196c716c2b2c3b872fe797deab1906950a47edbf824c0f66df23",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "move_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              21120,
-              22227
+              25935,
+              27205
             ],
             "description_sha256": "373b0c53f89e7ce84cebe79b100275a67c065a9b65dafcc9989d01323ca4c028",
             "description_repr": "source_text",
-            "input_schema_sha256": "34caafd6472953c59720d4565cf17fb1ba35f4ffd402d258888842b9863458d6",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "destination",
-              "source"
-            ]
+            "input_schema_sha256": "e866b33c90d7571ae23757cbfbe151364cc5ca15bd5ef0f0141ae9847321246c",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "read_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              6806,
-              7159
+              9667,
+              10077
             ],
             "description_sha256": "7abf56a4c306cf50c1ad1b4568b4d5f28086f068b4052f81aff20e72c0b92d47",
             "description_repr": "string_literal",
-            "input_schema_sha256": "5c1162dee31ebebcffe7fbf82f0a2df98696d112db4d3e9f756a2ba779f4fae8",
+            "input_schema_sha256": "6795c6230cba6c7767c9b44ddd2f172dc61b91fff3027618e9720be23e1d057e",
             "input_schema_repr": "source_text"
           },
           {
             "name": "read_media_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              8176,
-              10621
+              11302,
+              14133
             ],
             "description_sha256": "3a9bd15bc12b0187826eb13b29cd784209b2d57480ecda7f1071a8dedc31205e",
             "description_repr": "source_text",
-            "input_schema_sha256": "ad5a9636e33a7dcf4cf8b706cb05a5c5b944ffe5cf17cf09b60d9c8afe35519c",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "path"
-            ]
+            "input_schema_sha256": "fe764266a8306bdcd4a600788ab226e76c8f6ebc3fd7e554d9ab5f8eabe4f096",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "read_multiple_files",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              10623,
-              12053
+              14139,
+              15568
             ],
             "description_sha256": "64d353a4e882c9b9266f208da3171ea169b984e9a9e4e150ecb40daeb6efe086",
             "description_repr": "source_text",
-            "input_schema_sha256": "8a5597f973c6c15fcea0d32f2a2520364e7ef42e9f3a18829fdf3553b206ffc0",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "paths"
-            ]
+            "input_schema_sha256": "5597b7913856b24b0d962c6cb331a4dfd09c2e01f33ce0c8ecaf4b2f95f4f266",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "read_text_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              7161,
-              8174
+              10083,
+              11296
             ],
             "description_sha256": "cd1ed46753c771d071bb574aacffbb39ee58b840d30df914763c6ced9a0beccd",
             "description_repr": "source_text",
-            "input_schema_sha256": "93567c2bba4d24799341343ca9c9aff5c83d6968ad2d9cc6bd1fa64f5587b3c9",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "head",
-              "path",
-              "tail"
-            ]
+            "input_schema_sha256": "48161c4da0777ff77a529f44c68ec09429630fb745643fdfbcff0126377a2747",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "search_files",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              22229,
-              23449
+              27211,
+              28454
             ],
             "description_sha256": "3e69d5733647514efb5f3e516bf693224876f336f491bae5750ac23e4c619306",
             "description_repr": "source_text",
-            "input_schema_sha256": "e5ba6dad517a96c916877fc25f72ab73b2970138197f38b6846d4ade30a5a932",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "excludePatterns",
-              "path",
-              "pattern"
-            ]
+            "input_schema_sha256": "2bbeebf94ffadbbf16d4e1faf7e638cbd2cc440b6bc5597c12e76c9f575539af",
+            "input_schema_repr": "source_text"
           },
           {
             "name": "write_file",
             "discovery": "registration",
-            "artifact_path": "package/dist/index.js",
+            "artifact_path": "package/dist/server.js",
             "byte_range": [
-              12055,
-              12914
+              15574,
+              16572
             ],
             "description_sha256": "7bc4fff4830da21f34c4a3dd3bf1f16c58988c995dfa0c8554fbe62be1500c1e",
             "description_repr": "source_text",
-            "input_schema_sha256": "65f776c0cd49e87793b4a30a80ae6a63975cec98188665e252cc37a224019c57",
-            "input_schema_repr": "source_text",
-            "input_schema_properties": [
-              "content",
-              "path"
-            ]
+            "input_schema_sha256": "2ca36577c42a793c81c0b03a6293776410f154a5348fb4bee79b6cd4c53ecb74",
+            "input_schema_repr": "source_text"
           }
         ]
       }
